@@ -2,7 +2,7 @@ package com.pawello2222.chess.model;
 
 import com.pawello2222.chess.core.Board;
 
-import java.awt.*;
+import java.awt.Image;
 
 /**
  * Piece model.
@@ -11,7 +11,6 @@ import java.awt.*;
  */
 public class Piece
 {
-    private Board board;
     private Spot spot;
     private Image image;
 
@@ -21,16 +20,27 @@ public class Piece
     private int x;
     private int y;
 
+    boolean boardReversed;
     boolean active;
 
-    public Piece( Board board, Spot spot, Image image, PieceColor color, PieceType type, boolean active )
+    public Piece( Spot spot, Image image, PieceColor color, PieceType type, boolean active, boolean boardReversed )
     {
-        this.board = board;
         this.spot = spot;
         this.image = image;
         this.color = color;
         this.type = type;
         this.active = active;
+
+        resetCoordinatesToSpot( spot );
+    }
+
+    public void resetCoordinatesToSpot( Spot spot )
+    {
+        int a = boardReversed ? 7 - spot.getColumn() : spot.getColumn();
+        int b = boardReversed ? 7 - spot.getRow() : spot.getRow();
+
+        x = Board.BOARD_OFFSET_X + Board.TILE_OFFSET_X * a;
+        y = Board.BOARD_OFFSET_Y + Board.TILE_OFFSET_Y * b;
     }
 
     public Image getImage()

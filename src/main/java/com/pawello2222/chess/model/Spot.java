@@ -1,7 +1,7 @@
 package com.pawello2222.chess.model;
 
 /**
- * Spot class.
+ * Spot model.
  *
  * @author Pawel Wiszenko
  */

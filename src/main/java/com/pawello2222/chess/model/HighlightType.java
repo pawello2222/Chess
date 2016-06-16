@@ -1,7 +1,7 @@
 package com.pawello2222.chess.model;
 
 /**
- * << Class Name >>.
+ * Highlight type.
  *
  * @author Pawel Wiszenko
  */

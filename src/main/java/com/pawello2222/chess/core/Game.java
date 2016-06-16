@@ -37,7 +37,7 @@ public class Game extends JFrame
         menuBar.add( menu );
         this.setJMenuBar( menuBar );
 
-        board = new Board();
+        board = new Board( false );
         this.add( board );
         this.pack();
 

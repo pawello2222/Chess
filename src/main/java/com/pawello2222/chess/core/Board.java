@@ -11,12 +11,21 @@ import java.net.URL;
  *
  * @author Pawel Wiszenko
  */
-class Board extends JPanel
+public class Board extends JPanel
 {
+//    public static final int BOARD_OFFSET_X = 10;
+//    public static final int BOARD_OFFSET_Y = 10;
+//    public static final int TILE_OFFSET_X = 50;
+//    public static final int TILE_OFFSET_Y = 50;
+
     private Image bgImage;
 
-    Board()
+//    private boolean reversed;
+
+    public Board( boolean reversed )
     {
+//        this.reversed = reversed;
+
         String boardName = "BOARD.png";
         URL bgImageURL = getClass().getClassLoader().getResource( boardName );
         if ( bgImageURL == null )
@@ -32,4 +41,9 @@ class Board extends JPanel
     {
         graphics.drawImage( bgImage, 0, 0, null );
     }
+
+//    public boolean isReversed()
+//    {
+//        return reversed;
+//    }
 }

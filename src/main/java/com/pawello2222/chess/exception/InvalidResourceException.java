@@ -1,7 +1,7 @@
 package com.pawello2222.chess.exception;
 
 /**
- * << Class Name >>.
+ * Invalid resource exception class.
  *
  * @author Pawel Wiszenko
  */

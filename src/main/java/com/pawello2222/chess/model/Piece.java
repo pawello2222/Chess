@@ -11,7 +11,6 @@ import java.awt.Image;
  */
 public class Piece
 {
-    private Spot spot;
     private Image image;
 
     private PieceColor color;
@@ -20,27 +19,20 @@ public class Piece
     private int x;
     private int y;
 
-    boolean boardReversed;
-    boolean active;
+    private boolean active;
 
-    public Piece( Spot spot, Image image, PieceColor color, PieceType type, boolean active, boolean boardReversed )
+    public Piece( Image image, PieceColor color, PieceType type, boolean active )
     {
-        this.spot = spot;
         this.image = image;
         this.color = color;
         this.type = type;
         this.active = active;
-
-        resetCoordinatesToSpot( spot );
     }
 
-    public void resetCoordinatesToSpot( Spot spot )
+    public void setCoordinatesToSpot( Spot spot )
     {
-        int a = boardReversed ? 7 - spot.getColumn() : spot.getColumn();
-        int b = boardReversed ? 7 - spot.getRow() : spot.getRow();
-
-        x = Board.BOARD_OFFSET_X + Board.TILE_OFFSET_X * a;
-        y = Board.BOARD_OFFSET_Y + Board.TILE_OFFSET_Y * b;
+        this.x = spot.getX();
+        this.y = spot.getY();
     }
 
     public Image getImage()
@@ -96,5 +88,15 @@ public class Piece
     public void setY( int y )
     {
         this.y = y;
+    }
+
+    public boolean isActive()
+    {
+        return active;
+    }
+
+    public void setActive( boolean active )
+    {
+        this.active = active;
     }
 }

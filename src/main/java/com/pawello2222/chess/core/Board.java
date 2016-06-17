@@ -6,7 +6,6 @@ import com.pawello2222.chess.model.Spot;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,15 +18,11 @@ public class Board extends JPanel
 {
     public static final int BOARD_OFFSET_X = 10;
     public static final int BOARD_OFFSET_Y = 10;
-    public static final int TILE_OFFSET_X = 50;
-    public static final int TILE_OFFSET_Y = 50;
-
-    private BoardCreator boardCreator;
 
     private Image bgImage;
 
     private Spot[][] spots;
-    private List< Piece > pieces = new ArrayList< Piece >();
+    private List< Piece > pieces = new ArrayList<>();
 
     private boolean reversed;
 
@@ -35,14 +30,17 @@ public class Board extends JPanel
     {
         this.reversed = reversed;
 
-        this.boardCreator = new BoardCreator( this.reversed );
-        bgImage = loadResource( "BOARD.png" );
-        this.setPreferredSize( new Dimension( bgImage.getWidth( this ),
-                                               bgImage.getHeight( this ) ) );
+        BoardCreator boardCreator = new BoardCreator( this );
 
-        spots = new Spot[ 8 ][ 8 ];
-        boardCreator.initializeSpots( spots );
-        boardCreator.addPieces( spots, pieces );
+        try
+        {
+            boardCreator.initializeBoard( "BOARD.png" );
+        }
+        catch ( InvalidResourceException e )
+        {
+            System.out.println( e.getMessage() );
+            System.exit( -1 );
+        }
     }
 
     @Override
@@ -52,14 +50,6 @@ public class Board extends JPanel
 
         for ( Piece piece : pieces )
             graphics.drawImage( piece.getImage(), piece.getX(), piece.getY(), null );
-    }
-
-    public static Image loadResource( String resource ) throws InvalidResourceException
-    {
-        URL bgImageURL = Board.class.getClassLoader().getResource( resource );
-        if ( bgImageURL == null )
-            throw new InvalidResourceException( resource );
-        return new ImageIcon( bgImageURL ).getImage();
     }
 
     public boolean isReversed()
@@ -75,5 +65,25 @@ public class Board extends JPanel
     public void setBgImage( Image bgImage )
     {
         this.bgImage = bgImage;
+    }
+
+    public Spot[][] getSpots()
+    {
+        return spots;
+    }
+
+    public void setSpots( Spot[][] spots )
+    {
+        this.spots = spots;
+    }
+
+    public List< Piece > getPieces()
+    {
+        return pieces;
+    }
+
+    public void setPieces( List< Piece > pieces )
+    {
+        this.pieces = pieces;
     }
 }

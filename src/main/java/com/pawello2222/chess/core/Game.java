@@ -1,5 +1,7 @@
 package com.pawello2222.chess.core;
 
+import com.pawello2222.chess.exception.InvalidResourceException;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -19,7 +21,15 @@ public class Game extends JFrame
     private Game()
     {
         this.setTitle( "Chess" );
-        this.setIconImage( Board.loadResource( "ICON.png" ) );
+        try
+        {
+            this.setIconImage( BoardCreator.loadResource( "ICON.png" ) );
+        }
+        catch ( InvalidResourceException e )
+        {
+            System.out.println( e.getMessage() );
+            System.exit( -1 );
+        }
 
         menuBar = new JMenuBar();
         menuItems = new JMenuItem[ 6 ];

@@ -7,6 +7,9 @@ package com.pawello2222.chess.model;
  */
 public class Spot
 {
+    public static final int SPOT_WIDTH = 50;
+    public static final int SPOT_HEIGHT = 50;
+
     private Piece piece;
 
     private int row;

@@ -6,7 +6,10 @@ import com.pawello2222.chess.model.PieceColor;
 import com.pawello2222.chess.model.PieceType;
 import com.pawello2222.chess.model.Spot;
 
+import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,64 +19,91 @@ import java.util.List;
  *
  * @author Pawel Wiszenko
  */
-public class BoardCreator
+class BoardCreator
 {
-    private boolean boardReversed;
+    private Board board;
 
-    public BoardCreator( boolean boardReversed )
+    BoardCreator( Board board )
     {
-        this.boardReversed = boardReversed;
+        this.board = board;
     }
 
-    public void initializeSpots( Spot[][] spots )
+    void initializeBoard( String bgImageName ) throws InvalidResourceException
     {
+        Image bgImage = BoardCreator.loadResource( bgImageName );
+        board.setBgImage( bgImage );
+        board.setPreferredSize( new Dimension( bgImage.getWidth( board ),
+                                              bgImage.getHeight( board ) ) );
+
+        Spot[][] spots = initializeSpots();
+        board.setSpots( spots );
+
+        List< Piece > pieces = initializePieces( spots );
+        board.setPieces( pieces );
+    }
+
+    static Image loadResource( String resourceName ) throws InvalidResourceException
+    {
+        URL bgImageURL = Board.class.getClassLoader().getResource( resourceName );
+        if ( bgImageURL == null )
+            throw new InvalidResourceException( resourceName );
+        return new ImageIcon( bgImageURL ).getImage();
+    }
+
+    private Spot[][] initializeSpots()
+    {
+        Spot[][] spots = new Spot[ 8 ][ 8 ];
+
         for ( int column = 0; column < 8; column++ )
             for ( int row = 0; row < 8; row++ )
             {
-                int x = boardReversed ? 7 - column : column;
-                int y = boardReversed ? 7 - row : row;
+                int x = board.isReversed() ? 7 - column : column;
+                int y = board.isReversed() ? 7 - row : row;
 
                 spots[ column ][ row ] = new Spot();
-                spots[ column ][ row ].setX( Board.BOARD_OFFSET_X + Board.TILE_OFFSET_X * x );
-                spots[ column ][ row ].setY( Board.BOARD_OFFSET_Y + Board.TILE_OFFSET_Y * y );
+                spots[ column ][ row ].setX( Board.BOARD_OFFSET_X + Spot.SPOT_WIDTH * x );
+                spots[ column ][ row ].setY( Board.BOARD_OFFSET_Y + Spot.SPOT_HEIGHT * y );
                 spots[ column ][ row ].setRow( row );
                 spots[ column ][ row ].setColumn( column );
             }
+
+        return spots;
     }
 
-    public void addPieces( Spot[][] spots, List< Piece > pieces )
+    private List< Piece > initializePieces( Spot[][] spots ) throws InvalidResourceException
     {
+        List< Piece > pieces = new ArrayList<>();
+
         for ( int j = 0; j < 2; j++ )
         {
             int row = j == 0 ? 6 : 1;
             PieceColor color = j == 0 ? PieceColor.WHITE : PieceColor.BLACK;
 
             for ( int i = 0; i < 8; i++ )
-                createPiece( spots, pieces, row, i, color, PieceType.PAWN );
+                pieces.add( createPiece( spots, row, i, color, PieceType.PAWN ) );
 
             row = j == 0 ? 7 : 0;
-            createPiece( spots, pieces, row, 0, color, PieceType.ROOK );
-            createPiece( spots, pieces, row, 1, color, PieceType.KNIGHT );
-            createPiece( spots, pieces, row, 2, color, PieceType.BISHOP );
-            createPiece( spots, pieces, row, 3, color, PieceType.QUEEN );
-            createPiece( spots, pieces, row, 4, color, PieceType.KING );
-            createPiece( spots, pieces, row, 5, color, PieceType.BISHOP );
-            createPiece( spots, pieces, row, 6, color, PieceType.KNIGHT );
-            createPiece( spots, pieces, row, 7, color, PieceType.ROOK );
+            pieces.add( createPiece( spots, row, 0, color, PieceType.ROOK ) );
+            pieces.add( createPiece( spots, row, 1, color, PieceType.KNIGHT ) );
+            pieces.add( createPiece( spots, row, 2, color, PieceType.BISHOP ) );
+            pieces.add( createPiece( spots, row, 3, color, PieceType.QUEEN ) );
+            pieces.add( createPiece( spots, row, 4, color, PieceType.KING ) );
+            pieces.add( createPiece( spots, row, 5, color, PieceType.BISHOP ) );
+            pieces.add( createPiece( spots, row, 6, color, PieceType.KNIGHT ) );
+            pieces.add( createPiece( spots, row, 7, color, PieceType.ROOK ) );
         }
+
+        return pieces;
     }
 
-    private void createPiece( Spot[][] spots, List< Piece > pieces, int row, int column,
-                              PieceColor color, PieceType type )
+    private Piece createPiece( Spot[][] spots, int row, int column, PieceColor color, PieceType type )
             throws InvalidResourceException
     {
-        Image pieceImage = Board.loadResource( color + "_" + type + ".png" );
-
-        boolean active = false;
-
-        Piece piece = new Piece( spots[ column ][ row ], pieceImage, color, type,
-                                 color == PieceColor.WHITE, boardReversed );
-        pieces.add( piece );
+        Image pieceImage = loadResource( color + "_" + type + ".png" );
+        Piece piece = new Piece( pieceImage, color, type, color == PieceColor.WHITE );
         spots[ column ][ row ].setPiece( piece );
+        piece.setCoordinatesToSpot( spots[ column ][ row ] );
+
+        return piece;
     }
 }

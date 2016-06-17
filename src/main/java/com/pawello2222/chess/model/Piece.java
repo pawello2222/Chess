@@ -1,7 +1,5 @@
 package com.pawello2222.chess.model;
 
-import com.pawello2222.chess.core.Board;
-
 import java.awt.Image;
 
 /**
@@ -21,18 +19,24 @@ public class Piece
 
     private boolean active;
 
+    private int offset_x;
+    private int offset_y;
+
     public Piece( Image image, PieceColor color, PieceType type, boolean active )
     {
         this.image = image;
         this.color = color;
         this.type = type;
         this.active = active;
+
+        this.offset_x = ( Spot.SPOT_WIDTH - this.getWidth() ) / 2;
+        this.offset_y = ( Spot.SPOT_HEIGHT - this.getHeight() ) / 2;
     }
 
     public void setCoordinatesToSpot( Spot spot )
     {
-        this.x = spot.getX();
-        this.y = spot.getY();
+        this.x = spot.getX() + offset_x;
+        this.y = spot.getY() + offset_y;
     }
 
     public Image getImage()

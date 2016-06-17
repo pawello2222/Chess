@@ -3,6 +3,7 @@ package com.pawello2222.chess.core;
 import com.pawello2222.chess.exception.InvalidResourceException;
 import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.Spot;
+import com.pawello2222.chess.service.MoveListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +27,7 @@ public class Board extends JPanel
 
     private boolean reversed;
 
-    public Board( boolean reversed )
+    Board( boolean reversed )
     {
         this.reversed = reversed;
 
@@ -41,6 +42,10 @@ public class Board extends JPanel
             System.out.println( e.getMessage() );
             System.exit( -1 );
         }
+
+        MoveListener moveListener = new MoveListener( this );
+        this.addMouseListener( moveListener );
+        this.addMouseMotionListener( moveListener );
     }
 
     @Override
@@ -57,12 +62,7 @@ public class Board extends JPanel
         return reversed;
     }
 
-    public Image getBgImage()
-    {
-        return bgImage;
-    }
-
-    public void setBgImage( Image bgImage )
+    void setBgImage( Image bgImage )
     {
         this.bgImage = bgImage;
     }
@@ -72,7 +72,7 @@ public class Board extends JPanel
         return spots;
     }
 
-    public void setSpots( Spot[][] spots )
+    void setSpots( Spot[][] spots )
     {
         this.spots = spots;
     }
@@ -82,7 +82,7 @@ public class Board extends JPanel
         return pieces;
     }
 
-    public void setPieces( List< Piece > pieces )
+    void setPieces( List< Piece > pieces )
     {
         this.pieces = pieces;
     }

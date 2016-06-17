@@ -40,11 +40,6 @@ public class Piece
         return image;
     }
 
-    public void setImage( Image image )
-    {
-        this.image = image;
-    }
-
     public int getWidth()
     {
         return image.getHeight( null );

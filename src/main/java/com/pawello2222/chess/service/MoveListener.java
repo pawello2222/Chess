@@ -11,7 +11,7 @@ import java.awt.event.MouseMotionListener;
 import java.util.List;
 
 /**
- * Piece move listener.
+ * Piece move listener class.
  *
  * @author Pawel Wiszenko
  */

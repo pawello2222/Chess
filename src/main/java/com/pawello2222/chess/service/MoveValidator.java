@@ -4,7 +4,7 @@ import com.pawello2222.chess.core.Board;
 import com.pawello2222.chess.model.Spot;
 
 /**
- * Piece move validator.
+ * Piece move validator class.
  *
  * @author Pawel Wiszenko
  */

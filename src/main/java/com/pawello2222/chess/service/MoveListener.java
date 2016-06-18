@@ -22,7 +22,6 @@ public class MoveListener implements MouseListener, MouseMotionListener
     private List< Piece > pieces;
 
     private Spot sourceSpot;
-    private Spot targetSpot;
     private Piece dragPiece;
 
     public MoveListener( Board board )
@@ -30,12 +29,6 @@ public class MoveListener implements MouseListener, MouseMotionListener
         this.board = board;
         this.spots = board.getSpots();
         this.pieces = board.getPieces();
-    }
-
-    @Override
-    public void mouseClicked( MouseEvent e )
-    {
-
     }
 
     @Override
@@ -61,7 +54,33 @@ public class MoveListener implements MouseListener, MouseMotionListener
     }
 
     @Override
+    public void mouseDragged( MouseEvent e )
+    {
+        if( dragPiece != null )
+        {
+            dragPiece.setX( e.getPoint().x - dragPiece.getWidth() / 2 );
+            dragPiece.setY( e.getPoint().y - dragPiece.getHeight() / 2 );
+            board.repaint();
+        }
+    }
+
+    @Override
     public void mouseReleased( MouseEvent e )
+    {
+        if( dragPiece != null )
+        {
+            Spot targetSpot = getSpotFromXY( e.getPoint().x, e.getPoint().y );
+            movePiece( sourceSpot, targetSpot );
+            sourceSpot = null;
+            dragPiece = null;
+            board.repaint();
+
+            board.nextTurn();
+        }
+    }
+
+    @Override
+    public void mouseClicked( MouseEvent e )
     {
 
     }
@@ -79,20 +98,16 @@ public class MoveListener implements MouseListener, MouseMotionListener
     }
 
     @Override
-    public void mouseDragged( MouseEvent e )
-    {
-        if( dragPiece != null )
-        {
-            dragPiece.setX( e.getPoint().x - Spot.SPOT_WIDTH / 2 );
-            dragPiece.setY( e.getPoint().y - Spot.SPOT_HEIGHT / 2 );
-            board.repaint();
-        }
-    }
-
-    @Override
     public void mouseMoved( MouseEvent e )
     {
+        Spot spot = getSpotFromXY( e.getPoint().x, e.getPoint().y );
 
+//        board.clearSpots( Spot.HighlightType.VALID );
+//
+//        if ( spot != null && spot.getPiece() != null && spot.getPiece().isActive() && dragPiece == null )
+//            validator.validate( spot );
+
+        board.repaint();
     }
 
     private boolean isMouseOverSpot( Spot spot, int x, int y )
@@ -111,5 +126,12 @@ public class MoveListener implements MouseListener, MouseMotionListener
                     return spots[ column ][ row ];
 
         return null;
+    }
+
+    private void movePiece( Spot source, Spot target )
+    {
+        target.setPiece( source.getPiece() );
+        target.getPiece().setCoordinatesToSpot( target );
+        source.setPiece( null );
     }
 }

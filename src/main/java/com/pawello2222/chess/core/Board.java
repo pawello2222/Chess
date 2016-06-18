@@ -1,6 +1,8 @@
 package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.exception.InvalidResourceException;
+import com.pawello2222.chess.model.GameState;
+import com.pawello2222.chess.model.HighlightType;
 import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.Spot;
 import com.pawello2222.chess.service.MoveListener;
@@ -17,13 +19,15 @@ import java.util.List;
  */
 public class Board extends JPanel
 {
-    public static final int BOARD_OFFSET_X = 10;
-    public static final int BOARD_OFFSET_Y = 10;
+    static final int BOARD_OFFSET_X = 10;
+    static final int BOARD_OFFSET_Y = 10;
 
     private Image bgImage;
 
     private Spot[][] spots;
     private List< Piece > pieces = new ArrayList<>();
+
+    private GameState gameState;
 
     private boolean reversed;
 
@@ -53,13 +57,61 @@ public class Board extends JPanel
     {
         graphics.drawImage( bgImage, 0, 0, null );
 
+        for ( int column = 0; column < 8; column++ )
+            for ( int row = 0; row < 8; row++ )
+            {
+                if ( spots[ column ][ row ].isValidMoveFlg() )
+                    drawHighlightedRect( graphics, spots[ column ][ row ], Color.GREEN, 4 );
+
+                if ( spots[ column ][ row ].isLastMoveFlg() )
+                    drawHighlightedRect( graphics, spots[ column ][ row ], Color.YELLOW, 2 );
+
+                if ( spots[ column ][ row ].isCheckFlg() )
+                    drawHighlightedRect( graphics, spots[ column ][ row ], Color.RED, 6 );
+            }
+
         for ( Piece piece : pieces )
             graphics.drawImage( piece.getImage(), piece.getX(), piece.getY(), null );
     }
 
-    public boolean isReversed()
+    private void drawHighlightedRect( Graphics graphics, Spot spot, Color color, int offset )
     {
-        return reversed;
+        graphics.setColor( color );
+        graphics.drawRoundRect( spot.getX() + offset, spot.getY() + offset,
+                                Spot.SPOT_WIDTH - 2 * offset, Spot.SPOT_HEIGHT - 2 * offset, 10, 10 );
+    }
+
+    public void clearSpots( HighlightType highlightType )
+    {
+        for ( int column = 0; column < 8; column++ )
+            for ( int row = 0; row < 8; row++ )
+                switch( highlightType )
+                {
+                    case VALID_MOVE:
+                        spots[ column ][ row ].setValidMoveFlg( false );
+                        break;
+
+                    case LAST_MOVE:
+                        spots[ column ][ row ].setLastMoveFlg( false );
+                        break;
+
+                    case CHECK:
+                        spots[ column ][ row ].setCheckFlg( false );
+                        break;
+                }
+    }
+
+    public void nextTurn()
+    {
+        if ( gameState == GameState.RUNNING_WHITE )
+            gameState = GameState.RUNNING_BLACK;
+        else if ( gameState == GameState.RUNNING_BLACK )
+            gameState = GameState.RUNNING_WHITE;
+
+        for ( Piece piece : this.getPieces() )
+        {
+            piece.setActive( !piece.isActive() );
+        }
     }
 
     void setBgImage( Image bgImage )
@@ -85,5 +137,20 @@ public class Board extends JPanel
     void setPieces( List< Piece > pieces )
     {
         this.pieces = pieces;
+    }
+
+    public GameState getGameState()
+    {
+        return gameState;
+    }
+
+    public void setGameState( GameState gameState )
+    {
+        this.gameState = gameState;
+    }
+
+    boolean isReversed()
+    {
+        return reversed;
     }
 }

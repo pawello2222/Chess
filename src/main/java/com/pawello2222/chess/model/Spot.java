@@ -18,6 +18,10 @@ public class Spot
     private int x;
     private int y;
 
+    private boolean validMoveFlg;
+    private boolean lastMoveFlg;
+    private boolean checkFlg;
+
     public Spot()
     {
 
@@ -71,5 +75,35 @@ public class Spot
     public void setY( int y )
     {
         this.y = y;
+    }
+
+    public boolean isValidMoveFlg()
+    {
+        return validMoveFlg;
+    }
+
+    public void setValidMoveFlg( boolean validMoveFlg )
+    {
+        this.validMoveFlg = validMoveFlg;
+    }
+
+    public boolean isLastMoveFlg()
+    {
+        return lastMoveFlg;
+    }
+
+    public void setLastMoveFlg( boolean lastMoveFlg )
+    {
+        this.lastMoveFlg = lastMoveFlg;
+    }
+
+    public boolean isCheckFlg()
+    {
+        return checkFlg;
+    }
+
+    public void setCheckFlg( boolean checkFlg )
+    {
+        this.checkFlg = checkFlg;
     }
 }

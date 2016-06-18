@@ -1,6 +1,8 @@
 package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.exception.InvalidResourceException;
+import com.pawello2222.chess.model.GameState;
+import com.pawello2222.chess.model.Piece;
 
 import javax.swing.*;
 import java.awt.*;

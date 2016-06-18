@@ -7,7 +7,7 @@ package com.pawello2222.chess.model;
  */
 public enum HighlightType
 {
-    VALID,
-    CHECKED,
-    MOVED
+    VALID_MOVE,
+    LAST_MOVE,
+    CHECK
 }

@@ -1,13 +1,14 @@
 package com.pawello2222.chess.model;
 
 /**
- * Highlight type.
+ * Spot flag type.
  *
  * @author Pawel Wiszenko
  */
-public enum HighlightType
+public enum FlagType
 {
     VALID_MOVE,
     LAST_MOVE,
-    CHECK
+    CHECK,
+    EN_PASSANT
 }

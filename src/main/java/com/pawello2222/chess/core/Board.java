@@ -2,12 +2,10 @@ package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.exception.InvalidResourceException;
 import com.pawello2222.chess.model.GameState;
-import com.pawello2222.chess.model.HighlightType;
+import com.pawello2222.chess.model.FlagType;
 import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.Spot;
-import com.pawello2222.chess.service.IMoveValidator;
-import com.pawello2222.chess.service.MoveListener;
-import com.pawello2222.chess.service.MoveValidator;
+import com.pawello2222.chess.service.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -66,13 +64,13 @@ public class Board extends JPanel
         for ( int column = 0; column < 8; column++ )
             for ( int row = 0; row < 8; row++ )
             {
-                if ( spots[ column ][ row ].isValidMoveFlg() )
+                if ( spots[ column ][ row ].isValidMoveFlag() )
                     drawHighlightedRect( graphics, spots[ column ][ row ], Color.GREEN, 4 );
 
-                if ( spots[ column ][ row ].isLastMoveFlg() )
+                if ( spots[ column ][ row ].isLastMoveFlag() )
                     drawHighlightedRect( graphics, spots[ column ][ row ], Color.YELLOW, 2 );
 
-                if ( spots[ column ][ row ].isCheckFlg() )
+                if ( spots[ column ][ row ].isCheckFlag() )
                     drawHighlightedRect( graphics, spots[ column ][ row ], Color.RED, 6 );
             }
 
@@ -87,29 +85,41 @@ public class Board extends JPanel
                                 Spot.SPOT_WIDTH - 2 * offset, Spot.SPOT_HEIGHT - 2 * offset, 10, 10 );
     }
 
-    private void clearSpots( HighlightType highlightType )
+    public void clearAllFlags()
+    {
+        clearFlags( FlagType.VALID_MOVE );
+        clearFlags( FlagType.LAST_MOVE );
+        clearFlags( FlagType.CHECK );
+        clearFlags( FlagType.EN_PASSANT );
+    }
+
+    private void clearFlags( FlagType flagType )
     {
         for ( int column = 0; column < 8; column++ )
             for ( int row = 0; row < 8; row++ )
-                switch( highlightType )
+                switch( flagType )
                 {
                     case VALID_MOVE:
-                        spots[ column ][ row ].setValidMoveFlg( false );
+                        spots[ column ][ row ].setValidMoveFlag( false );
                         break;
 
                     case LAST_MOVE:
-                        spots[ column ][ row ].setLastMoveFlg( false );
+                        spots[ column ][ row ].setLastMoveFlag( false );
                         break;
 
                     case CHECK:
-                        spots[ column ][ row ].setCheckFlg( false );
+                        spots[ column ][ row ].setCheckFlag( false );
+                        break;
+
+                    case EN_PASSANT:
+                        spots[ column ][ row ].setEnPassantFlag( false );
                         break;
                 }
     }
 
-    public void updateSpot( Spot spot )
+    public void updateSpotMoves( Spot spot )
     {
-        clearSpots( HighlightType.VALID_MOVE );
+        clearFlags( FlagType.VALID_MOVE );
         if ( spot != null && spot.getPiece() != null && spot.getPiece().isActive() )
             moveValidator.validateMovesForSpot( spot );
     }

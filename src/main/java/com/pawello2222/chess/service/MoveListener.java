@@ -2,6 +2,7 @@ package com.pawello2222.chess.service;
 
 import com.pawello2222.chess.core.Board;
 import com.pawello2222.chess.model.Piece;
+import com.pawello2222.chess.model.PieceType;
 import com.pawello2222.chess.model.Spot;
 
 import java.awt.event.InputEvent;
@@ -70,13 +71,13 @@ public class MoveListener implements MouseListener, MouseMotionListener
         if( dragPiece != null )
         {
             Spot targetSpot = getSpotFromXY( e.getPoint().x, e.getPoint().y );
-            if ( targetSpot == null || !targetSpot.isValidMoveFlg() || targetSpot == sourceSpot )
+            if ( targetSpot == null || !targetSpot.isValidMoveFlag() || targetSpot == sourceSpot )
                 dragPiece.setCoordinatesToSpot( sourceSpot );
             else
             {
-                pieces.remove( targetSpot.getPiece() );
-                targetSpot.setPiece( null );
-                movePiece( sourceSpot, targetSpot );
+                board.clearAllFlags();
+                MoveLogic.removePiece( pieces, spots, sourceSpot, targetSpot );
+                MoveLogic.movePiece( sourceSpot, targetSpot );
                 board.nextTurn();
             }
 
@@ -111,7 +112,7 @@ public class MoveListener implements MouseListener, MouseMotionListener
         if( dragPiece == null )
         {
             Spot spot = getSpotFromXY( e.getPoint().x, e.getPoint().y );
-            board.updateSpot( spot );
+            board.updateSpotMoves( spot );
             board.repaint();
         }
     }
@@ -132,12 +133,5 @@ public class MoveListener implements MouseListener, MouseMotionListener
                     return spots[ column ][ row ];
 
         return null;
-    }
-
-    private void movePiece( Spot source, Spot target )
-    {
-        target.setPiece( source.getPiece() );
-        target.getPiece().setCoordinatesToSpot( target );
-        source.setPiece( null );
     }
 }

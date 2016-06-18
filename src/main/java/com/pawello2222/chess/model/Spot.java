@@ -18,9 +18,10 @@ public class Spot
     private int x;
     private int y;
 
-    private boolean validMoveFlg;
-    private boolean lastMoveFlg;
-    private boolean checkFlg;
+    private boolean validMoveFlag;
+    private boolean lastMoveFlag;
+    private boolean checkFlag;
+    private boolean enPassantFlag;
 
     public Spot()
     {
@@ -77,33 +78,43 @@ public class Spot
         this.y = y;
     }
 
-    public boolean isValidMoveFlg()
+    public boolean isValidMoveFlag()
     {
-        return validMoveFlg;
+        return validMoveFlag;
     }
 
-    public void setValidMoveFlg( boolean validMoveFlg )
+    public void setValidMoveFlag( boolean validMoveFlag )
     {
-        this.validMoveFlg = validMoveFlg;
+        this.validMoveFlag = validMoveFlag;
     }
 
-    public boolean isLastMoveFlg()
+    public boolean isLastMoveFlag()
     {
-        return lastMoveFlg;
+        return lastMoveFlag;
     }
 
-    public void setLastMoveFlg( boolean lastMoveFlg )
+    public void setLastMoveFlag( boolean lastMoveFlag )
     {
-        this.lastMoveFlg = lastMoveFlg;
+        this.lastMoveFlag = lastMoveFlag;
     }
 
-    public boolean isCheckFlg()
+    public boolean isCheckFlag()
     {
-        return checkFlg;
+        return checkFlag;
     }
 
-    public void setCheckFlg( boolean checkFlg )
+    public void setCheckFlag( boolean checkFlag )
     {
-        this.checkFlg = checkFlg;
+        this.checkFlag = checkFlag;
+    }
+
+    public boolean isEnPassantFlag()
+    {
+        return enPassantFlag;
+    }
+
+    public void setEnPassantFlag( boolean enPassantFlag )
+    {
+        this.enPassantFlag = enPassantFlag;
     }
 }

@@ -21,31 +21,73 @@ public class MoveValidator implements IMoveValidator
     @Override
     public void validateMovesForSpot( Spot spot )
     {
-        Spot nextSpot;
         sourcePiece = spot.getPiece();
+        Spot nextSpot;
 
-        if ( sourcePiece.getType() == PieceType.PAWN )
+        switch ( sourcePiece.getType() )
         {
-            nextSpot = getNextSpot( spot, Side.N );
-            updateFlagsForSpot( nextSpot, true );
+            case PAWN:
+                nextSpot = getNextSpot( spot, Side.N );
+                updateValidFlag( nextSpot, true );
 
-            nextSpot = getNextSpot( spot, Side.NW );
-            updateFlagsForSpot( nextSpot, false );
+                if ( nextSpot != null && nextSpot.getPiece() == null && sourcePiece.isUnmoved() )
+                {
+                    nextSpot = getNextSpot( nextSpot, Side.N );
+                    updateValidFlag( nextSpot, true );
+                }
 
-            nextSpot = getNextSpot( spot, Side.NE );
-            updateFlagsForSpot( nextSpot, false );
+                nextSpot = getNextSpot( spot, Side.NW );
+                updateValidFlag( nextSpot, false );
+
+                nextSpot = getNextSpot( spot, Side.NE );
+                updateValidFlag( nextSpot, false );
+
+                nextSpot = getNextSpot( spot, Side.NE );
+                updateValidFlag( nextSpot, false );
+
+                nextSpot = getNextSpot( spot, Side.W );
+                updateEnPassantFlag( nextSpot );
+
+                nextSpot = getNextSpot( spot, Side.E );
+                updateEnPassantFlag( nextSpot );
+                break;
+
+            case ROOK:
+                break;
+
+            case KNIGHT:
+                break;
+
+            case BISHOP:
+                break;
+
+            case QUEEN:
+                break;
+
+            case KING:
+                break;
         }
     }
 
-    private void updateFlagsForSpot( Spot spot, boolean validWhenFree )
+    private void updateValidFlag( Spot spot, boolean validWhenFree )
     {
         if ( spot == null )
             return;
 
         if ( validWhenFree && spot.getPiece() == null )
-            spot.setValidMoveFlg( true );
+            spot.setValidMoveFlag( true );
         else if ( !validWhenFree && spot.getPiece() != null && spot.getPiece().getColor() != sourcePiece.getColor() )
-            spot.setValidMoveFlg( true );
+            spot.setValidMoveFlag( true );
+    }
+
+    private void updateEnPassantFlag( Spot spot )
+    {
+        if ( spot == null )
+            return;
+
+        Piece targetPiece = spot.getPiece();
+        if ( targetPiece != null && targetPiece.getColor() != sourcePiece.getColor() && spot.isEnPassantFlag() )
+            getNextSpot( spot, Side.N ).setValidMoveFlag( true );
     }
 
     private Spot getNextSpot( Spot spot, Side side )

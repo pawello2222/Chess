@@ -18,7 +18,8 @@ public class Piece
     private int y;
 
     private boolean active;
-    private boolean moved;
+    private boolean unmoved;
+//    private boolean doubleMoved;
 
     private int offset_x;
     private int offset_y;
@@ -29,6 +30,7 @@ public class Piece
         this.color = color;
         this.type = type;
         this.active = active;
+        this.unmoved = true;
 
         this.offset_x = ( Spot.SPOT_WIDTH - this.getWidth() ) / 2;
         this.offset_y = ( Spot.SPOT_HEIGHT - this.getHeight() ) / 2;
@@ -65,11 +67,6 @@ public class Piece
         return type;
     }
 
-    public void setType( PieceType type )
-    {
-        this.type = type;
-    }
-
     public int getX()
     {
         return x;
@@ -100,13 +97,23 @@ public class Piece
         this.active = active;
     }
 
-    public boolean isMoved()
+    public boolean isUnmoved()
     {
-        return moved;
+        return unmoved;
     }
 
-    public void setMoved( boolean moved )
+    public void setUnmoved( boolean unmoved )
     {
-        this.moved = moved;
+        this.unmoved = unmoved;
     }
+
+//    public boolean isDoubleMoved()
+//    {
+//        return doubleMoved;
+//    }
+//
+//    public void setDoubleMoved( boolean doubleMoved )
+//    {
+//        this.doubleMoved = doubleMoved;
+//    }
 }

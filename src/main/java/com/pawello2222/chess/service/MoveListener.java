@@ -70,11 +70,18 @@ public class MoveListener implements MouseListener, MouseMotionListener
         if( dragPiece != null )
         {
             Spot targetSpot = getSpotFromXY( e.getPoint().x, e.getPoint().y );
-            movePiece( sourceSpot, targetSpot );
+            if ( targetSpot == null || !targetSpot.isValidMoveFlg() || targetSpot == sourceSpot )
+                dragPiece.setCoordinatesToSpot( sourceSpot );
+            else
+            {
+                pieces.remove( targetSpot.getPiece() );
+                targetSpot.setPiece( null );
+                movePiece( sourceSpot, targetSpot );
+                board.nextTurn();
+            }
+
             sourceSpot = null;
             dragPiece = null;
-
-            board.nextTurn();
 
             mouseMoved( e );
         }

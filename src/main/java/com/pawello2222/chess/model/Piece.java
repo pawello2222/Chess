@@ -18,6 +18,7 @@ public class Piece
     private int y;
 
     private boolean active;
+    private boolean moved;
 
     private int offset_x;
     private int offset_y;
@@ -97,5 +98,15 @@ public class Piece
     public void setActive( boolean active )
     {
         this.active = active;
+    }
+
+    public boolean isMoved()
+    {
+        return moved;
+    }
+
+    public void setMoved( boolean moved )
+    {
+        this.moved = moved;
     }
 }

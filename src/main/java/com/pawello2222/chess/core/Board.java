@@ -55,7 +55,7 @@ public class Board extends JPanel
         this.addMouseListener( moveListener );
         this.addMouseMotionListener( moveListener );
 
-        moveValidator = new MoveValidator( this );
+        moveValidator = new MoveValidator( spots );
     }
 
     @Override

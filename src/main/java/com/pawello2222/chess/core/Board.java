@@ -5,7 +5,9 @@ import com.pawello2222.chess.model.GameState;
 import com.pawello2222.chess.model.HighlightType;
 import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.Spot;
+import com.pawello2222.chess.service.IMoveValidator;
 import com.pawello2222.chess.service.MoveListener;
+import com.pawello2222.chess.service.MoveValidator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +25,8 @@ public class Board extends JPanel
     static final int BOARD_OFFSET_Y = 10;
 
     private Image bgImage;
+
+    private IMoveValidator moveValidator;
 
     private Spot[][] spots;
     private List< Piece > pieces = new ArrayList<>();
@@ -50,6 +54,8 @@ public class Board extends JPanel
         MoveListener moveListener = new MoveListener( this );
         this.addMouseListener( moveListener );
         this.addMouseMotionListener( moveListener );
+
+        moveValidator = new MoveValidator( this );
     }
 
     @Override
@@ -81,7 +87,7 @@ public class Board extends JPanel
                                 Spot.SPOT_WIDTH - 2 * offset, Spot.SPOT_HEIGHT - 2 * offset, 10, 10 );
     }
 
-    public void clearSpots( HighlightType highlightType )
+    private void clearSpots( HighlightType highlightType )
     {
         for ( int column = 0; column < 8; column++ )
             for ( int row = 0; row < 8; row++ )
@@ -101,6 +107,13 @@ public class Board extends JPanel
                 }
     }
 
+    public void updateSpot( Spot spot )
+    {
+        clearSpots( HighlightType.VALID_MOVE );
+        if ( spot != null && spot.getPiece() != null && spot.getPiece().isActive() )
+            moveValidator.validateMovesForSpot( spot );
+    }
+
     public void nextTurn()
     {
         if ( gameState == GameState.RUNNING_WHITE )
@@ -112,6 +125,11 @@ public class Board extends JPanel
         {
             piece.setActive( !piece.isActive() );
         }
+    }
+
+    public boolean isGameRunning()
+    {
+        return gameState == GameState.RUNNING_WHITE || gameState == GameState.RUNNING_BLACK;
     }
 
     void setBgImage( Image bgImage )

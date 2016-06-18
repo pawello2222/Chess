@@ -73,9 +73,10 @@ public class MoveListener implements MouseListener, MouseMotionListener
             movePiece( sourceSpot, targetSpot );
             sourceSpot = null;
             dragPiece = null;
-            board.repaint();
 
             board.nextTurn();
+
+            mouseMoved( e );
         }
     }
 
@@ -100,14 +101,12 @@ public class MoveListener implements MouseListener, MouseMotionListener
     @Override
     public void mouseMoved( MouseEvent e )
     {
-        Spot spot = getSpotFromXY( e.getPoint().x, e.getPoint().y );
-
-//        board.clearSpots( Spot.HighlightType.VALID );
-//
-//        if ( spot != null && spot.getPiece() != null && spot.getPiece().isActive() && dragPiece == null )
-//            validator.validate( spot );
-
-        board.repaint();
+        if( dragPiece == null )
+        {
+            Spot spot = getSpotFromXY( e.getPoint().x, e.getPoint().y );
+            board.updateSpot( spot );
+            board.repaint();
+        }
     }
 
     private boolean isMouseOverSpot( Spot spot, int x, int y )

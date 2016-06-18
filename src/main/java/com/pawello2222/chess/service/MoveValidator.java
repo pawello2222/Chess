@@ -28,22 +28,22 @@ public class MoveValidator implements IMoveValidator
         {
             case PAWN:
                 nextSpot = getNextSpot( spot, Side.N );
-                updateValidFlag( nextSpot, true );
+                updateBasicFlags( nextSpot, true );
 
                 if ( nextSpot != null && nextSpot.getPiece() == null && sourcePiece.isUnmoved() )
                 {
                     nextSpot = getNextSpot( nextSpot, Side.N );
-                    updateValidFlag( nextSpot, true );
+                    updateBasicFlags( nextSpot, true );
                 }
 
                 nextSpot = getNextSpot( spot, Side.NW );
-                updateValidFlag( nextSpot, false );
+                updateBasicFlags( nextSpot, false );
 
                 nextSpot = getNextSpot( spot, Side.NE );
-                updateValidFlag( nextSpot, false );
+                updateBasicFlags( nextSpot, false );
 
                 nextSpot = getNextSpot( spot, Side.NE );
-                updateValidFlag( nextSpot, false );
+                updateBasicFlags( nextSpot, false );
 
                 nextSpot = getNextSpot( spot, Side.W );
                 updateEnPassantFlag( nextSpot );
@@ -69,7 +69,7 @@ public class MoveValidator implements IMoveValidator
         }
     }
 
-    private void updateValidFlag( Spot spot, boolean validWhenFree )
+    private void updateBasicFlags( Spot spot, boolean validWhenFree )
     {
         if ( spot == null )
             return;

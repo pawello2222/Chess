@@ -19,7 +19,6 @@ public class Piece
 
     private boolean active;
     private boolean unmoved;
-//    private boolean doubleMoved;
 
     private int offset_x;
     private int offset_y;
@@ -106,14 +105,4 @@ public class Piece
     {
         this.unmoved = unmoved;
     }
-
-//    public boolean isDoubleMoved()
-//    {
-//        return doubleMoved;
-//    }
-//
-//    public void setDoubleMoved( boolean doubleMoved )
-//    {
-//        this.doubleMoved = doubleMoved;
-//    }
 }

@@ -7,11 +7,11 @@ import com.pawello2222.chess.model.Spot;
 import java.util.List;
 
 /**
- * Move logic class.
+ * Piece logic class.
  *
  * @author Pawel Wiszenko
  */
-class MoveLogic
+class PieceLogic
 {
     static void removePiece( List< Piece > pieces, Spot[][] spots, Spot source, Spot target )
     {

@@ -2,7 +2,6 @@ package com.pawello2222.chess.service;
 
 import com.pawello2222.chess.core.Board;
 import com.pawello2222.chess.model.Piece;
-import com.pawello2222.chess.model.PieceType;
 import com.pawello2222.chess.model.Spot;
 
 import java.awt.event.InputEvent;
@@ -76,8 +75,8 @@ public class MoveListener implements MouseListener, MouseMotionListener
             else
             {
                 board.clearAllFlags();
-                MoveLogic.removePiece( pieces, spots, sourceSpot, targetSpot );
-                MoveLogic.movePiece( sourceSpot, targetSpot );
+                PieceLogic.removePiece( pieces, spots, sourceSpot, targetSpot );
+                PieceLogic.movePiece( sourceSpot, targetSpot );
                 board.nextTurn();
             }
 

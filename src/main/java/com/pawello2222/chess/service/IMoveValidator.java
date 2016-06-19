@@ -9,9 +9,9 @@ import com.pawello2222.chess.model.Spot;
  */
 public interface IMoveValidator
 {
-    void updateFlagsForSpot( Spot spot );
+    void updateValidMoveFlags( Spot spot );
 
-    void updateLastMoveFlag( Spot source, Spot target );
+    void updateLastMoveFlags( Spot source, Spot target );
 
     void updateCheckFlag();
 

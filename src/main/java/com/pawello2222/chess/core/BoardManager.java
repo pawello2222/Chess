@@ -30,7 +30,7 @@ class BoardManager
     void nextTurn( Spot sourceSpot, Spot targetSpot )
     {
         clearAllFlags();
-        moveValidator.updateLastMoveFlag( sourceSpot, targetSpot );
+        moveValidator.updateLastMoveFlags( sourceSpot, targetSpot );
         moveValidator.updateCheckFlag();
         moveValidator.updateEnPassantFlag( sourceSpot, targetSpot );
 
@@ -73,10 +73,10 @@ class BoardManager
         System.out.println( "END" );
     }
 
-    void updateFlags( Spot spot )
+    void updateValidMoveFlags( Spot spot )
     {
         clearFlagsByType( FlagType.VALID_MOVE );
-        moveValidator.updateFlagsForSpot( spot );
+        moveValidator.updateValidMoveFlags( spot );
     }
 
     private void clearAllFlags()
@@ -118,7 +118,7 @@ class BoardManager
         if ( spot == null || spot.getPiece() == null || !spot.getPiece().isActive() )
             return 0;
 
-        moveValidator.updateFlagsForSpot( spot );
+        moveValidator.updateValidMoveFlags( spot );
 
         for ( int column = 0; column < 8; column++ )
             for ( int row = 0; row < 8; row++ )

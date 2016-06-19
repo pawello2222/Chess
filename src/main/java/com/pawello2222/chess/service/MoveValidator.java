@@ -20,7 +20,7 @@ public class MoveValidator implements IMoveValidator
     }
 
     @Override
-    public void updateFlagsForSpot( Spot spot )
+    public void updateValidMoveFlags( Spot spot )
     {
         if ( spot == null || spot.getPiece() == null || !spot.getPiece().isActive() )
             return;
@@ -176,7 +176,7 @@ public class MoveValidator implements IMoveValidator
     }
 
     @Override
-    public void updateLastMoveFlag( Spot source, Spot target )
+    public void updateLastMoveFlags( Spot source, Spot target )
     {
         source.setLastMoveFlag( true );
         target.setLastMoveFlag( true );

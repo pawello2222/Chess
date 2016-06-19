@@ -87,9 +87,9 @@ public class Board extends JPanel
         boardManager.nextTurn( sourceSpot, targetSpot );
     }
 
-    public void updateFlags( Spot spot )
+    public void updateValidMoveFlags( Spot spot )
     {
-        boardManager.updateFlags( spot );
+        boardManager.updateValidMoveFlags( spot );
     }
 
     void setBgImage( Image bgImage )

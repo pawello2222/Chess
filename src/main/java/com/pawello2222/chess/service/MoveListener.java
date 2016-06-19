@@ -116,7 +116,7 @@ public class MoveListener implements MouseListener, MouseMotionListener
         if( dragPiece == null )
         {
             Spot spot = getSpotFromXY( e.getPoint().x, e.getPoint().y );
-            board.updatePossibleMoves( spot );
+            board.updateFlags( spot );
             board.repaint();
         }
     }

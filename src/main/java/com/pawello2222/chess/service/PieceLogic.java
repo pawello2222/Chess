@@ -43,4 +43,12 @@ class PieceLogic
     {
         return pieceColor == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
     }
+
+    static boolean isPieceAtSpot( Spot spot, PieceType type, PieceColor color )
+    {
+        return spot != null
+               && spot.getPiece() != null
+               && spot.getPiece().getType() == type
+               && spot.getPiece().getColor() == color;
+    }
 }

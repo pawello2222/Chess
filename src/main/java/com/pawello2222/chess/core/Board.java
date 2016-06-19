@@ -114,10 +114,27 @@ public class Board extends JPanel
                 }
     }
 
-    public void updatePossibleMoves( Spot spot )
+    public void updateFlags( Spot spot )
     {
         clearFlags( FlagType.VALID_MOVE );
-        moveValidator.validateMovesForSpot( spot );
+        moveValidator.updateFlagsForSpot( spot );
+    }
+
+    private int countValidMoveFlags( Spot spot )
+    {
+        int count = 0;
+
+        if ( spot == null || spot.getPiece() == null || !spot.getPiece().isActive() )
+            return 0;
+
+        moveValidator.updateFlagsForSpot( spot );
+
+        for ( int column = 0; column < 8; column++ )
+            for ( int row = 0; row < 8; row++ )
+                if ( spots[ column ][ row ].isValidMoveFlag() )
+                    count++;
+
+        return count;
     }
 
     public void nextTurn()
@@ -132,7 +149,7 @@ public class Board extends JPanel
         for ( int column = 0; column < 8; column++ )
             for ( int row = 0; row < 8; row++ )
             {
-                possibleMoves += moveValidator.countMovesForSpot( spots[ column ][ row ] );
+                possibleMoves += countValidMoveFlags( spots[ column ][ row ] );
                 clearFlags( FlagType.VALID_MOVE );
             }
 
@@ -186,16 +203,6 @@ public class Board extends JPanel
     void setPieces( List< Piece > pieces )
     {
         this.pieces = pieces;
-    }
-
-    public GameState getGameState()
-    {
-        return gameState;
-    }
-
-    public void setGameState( GameState gameState )
-    {
-        this.gameState = gameState;
     }
 
     boolean isReversed()

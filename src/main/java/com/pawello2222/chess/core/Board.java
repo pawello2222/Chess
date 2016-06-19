@@ -82,19 +82,14 @@ public class Board extends JPanel
                                 Spot.SPOT_WIDTH - 2 * offset, Spot.SPOT_HEIGHT - 2 * offset, 10, 10 );
     }
 
-    public void nextTurn()
+    public void nextTurn( Spot sourceSpot, Spot targetSpot )
     {
-        boardManager.nextTurn();
+        boardManager.nextTurn( sourceSpot, targetSpot );
     }
 
     public void updateFlags( Spot spot )
     {
         boardManager.updateFlags( spot );
-    }
-
-    public void clearAllFlags()
-    {
-        boardManager.clearAllFlags();
     }
 
     void setBgImage( Image bgImage )
@@ -122,12 +117,12 @@ public class Board extends JPanel
         this.pieces = pieces;
     }
 
-    public GameState getGameState()
+    GameState getGameState()
     {
         return gameState;
     }
 
-    public void setGameState( GameState gameState )
+    void setGameState( GameState gameState )
     {
         this.gameState = gameState;
     }

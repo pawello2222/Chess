@@ -27,9 +27,16 @@ class BoardManager
         moveValidator = new MoveValidator( spots );
     }
 
-    public void nextTurn()
+    void nextTurn( Spot sourceSpot, Spot targetSpot )
     {
+        boolean isEnPassant = targetSpot.isEnPassantFlag();
+
+        clearAllFlags();
+        sourceSpot.setLastMoveFlag( true );
+        targetSpot.setLastMoveFlag( true );
         moveValidator.updateCheckFlag();
+        if ( isEnPassant )
+            targetSpot.setEnPassantFlag( true );
 
         for ( Piece piece : board.getPieces() )
             piece.setActive( !piece.isActive() );
@@ -70,13 +77,13 @@ class BoardManager
         System.out.println( "END" );
     }
 
-    public void updateFlags( Spot spot )
+    void updateFlags( Spot spot )
     {
         clearFlagsByType( FlagType.VALID_MOVE );
         moveValidator.updateFlagsForSpot( spot );
     }
 
-    public void clearAllFlags()
+    private void clearAllFlags()
     {
         clearFlagsByType( FlagType.VALID_MOVE );
         clearFlagsByType( FlagType.LAST_MOVE );

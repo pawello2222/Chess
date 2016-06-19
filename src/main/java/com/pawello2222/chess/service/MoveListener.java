@@ -77,12 +77,9 @@ public class MoveListener implements MouseListener, MouseMotionListener
                 dragPiece.setCoordinatesToSpot( sourceSpot );
             else
             {
-                board.clearAllFlags();
                 PieceLogic.removePiece( pieces, spots, sourceSpot, targetSpot );
                 PieceLogic.movePiece( sourceSpot, targetSpot );
-                sourceSpot.setLastMoveFlag( true );
-                targetSpot.setLastMoveFlag( true );
-                board.nextTurn();
+                board.nextTurn( sourceSpot, targetSpot );
             }
 
             sourceSpot = null;

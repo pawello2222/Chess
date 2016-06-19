@@ -37,7 +37,7 @@ public class MoveValidator implements IMoveValidator
                 break;
 
             case ROOK:
-                updateRookMoves( spot, isColorWhite );
+                updateLineMoves( spot, isColorWhite, 0, 3 );
                 break;
 
             case KNIGHT:
@@ -45,11 +45,11 @@ public class MoveValidator implements IMoveValidator
                 break;
 
             case BISHOP:
-                updateBishopMoves( spot, isColorWhite );
+                updateLineMoves( spot, isColorWhite, 4, 7 );
                 break;
 
             case QUEEN:
-                updateQueenMoves( spot, isColorWhite );
+                updateLineMoves( spot, isColorWhite, 0, 7 );
                 break;
 
             case KING:
@@ -87,11 +87,11 @@ public class MoveValidator implements IMoveValidator
         updateEnPassantFlag( nextSpot );
     }
 
-    private void updateRookMoves( Spot spot, boolean isColorWhite )
+    private void updateLineMoves( Spot spot, boolean isColorWhite, int sideBegin, int sideEnd )
     {
         Spot nextSpot;
 
-        for( int i = 0; i < 4; i++ )
+        for( int i = sideBegin; i <= sideEnd; i++ )
         {
             nextSpot = getNextSpot( spot, Side.values()[ i ], isColorWhite );
 
@@ -113,19 +113,15 @@ public class MoveValidator implements IMoveValidator
 
     }
 
-    private void updateBishopMoves( Spot spot, boolean isColorWhite )
-    {
-
-    }
-
-    private void updateQueenMoves( Spot spot, boolean isColorWhite )
-    {
-
-    }
-
     private void updateKingMoves( Spot spot, boolean isColorWhite )
     {
+        Spot nextSpot;
 
+        for( int i = 0; i <= 7; i++ )
+        {
+            nextSpot = getNextSpot( spot, Side.values()[ i ], isColorWhite );
+            updateValidMoveFlag( nextSpot, true, true );
+        }
     }
 
     private void updateValidMoveFlag( Spot spot, boolean validWhenFree, boolean validWhenOpponent )
@@ -214,16 +210,20 @@ public class MoveValidator implements IMoveValidator
         if ( isPieceAtSpot( nextSpot, PieceType.PAWN, PieceLogic.getOppositePieceColor( color ) ) )
             return true;
 
-        for( int i = 0; i < 4; i++ )
+        for( int i = 0; i <= 7; i++ )
         {
             nextSpot = getNextSpot( spot, Side.values()[ i ], color == PieceColor.WHITE );
+
+            if ( isPieceAtSpot( nextSpot, PieceType.KING, PieceLogic.getOppositePieceColor( color ) ) )
+                return true;
 
             while( nextSpot != null && ( nextSpot.getPiece() == null || nextSpot.getPiece().getColor() != color ) )
             {
                 if ( nextSpot.getPiece() != null && nextSpot.getPiece().getColor() != color )
                 {
-                    if( nextSpot.getPiece().getType() == PieceType.ROOK
-                        || nextSpot.getPiece().getType() == PieceType.QUEEN )
+                    if( nextSpot.getPiece().getType() == PieceType.QUEEN
+                        || nextSpot.getPiece().getType() == PieceType.ROOK && i <= 3
+                        || nextSpot.getPiece().getType() == PieceType.BISHOP && i >= 4 )
                         return true;
                     else
                         break;

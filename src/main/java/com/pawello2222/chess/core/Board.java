@@ -21,7 +21,7 @@ public class Board extends JPanel
 
     private Image bgImage;
 
-    private IMoveValidator moveValidator;
+    private BoardManager boardManager;
 
     private Spot[][] spots;
     private List< Piece > pieces = new ArrayList<>();
@@ -46,11 +46,11 @@ public class Board extends JPanel
             System.exit( -1 );
         }
 
+        boardManager = new BoardManager( this );
+
         MoveListener moveListener = new MoveListener( this );
         this.addMouseListener( moveListener );
         this.addMouseMotionListener( moveListener );
-
-        moveValidator = new MoveValidator( spots );
     }
 
     @Override
@@ -82,102 +82,19 @@ public class Board extends JPanel
                                 Spot.SPOT_WIDTH - 2 * offset, Spot.SPOT_HEIGHT - 2 * offset, 10, 10 );
     }
 
-    public void clearAllFlags()
+    public void nextTurn()
     {
-        clearFlags( FlagType.VALID_MOVE );
-        clearFlags( FlagType.LAST_MOVE );
-        clearFlags( FlagType.CHECK );
-        clearFlags( FlagType.EN_PASSANT );
-    }
-
-    private void clearFlags( FlagType flagType )
-    {
-        for ( int column = 0; column < 8; column++ )
-            for ( int row = 0; row < 8; row++ )
-                switch( flagType )
-                {
-                    case VALID_MOVE:
-                        spots[ column ][ row ].setValidMoveFlag( false );
-                        break;
-
-                    case LAST_MOVE:
-                        spots[ column ][ row ].setLastMoveFlag( false );
-                        break;
-
-                    case CHECK:
-                        spots[ column ][ row ].setCheckFlag( false );
-                        break;
-
-                    case EN_PASSANT:
-                        spots[ column ][ row ].setEnPassantFlag( false );
-                        break;
-                }
+        boardManager.nextTurn();
     }
 
     public void updateFlags( Spot spot )
     {
-        clearFlags( FlagType.VALID_MOVE );
-        moveValidator.updateFlagsForSpot( spot );
+        boardManager.updateFlags( spot );
     }
 
-    private int countValidMoveFlags( Spot spot )
+    public void clearAllFlags()
     {
-        int count = 0;
-
-        if ( spot == null || spot.getPiece() == null || !spot.getPiece().isActive() )
-            return 0;
-
-        moveValidator.updateFlagsForSpot( spot );
-
-        for ( int column = 0; column < 8; column++ )
-            for ( int row = 0; row < 8; row++ )
-                if ( spots[ column ][ row ].isValidMoveFlag() )
-                    count++;
-
-        return count;
-    }
-
-    public void nextTurn()
-    {
-        moveValidator.updateCheckFlag();
-
-        for ( Piece piece : this.getPieces() )
-            piece.setActive( !piece.isActive() );
-
-        int possibleMoves = 0;
-
-        for ( int column = 0; column < 8; column++ )
-            for ( int row = 0; row < 8; row++ )
-            {
-                possibleMoves += countValidMoveFlags( spots[ column ][ row ] );
-                clearFlags( FlagType.VALID_MOVE );
-            }
-
-        if ( possibleMoves > 0 )
-            switchPlayer();
-        else
-            endGame();
-    }
-
-    private void switchPlayer()
-    {
-        if ( gameState == GameState.RUNNING_WHITE )
-            gameState = GameState.RUNNING_BLACK;
-        else if ( gameState == GameState.RUNNING_BLACK )
-            gameState = GameState.RUNNING_WHITE;
-    }
-
-    private void endGame()
-    {
-        if ( gameState == GameState.RUNNING_WHITE )
-            gameState = GameState.CHECKMATE_WIN_WHITE;
-        else if ( gameState == GameState.RUNNING_BLACK )
-            gameState = GameState.CHECKMATE_WIN_BLACK;
-
-        for ( Piece piece : this.getPieces() )
-            piece.setActive( false );
-
-        System.out.println( "END" );
+        boardManager.clearAllFlags();
     }
 
     void setBgImage( Image bgImage )
@@ -203,6 +120,16 @@ public class Board extends JPanel
     void setPieces( List< Piece > pieces )
     {
         this.pieces = pieces;
+    }
+
+    public GameState getGameState()
+    {
+        return gameState;
+    }
+
+    public void setGameState( GameState gameState )
+    {
+        this.gameState = gameState;
     }
 
     boolean isReversed()

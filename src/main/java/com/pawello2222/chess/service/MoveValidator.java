@@ -110,7 +110,19 @@ public class MoveValidator implements IMoveValidator
 
     private void updateKnightMoves( Spot spot, boolean isColorWhite )
     {
+        Spot nextSpot, oldSpot;
 
+        for( int i = 0; i <= 3; i++ )
+        {
+            nextSpot = getNextSpot( spot, Side.values()[ i ], isColorWhite );
+            oldSpot = getNextSpot( nextSpot, Side.values()[ i ], isColorWhite );
+
+            nextSpot = getNextSpot( oldSpot, Side.values()[ ( i + 1 ) % 4 ], isColorWhite );
+            updateValidMoveFlag( nextSpot, true, true );
+
+            nextSpot = getNextSpot( oldSpot, Side.values()[ ( i + 3 ) % 4 ], isColorWhite );
+            updateValidMoveFlag( nextSpot, true, true );
+        }
     }
 
     private void updateKingMoves( Spot spot, boolean isColorWhite )
@@ -200,7 +212,7 @@ public class MoveValidator implements IMoveValidator
 
     private boolean isSpotCapturable( Spot spot, PieceColor color )
     {
-        Spot nextSpot;
+        Spot nextSpot, tmpSpot, oldSpot;
 
         nextSpot = getNextSpot( spot, Side.NW, color == PieceColor.WHITE );
         if ( isPieceAtSpot( nextSpot, PieceType.PAWN, PieceLogic.getOppositePieceColor( color ) ) )
@@ -213,8 +225,17 @@ public class MoveValidator implements IMoveValidator
         for( int i = 0; i <= 7; i++ )
         {
             nextSpot = getNextSpot( spot, Side.values()[ i ], color == PieceColor.WHITE );
-
             if ( isPieceAtSpot( nextSpot, PieceType.KING, PieceLogic.getOppositePieceColor( color ) ) )
+                return true;
+
+            oldSpot = getNextSpot( nextSpot, Side.values()[ i ], color == PieceColor.WHITE );
+
+            tmpSpot = getNextSpot( oldSpot, Side.values()[ ( i + 1 ) % 4 ], color == PieceColor.WHITE );
+            if ( i <= 3 && isPieceAtSpot( tmpSpot, PieceType.KNIGHT, PieceLogic.getOppositePieceColor( color ) ) )
+                return true;
+
+            tmpSpot = getNextSpot( oldSpot, Side.values()[ ( i + 3 ) % 4 ], color == PieceColor.WHITE );
+            if ( i <= 3 && isPieceAtSpot( tmpSpot, PieceType.KNIGHT, PieceLogic.getOppositePieceColor( color ) ) )
                 return true;
 
             while( nextSpot != null && ( nextSpot.getPiece() == null || nextSpot.getPiece().getColor() != color ) )

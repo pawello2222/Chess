@@ -1,10 +1,7 @@
 package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.exception.InvalidResourceException;
-import com.pawello2222.chess.model.GameState;
-import com.pawello2222.chess.model.FlagType;
-import com.pawello2222.chess.model.Piece;
-import com.pawello2222.chess.model.Spot;
+import com.pawello2222.chess.model.*;
 import com.pawello2222.chess.service.*;
 
 import javax.swing.*;
@@ -117,30 +114,57 @@ public class Board extends JPanel
                 }
     }
 
-    public void updateSpotMoves( Spot spot )
+    public void updatePossibleMoves( Spot spot )
     {
         clearFlags( FlagType.VALID_MOVE );
-        if ( spot != null && spot.getPiece() != null && spot.getPiece().isActive() )
-            moveValidator.validateMovesForSpot( spot );
+        moveValidator.validateMovesForSpot( spot );
     }
 
     public void nextTurn()
+    {
+        moveValidator.updateCheckFlag();
+
+        for ( Piece piece : this.getPieces() )
+            piece.setActive( !piece.isActive() );
+
+        int possibleMoves = 0;
+
+        for ( int column = 0; column < 8; column++ )
+            for ( int row = 0; row < 8; row++ )
+            {
+                possibleMoves += moveValidator.countMovesForSpot( spots[ column ][ row ] );
+                clearFlags( FlagType.VALID_MOVE );
+            }
+
+        if ( possibleMoves > 0 )
+            switchPlayer();
+        else
+            endGame();
+    }
+
+    private void switchPlayer()
     {
         if ( gameState == GameState.RUNNING_WHITE )
             gameState = GameState.RUNNING_BLACK;
         else if ( gameState == GameState.RUNNING_BLACK )
             gameState = GameState.RUNNING_WHITE;
+    }
+
+    private void endGame()
+    {
+        if ( gameState == GameState.RUNNING_WHITE )
+            gameState = GameState.CHECKMATE_WIN_WHITE;
+        else if ( gameState == GameState.RUNNING_BLACK )
+            gameState = GameState.CHECKMATE_WIN_BLACK;
 
         for ( Piece piece : this.getPieces() )
-        {
-            piece.setActive( !piece.isActive() );
-        }
+            piece.setActive( false );
     }
 
-    public boolean isGameRunning()
-    {
-        return gameState == GameState.RUNNING_WHITE || gameState == GameState.RUNNING_BLACK;
-    }
+//    public boolean isGameRunning()
+//    {
+//        return gameState == GameState.RUNNING_WHITE || gameState == GameState.RUNNING_BLACK;
+//    }
 
     void setBgImage( Image bgImage )
     {

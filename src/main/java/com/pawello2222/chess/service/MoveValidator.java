@@ -21,37 +21,17 @@ public class MoveValidator implements IMoveValidator
     @Override
     public void validateMovesForSpot( Spot spot )
     {
+        if ( spot == null || spot.getPiece() == null || !spot.getPiece().isActive() )
+            return;
+
         sourcePiece = spot.getPiece();
-        Spot nextSpot;
 
         boolean isColorWhite = sourcePiece.getColor() == PieceColor.WHITE;
 
         switch ( sourcePiece.getType() )
         {
             case PAWN:
-                nextSpot = getNextSpot( spot, Side.N, isColorWhite );
-                updateValidFlag( nextSpot, true );
-
-                if ( nextSpot != null && nextSpot.getPiece() == null && sourcePiece.isUnmoved() )
-                {
-                    nextSpot = getNextSpot( nextSpot, Side.N, isColorWhite );
-                    updateValidFlag( nextSpot, true );
-                }
-
-                nextSpot = getNextSpot( spot, Side.NW, isColorWhite );
-                updateValidFlag( nextSpot, false );
-
-                nextSpot = getNextSpot( spot, Side.NE, isColorWhite );
-                updateValidFlag( nextSpot, false );
-
-                nextSpot = getNextSpot( spot, Side.NE, isColorWhite );
-                updateValidFlag( nextSpot, false );
-
-                nextSpot = getNextSpot( spot, Side.W, isColorWhite );
-                updateEnPassantFlag( nextSpot );
-
-                nextSpot = getNextSpot( spot, Side.E, isColorWhite );
-                updateEnPassantFlag( nextSpot );
+                updatePawnMoves( spot, isColorWhite );
                 break;
 
             case ROOK:
@@ -71,18 +51,76 @@ public class MoveValidator implements IMoveValidator
         }
     }
 
+    @Override
+    public int countMovesForSpot( Spot spot )
+    {
+        int count = 0;
+
+        if ( spot == null || spot.getPiece() == null || !spot.getPiece().isActive() )
+            return 0;
+
+        validateMovesForSpot( spot );
+
+        for ( int column = 0; column < 8; column++ )
+            for ( int row = 0; row < 8; row++ )
+                if ( spots[ column ][ row ].isValidMoveFlag() )
+                    count++;
+
+        return count;
+    }
+
+    @Override
+    public boolean updateCheckFlag()
+    {
+        PieceColor opponentColor = PieceLogic.getOppositePieceColor( sourcePiece.getColor() );
+        Spot kingSpot = getKingSpot( opponentColor );
+        if ( kingSpot != null && isSpotCapturable( kingSpot, opponentColor ) )
+            kingSpot.setCheckFlag( true );
+
+        return false;
+    }
+
+    private void updatePawnMoves( Spot spot, boolean isColorWhite )
+    {
+        Spot nextSpot;
+
+        nextSpot = getNextSpot( spot, Side.N, isColorWhite );
+        updateValidFlag( nextSpot, true );
+
+        if ( nextSpot != null && nextSpot.getPiece() == null && sourcePiece.isUnmoved() )
+        {
+            nextSpot = getNextSpot( nextSpot, Side.N, isColorWhite );
+            updateValidFlag( nextSpot, true );
+        }
+
+        nextSpot = getNextSpot( spot, Side.NW, isColorWhite );
+        updateValidFlag( nextSpot, false );
+
+        nextSpot = getNextSpot( spot, Side.NE, isColorWhite );
+        updateValidFlag( nextSpot, false );
+
+        nextSpot = getNextSpot( spot, Side.NE, isColorWhite );
+        updateValidFlag( nextSpot, false );
+
+        nextSpot = getNextSpot( spot, Side.W, isColorWhite );
+        updateEnPassantFlag( nextSpot );
+
+        nextSpot = getNextSpot( spot, Side.E, isColorWhite );
+        updateEnPassantFlag( nextSpot );
+    }
+
     private void updateValidFlag( Spot spot, boolean validWhenFree )
     {
         if ( spot == null )
             return;
 
-        Spot kingSpot = getKingSpot();
-        if ( isSpotCapturable( kingSpot, sourcePiece.getColor() ) )
+        PieceColor activeColor = sourcePiece.getColor();
+        if ( isSpotCapturable( getKingSpot( activeColor ), activeColor ) )
             return;
 
         if ( validWhenFree && spot.getPiece() == null )
             spot.setValidMoveFlag( true );
-        else if ( !validWhenFree && spot.getPiece() != null && spot.getPiece().getColor() != sourcePiece.getColor() )
+        else if ( !validWhenFree && spot.getPiece() != null && spot.getPiece().getColor() != activeColor )
             spot.setValidMoveFlag( true );
     }
 
@@ -101,22 +139,22 @@ public class MoveValidator implements IMoveValidator
         Spot nextSpot;
 
         nextSpot = getNextSpot( spot, Side.NW, color == PieceColor.WHITE );
-        if ( isOpponentPieceAtSpot( nextSpot, PieceType.PAWN, color ) )
+        if ( isPieceAtSpot( nextSpot, PieceType.PAWN, PieceLogic.getOppositePieceColor( color ) ) )
             return true;
 
         nextSpot = getNextSpot( spot, Side.NE, color == PieceColor.WHITE );
-        if ( isOpponentPieceAtSpot( nextSpot, PieceType.PAWN, color ) )
+        if ( isPieceAtSpot( nextSpot, PieceType.PAWN, PieceLogic.getOppositePieceColor( color ) ) )
             return true;
 
         return false;
     }
 
-    private boolean isOpponentPieceAtSpot( Spot spot, PieceType type, PieceColor color )
+    private boolean isPieceAtSpot( Spot spot, PieceType type, PieceColor color )
     {
         return spot != null
                && spot.getPiece() != null
                && spot.getPiece().getType() == type
-               && spot.getPiece().getColor() != color;
+               && spot.getPiece().getColor() == color;
     }
 
     private Spot getNextSpot( Spot spot, Side side, boolean isColorWhite )
@@ -164,13 +202,13 @@ public class MoveValidator implements IMoveValidator
         return null;
     }
 
-    private Spot getKingSpot()
+    private Spot getKingSpot( PieceColor pieceColor )
     {
         for ( int column = 0; column < 8; column++ )
             for ( int row = 0; row < 8; row++ )
                 if( spots[ column ][ row ].getPiece() != null
                     && spots[ column ][ row ].getPiece().getType() == PieceType.KING
-                    && spots[ column ][ row ].getPiece().getColor() == sourcePiece.getColor() )
+                    && spots[ column ][ row ].getPiece().getColor() == pieceColor )
 
                     return spots[ column ][ row ];
 

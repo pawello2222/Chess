@@ -48,12 +48,6 @@ public class Game extends JFrame
 
     public static void main( String[] args )
     {
-        EventQueue.invokeLater( new Runnable()
-        {
-            public void run()
-            {
-                new Game();
-            }
-        } );
+        EventQueue.invokeLater( Game::new );
     }
 }

@@ -1,6 +1,7 @@
 package com.pawello2222.chess.service;
 
 import com.pawello2222.chess.model.Piece;
+import com.pawello2222.chess.model.PieceColor;
 import com.pawello2222.chess.model.PieceType;
 import com.pawello2222.chess.model.Spot;
 
@@ -19,7 +20,7 @@ class PieceLogic
              && target.getColumn() != source.getColumn()
              && target.getPiece() == null )
             pieces.remove( spots[ target.getColumn() ][ source.getRow() ].getPiece() );
-        else
+        else if ( target.getPiece() != null )
             pieces.remove( target.getPiece() );
     }
 
@@ -36,5 +37,10 @@ class PieceLogic
         target.setPiece( source.getPiece() );
         target.getPiece().setCoordinatesToSpot( target );
         source.setPiece( null );
+    }
+
+    static PieceColor getOppositePieceColor( PieceColor pieceColor )
+    {
+        return pieceColor == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
     }
 }

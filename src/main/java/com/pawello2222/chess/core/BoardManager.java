@@ -29,14 +29,10 @@ class BoardManager
 
     void nextTurn( Spot sourceSpot, Spot targetSpot )
     {
-        boolean isEnPassant = targetSpot.isEnPassantFlag();
-
         clearAllFlags();
-        sourceSpot.setLastMoveFlag( true );
-        targetSpot.setLastMoveFlag( true );
+        moveValidator.updateLastMoveFlag( sourceSpot, targetSpot );
         moveValidator.updateCheckFlag();
-        if ( isEnPassant )
-            targetSpot.setEnPassantFlag( true );
+        moveValidator.updateEnPassantFlag( sourceSpot, targetSpot );
 
         for ( Piece piece : board.getPieces() )
             piece.setActive( !piece.isActive() );

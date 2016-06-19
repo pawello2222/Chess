@@ -11,5 +11,9 @@ public interface IMoveValidator
 {
     void updateFlagsForSpot( Spot spot );
 
+    void updateLastMoveFlag( Spot source, Spot target );
+
     void updateCheckFlag();
+
+    void updateEnPassantFlag( Spot source, Spot target );
 }

@@ -29,13 +29,8 @@ class PieceLogic
 
     static void movePiece( Spot source, Spot target )
     {
-        Piece sourcePiece = source.getPiece();
-
-        if ( sourcePiece.isUnmoved() )
-            sourcePiece.setUnmoved( false );
-
-        if ( sourcePiece.getType() == PieceType.PAWN && Math.abs( target.getRow() - source.getRow() ) == 2 )
-            target.setEnPassantFlag( true );
+        if ( source.getPiece().isUnmoved() )
+            source.getPiece().setUnmoved( false );
 
         target.setPiece( source.getPiece() );
         target.getPiece().setCoordinatesToSpot( target );

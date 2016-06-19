@@ -176,12 +176,27 @@ public class MoveValidator implements IMoveValidator
     }
 
     @Override
+    public void updateLastMoveFlag( Spot source, Spot target )
+    {
+        source.setLastMoveFlag( true );
+        target.setLastMoveFlag( true );
+    }
+
+    @Override
     public void updateCheckFlag()
     {
         PieceColor opponentColor = PieceLogic.getOppositePieceColor( sourcePiece.getColor() );
         Spot kingSpot = getKingSpot( opponentColor );
         if ( kingSpot != null && isSpotCapturable( kingSpot, opponentColor ) )
             kingSpot.setCheckFlag( true );
+    }
+
+    @Override
+    public void updateEnPassantFlag( Spot source, Spot target )
+    {
+        if ( target.getPiece().getType() == PieceType.PAWN
+             && Math.abs( target.getRow() - source.getRow() ) == 2 )
+            target.setEnPassantFlag( true );
     }
 
     private void updateEnPassantFlag( Spot spot )

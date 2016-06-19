@@ -34,6 +34,9 @@ public class MoveListener implements MouseListener, MouseMotionListener
     @Override
     public void mousePressed( MouseEvent e )
     {
+        if ( dragPiece != null )
+            return;
+
         switch ( e.getModifiers() )
         {
             case InputEvent.BUTTON1_MASK:

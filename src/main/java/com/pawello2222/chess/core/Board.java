@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Board class.
+ * Board panel.
  *
  * @author Pawel Wiszenko
  */
@@ -159,12 +159,9 @@ public class Board extends JPanel
 
         for ( Piece piece : this.getPieces() )
             piece.setActive( false );
-    }
 
-//    public boolean isGameRunning()
-//    {
-//        return gameState == GameState.RUNNING_WHITE || gameState == GameState.RUNNING_BLACK;
-//    }
+        System.out.println( "END" );
+    }
 
     void setBgImage( Image bgImage )
     {

@@ -13,5 +13,5 @@ public interface IMoveValidator
 
     int countMovesForSpot( Spot spot );
 
-    boolean updateCheckFlag();
+    void updateCheckFlag();
 }

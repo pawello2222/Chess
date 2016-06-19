@@ -19,7 +19,10 @@ class PieceLogic
         if ( source.getPiece().getType() == PieceType.PAWN
              && target.getColumn() != source.getColumn()
              && target.getPiece() == null )
+        {
             pieces.remove( spots[ target.getColumn() ][ source.getRow() ].getPiece() );
+            spots[ target.getColumn() ][ source.getRow() ].setPiece( null );
+        }
         else if ( target.getPiece() != null )
             pieces.remove( target.getPiece() );
     }

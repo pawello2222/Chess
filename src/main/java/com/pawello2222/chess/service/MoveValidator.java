@@ -134,6 +134,8 @@ public class MoveValidator implements IMoveValidator
             nextSpot = getNextSpot( spot, Side.values()[ i ], isColorWhite );
             updateValidMoveFlag( nextSpot, true, true );
         }
+
+        //TODO: castling
     }
 
     private void updateValidMoveFlag( Spot spot, boolean validWhenFree, boolean validWhenOpponent )
@@ -234,6 +236,8 @@ public class MoveValidator implements IMoveValidator
 
                 nextSpot = getNextSpot( nextSpot, Side.values()[ i ], color == PieceColor.WHITE );
             }
+
+            //TODO: castling
         }
 
         return false;

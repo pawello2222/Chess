@@ -59,7 +59,7 @@ class BoardManager
     {
         String chosenType;
         do
-            chosenType = getPromotionPieceType();
+            chosenType = getPromotionDialogResult();
         while ( chosenType == null );
 
         Image pieceImage = BoardCreator.loadResource( piece.getColor() + "_" + chosenType.toUpperCase() + ".png" );
@@ -67,7 +67,7 @@ class BoardManager
         piece.setType( PieceType.valueOf( chosenType.toUpperCase() ) );
     }
 
-    private String getPromotionPieceType()
+    private String getPromotionDialogResult()
     {
         Object[] possibilities = { "Knight", "Bishop", "Rook", "Queen" };
 
@@ -78,7 +78,7 @@ class BoardManager
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 possibilities,
-                "Queen" );
+                possibilities[ 3 ] );
     }
 
     void nextTurn( Spot sourceSpot, Spot targetSpot )
@@ -124,7 +124,7 @@ class BoardManager
         for ( Piece piece : board.getPieces() )
             piece.setActive( false );
 
-        System.out.println( "END" );
+        board.endGame();
     }
 
     void updateValidMoveFlags( Spot spot )

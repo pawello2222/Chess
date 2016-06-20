@@ -3,7 +3,6 @@ package com.pawello2222.chess.core;
 import com.pawello2222.chess.exception.InvalidResourceException;
 import com.pawello2222.chess.model.*;
 import com.pawello2222.chess.service.*;
-import com.sun.codemodel.internal.JOp;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +21,8 @@ public class Board extends JPanel
 
     private Image bgImage;
 
+    private List< EndGameListener > listeners = new ArrayList<>();
+
     private BoardManager boardManager;
 
     private Spot[][] spots;
@@ -34,6 +35,7 @@ public class Board extends JPanel
     Board( boolean reversed )
     {
         this.reversed = reversed;
+        this.gameState = GameState.RUNNING_WHITE;
 
         BoardCreator boardCreator = new BoardCreator( this );
 
@@ -81,6 +83,16 @@ public class Board extends JPanel
         graphics.setColor( color );
         graphics.drawRoundRect( spot.getX() + offset, spot.getY() + offset,
                                 Spot.SPOT_WIDTH - 2 * offset, Spot.SPOT_HEIGHT - 2 * offset, 10, 10 );
+    }
+
+    void addListener( EndGameListener newListener )
+    {
+        listeners.add( newListener );
+    }
+
+    void endGame()
+    {
+        listeners.forEach( EndGameListener::endGame );
     }
 
     public void movePiece( Spot sourceSpot, Spot targetSpot )

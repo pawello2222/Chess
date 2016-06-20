@@ -1,9 +1,6 @@
 package com.pawello2222.chess.core;
 
-import com.pawello2222.chess.model.FlagType;
-import com.pawello2222.chess.model.GameState;
-import com.pawello2222.chess.model.Piece;
-import com.pawello2222.chess.model.Spot;
+import com.pawello2222.chess.model.*;
 import com.pawello2222.chess.service.IMoveValidator;
 import com.pawello2222.chess.service.MoveValidator;
 
@@ -25,6 +22,26 @@ class BoardManager
         this.spots = board.getSpots();
 
         moveValidator = new MoveValidator( spots );
+    }
+
+    void movePiece( Spot sourceSpot, Spot targetSpot )
+    {
+        if ( sourceSpot.getPiece().isUnmoved() )
+            sourceSpot.getPiece().setUnmoved( false );
+
+        if ( sourceSpot.getPiece().getType() == PieceType.PAWN
+             && targetSpot.getColumn() != sourceSpot.getColumn()
+             && targetSpot.getPiece() == null )
+        {
+            board.getPieces().remove( spots[ targetSpot.getColumn() ][ sourceSpot.getRow() ].getPiece() );
+            spots[ targetSpot.getColumn() ][ sourceSpot.getRow() ].setPiece( null );
+        }
+        else if ( targetSpot.getPiece() != null )
+            board.getPieces().remove( targetSpot.getPiece() );
+
+        targetSpot.setPiece( sourceSpot.getPiece() );
+        targetSpot.getPiece().setCoordinatesToSpot( targetSpot );
+        sourceSpot.setPiece( null );
     }
 
     void nextTurn( Spot sourceSpot, Spot targetSpot )

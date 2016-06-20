@@ -185,7 +185,7 @@ public class MoveValidator implements IMoveValidator
     @Override
     public void updateCheckFlag()
     {
-        PieceColor opponentColor = PieceLogic.getOppositePieceColor( sourcePiece.getColor() );
+        PieceColor opponentColor = getOppositePieceColor( sourcePiece.getColor() );
         Spot kingSpot = getKingSpot( opponentColor );
         if ( kingSpot != null && isSpotCapturable( kingSpot, opponentColor ) )
             kingSpot.setCheckFlag( true );
@@ -214,27 +214,27 @@ public class MoveValidator implements IMoveValidator
         Spot nextSpot, tmpSpot, oldSpot;
 
         nextSpot = getNextSpot( spot, Side.NW, color == PieceColor.WHITE );
-        if ( PieceLogic.isPieceAtSpot( nextSpot, PieceType.PAWN, PieceLogic.getOppositePieceColor( color ) ) )
+        if ( isPieceAtSpot( nextSpot, PieceType.PAWN, getOppositePieceColor( color ) ) )
             return true;
 
         nextSpot = getNextSpot( spot, Side.NE, color == PieceColor.WHITE );
-        if ( PieceLogic.isPieceAtSpot( nextSpot, PieceType.PAWN, PieceLogic.getOppositePieceColor( color ) ) )
+        if ( isPieceAtSpot( nextSpot, PieceType.PAWN, getOppositePieceColor( color ) ) )
             return true;
 
         for( int i = 0; i <= 7; i++ )
         {
             nextSpot = getNextSpot( spot, Side.values()[ i ], color == PieceColor.WHITE );
-            if ( PieceLogic.isPieceAtSpot( nextSpot, PieceType.KING, PieceLogic.getOppositePieceColor( color ) ) )
+            if ( isPieceAtSpot( nextSpot, PieceType.KING, getOppositePieceColor( color ) ) )
                 return true;
 
             oldSpot = getNextSpot( nextSpot, Side.values()[ i ], color == PieceColor.WHITE );
 
             tmpSpot = getNextSpot( oldSpot, Side.values()[ ( i + 1 ) % 4 ], color == PieceColor.WHITE );
-            if ( i <= 3 && PieceLogic.isPieceAtSpot( tmpSpot, PieceType.KNIGHT, PieceLogic.getOppositePieceColor( color ) ) )
+            if ( i <= 3 && isPieceAtSpot( tmpSpot, PieceType.KNIGHT, getOppositePieceColor( color ) ) )
                 return true;
 
             tmpSpot = getNextSpot( oldSpot, Side.values()[ ( i + 3 ) % 4 ], color == PieceColor.WHITE );
-            if ( i <= 3 && PieceLogic.isPieceAtSpot( tmpSpot, PieceType.KNIGHT, PieceLogic.getOppositePieceColor( color ) ) )
+            if ( i <= 3 && isPieceAtSpot( tmpSpot, PieceType.KNIGHT, getOppositePieceColor( color ) ) )
                 return true;
 
             while( nextSpot != null && ( nextSpot.getPiece() == null || nextSpot.getPiece().getColor() != color ) )
@@ -314,5 +314,18 @@ public class MoveValidator implements IMoveValidator
                     return spots[ column ][ row ];
 
         return null;
+    }
+
+    private static PieceColor getOppositePieceColor( PieceColor pieceColor )
+    {
+        return pieceColor == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
+    }
+
+    private static boolean isPieceAtSpot( Spot spot, PieceType type, PieceColor color )
+    {
+        return spot != null
+               && spot.getPiece() != null
+               && spot.getPiece().getType() == type
+               && spot.getPiece().getColor() == color;
     }
 }

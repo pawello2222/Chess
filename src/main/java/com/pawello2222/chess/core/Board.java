@@ -82,8 +82,9 @@ public class Board extends JPanel
                                 Spot.SPOT_WIDTH - 2 * offset, Spot.SPOT_HEIGHT - 2 * offset, 10, 10 );
     }
 
-    public void nextTurn( Spot sourceSpot, Spot targetSpot )
+    public void movePiece( Spot sourceSpot, Spot targetSpot )
     {
+        boardManager.movePiece( sourceSpot, targetSpot );
         boardManager.nextTurn( sourceSpot, targetSpot );
     }
 

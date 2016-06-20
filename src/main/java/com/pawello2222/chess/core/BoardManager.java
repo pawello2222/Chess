@@ -26,6 +26,8 @@ class BoardManager
 
     void movePiece( Spot sourceSpot, Spot targetSpot )
     {
+        //TODO: pawn promotion
+
         if ( sourceSpot.getPiece().isUnmoved() )
             sourceSpot.getPiece().setUnmoved( false );
 

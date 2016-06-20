@@ -14,10 +14,6 @@ public class Game extends JFrame
 {
     private Board board;
 
-    private JMenuBar menuBar;
-    private JMenu menu;
-    private JMenuItem[] menuItems;
-
     private Game()
     {
         this.setTitle( "Chess" );
@@ -31,19 +27,69 @@ public class Game extends JFrame
             System.exit( -1 );
         }
 
-        menuBar = new JMenuBar();
-        menuItems = new JMenuItem[ 6 ];
-        menu = new JMenu( "Game" );
-        menuBar.add( menu );
-        this.setJMenuBar( menuBar );
-
-        board = new Board( false );
-        this.add( board );
-        this.pack();
+        this.setJMenuBar( initMenuBar() );
+        startNewGame( false );
 
         this.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
         this.setLocationRelativeTo( null );
         this.setVisible( true );
+    }
+
+    private JMenuBar initMenuBar()
+    {
+        JMenuBar menuBar = new JMenuBar();
+
+        menuBar.add( initGameMenu() );
+        menuBar.add( initLanguageMenu() );
+
+        return menuBar;
+    }
+
+    private JMenu initGameMenu()
+    {
+        JMenu menu = new JMenu( "Game" );
+        JMenuItem menuItem;
+
+        menuItem = new JMenuItem( "New game (WHITE)" );
+        menuItem.addActionListener( event -> startNewGame( false ) );
+        menu.add( menuItem );
+
+        menuItem = new JMenuItem( "New game (BLACK)" );
+        menuItem.addActionListener( event -> startNewGame( true ) );
+        menu.add( menuItem );
+
+        menu.addSeparator();
+
+        menuItem = new JMenuItem( "Exit" );
+        menuItem.addActionListener( event -> this.dispose() );
+        menu.add( menuItem );
+
+        return menu;
+    }
+
+    private JMenu initLanguageMenu()
+    {
+        JMenu menu = new JMenu( "Language" );
+        JMenuItem menuItem;
+
+        menuItem = new JMenuItem( "Polski (PL)" );
+        menuItem.addActionListener( event -> {} );
+        menu.add( menuItem );
+
+        menuItem = new JMenuItem( "English (EN)" );
+        menuItem.addActionListener( event -> {} );
+        menu.add( menuItem );
+
+        return menu;
+    }
+
+    private void startNewGame( boolean reversed )
+    {
+        if ( board != null )
+            this.remove( board );
+        board = new Board( reversed );
+        this.add( board );
+        this.pack();
     }
 
     public static void main( String[] args )

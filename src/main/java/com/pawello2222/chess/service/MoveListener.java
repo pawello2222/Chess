@@ -8,7 +8,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.List;
 
 /**
  * Piece move listener class.
@@ -18,8 +17,6 @@ import java.util.List;
 public class MoveListener implements MouseListener, MouseMotionListener
 {
     private Board board;
-    private Spot[][] spots;
-    private List< Piece > pieces;
 
     private Spot sourceSpot;
     private Piece dragPiece;
@@ -27,8 +24,6 @@ public class MoveListener implements MouseListener, MouseMotionListener
     public MoveListener( Board board )
     {
         this.board = board;
-        this.spots = board.getSpots();
-        this.pieces = board.getPieces();
     }
 
     @Override
@@ -46,8 +41,7 @@ public class MoveListener implements MouseListener, MouseMotionListener
                 {
                     sourceSpot = spot;
                     dragPiece = spot.getPiece();
-                    pieces.remove( dragPiece );
-                    pieces.add( dragPiece );
+                    board.setFocusOnPiece( dragPiece );
                 }
                 break;
 
@@ -126,8 +120,8 @@ public class MoveListener implements MouseListener, MouseMotionListener
     {
         for ( int column = 0; column < 8; column++ )
             for ( int row = 0; row < 8; row++ )
-                if( isMouseOverSpot( spots[ column ][ row ], x, y ) )
-                    return spots[ column ][ row ];
+                if( isMouseOverSpot( board.getSpots()[ column ][ row ], x, y ) )
+                    return board.getSpots()[ column ][ row ];
 
         return null;
     }

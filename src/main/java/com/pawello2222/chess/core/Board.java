@@ -88,6 +88,12 @@ public class Board extends JPanel
         boardManager.nextTurn( sourceSpot, targetSpot );
     }
 
+    public void setFocusOnPiece( Piece piece )
+    {
+        pieces.remove( piece );
+        pieces.add( piece );
+    }
+
     public void updateValidMoveFlags( Spot spot )
     {
         boardManager.updateValidMoveFlags( spot );
@@ -108,7 +114,7 @@ public class Board extends JPanel
         this.spots = spots;
     }
 
-    public List< Piece > getPieces()
+    List< Piece > getPieces()
     {
         return pieces;
     }

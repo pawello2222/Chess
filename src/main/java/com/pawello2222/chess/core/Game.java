@@ -40,7 +40,6 @@ public class Game extends JFrame
         JMenuBar menuBar = new JMenuBar();
 
         menuBar.add( initGameMenu() );
-        menuBar.add( initLanguageMenu() );
 
         return menuBar;
     }
@@ -62,22 +61,6 @@ public class Game extends JFrame
 
         menuItem = new JMenuItem( "Exit" );
         menuItem.addActionListener( event -> this.dispose() );
-        menu.add( menuItem );
-
-        return menu;
-    }
-
-    private JMenu initLanguageMenu()
-    {
-        JMenu menu = new JMenu( "Language" );
-        JMenuItem menuItem;
-
-        menuItem = new JMenuItem( "Polski (PL)" );
-        menuItem.addActionListener( event -> {} );
-        menu.add( menuItem );
-
-        menuItem = new JMenuItem( "English (EN)" );
-        menuItem.addActionListener( event -> {} );
         menu.add( menuItem );
 
         return menu;

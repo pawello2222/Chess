@@ -4,6 +4,9 @@ import com.pawello2222.chess.model.*;
 import com.pawello2222.chess.service.IMoveValidator;
 import com.pawello2222.chess.service.MoveValidator;
 
+import javax.swing.*;
+import java.awt.*;
+
 /**
  * Board manager class.
  *
@@ -26,12 +29,12 @@ class BoardManager
 
     void movePiece( Spot sourceSpot, Spot targetSpot )
     {
-        //TODO: pawn promotion
+        Piece sourcePiece = sourceSpot.getPiece();
 
-        if ( sourceSpot.getPiece().isUnmoved() )
-            sourceSpot.getPiece().setUnmoved( false );
+        if ( sourcePiece.isUnmoved() )
+            sourcePiece.setUnmoved( false );
 
-        if ( sourceSpot.getPiece().getType() == PieceType.PAWN
+        if ( sourcePiece.getType() == PieceType.PAWN
              && targetSpot.getColumn() != sourceSpot.getColumn()
              && targetSpot.getPiece() == null )
         {
@@ -41,9 +44,41 @@ class BoardManager
         else if ( targetSpot.getPiece() != null )
             board.getPieces().remove( targetSpot.getPiece() );
 
-        targetSpot.setPiece( sourceSpot.getPiece() );
+        targetSpot.setPiece( sourcePiece );
         targetSpot.getPiece().setCoordinatesToSpot( targetSpot );
         sourceSpot.setPiece( null );
+
+        board.repaint();
+
+        int promotionRow = sourcePiece.getColor() == PieceColor.WHITE ? 0 : 7;
+        if ( sourcePiece.getType() == PieceType.PAWN && targetSpot.getRow() == promotionRow )
+            promotePawn( targetSpot.getPiece() );
+    }
+
+    private void promotePawn( Piece piece )
+    {
+        String chosenType;
+        do
+            chosenType = getPromotionPieceType();
+        while ( chosenType == null );
+
+        Image pieceImage = BoardCreator.loadResource( piece.getColor() + "_" + chosenType.toUpperCase() + ".png" );
+        piece.setImage( pieceImage );
+        piece.setType( PieceType.valueOf( chosenType.toUpperCase() ) );
+    }
+
+    private String getPromotionPieceType()
+    {
+        Object[] possibilities = { "Knight", "Bishop", "Rook", "Queen" };
+
+        return ( String ) JOptionPane.showInputDialog(
+                board.getParent(),
+                "Choose promotion",
+                "Promotion",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                possibilities,
+                "Queen" );
     }
 
     void nextTurn( Spot sourceSpot, Spot targetSpot )

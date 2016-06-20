@@ -3,6 +3,7 @@ package com.pawello2222.chess.core;
 import com.pawello2222.chess.exception.InvalidResourceException;
 import com.pawello2222.chess.model.*;
 import com.pawello2222.chess.service.*;
+import com.sun.codemodel.internal.JOp;
 
 import javax.swing.*;
 import java.awt.*;

@@ -46,6 +46,11 @@ public class Piece
         return image;
     }
 
+    public void setImage( Image image )
+    {
+        this.image = image;
+    }
+
     public int getWidth()
     {
         return image.getHeight( null );
@@ -64,6 +69,11 @@ public class Piece
     public PieceType getType()
     {
         return type;
+    }
+
+    public void setType( PieceType type )
+    {
+        this.type = type;
     }
 
     public int getX()

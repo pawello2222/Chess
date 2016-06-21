@@ -1,11 +1,11 @@
 package com.pawello2222.chess.model;
 
 /**
- * Side.
+ * Direction.
  *
  * @author Pawel Wiszenko
  */
-public enum Side
+public enum Direction
 {
     N,
     E,

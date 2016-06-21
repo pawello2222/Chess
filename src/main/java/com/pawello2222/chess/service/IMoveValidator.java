@@ -1,6 +1,5 @@
 package com.pawello2222.chess.service;
 
-import com.pawello2222.chess.model.PieceType;
 import com.pawello2222.chess.model.Spot;
 
 /**
@@ -16,5 +15,5 @@ public interface IMoveValidator
 
     void updateCheckFlag();
 
-    void updateSpecialMoveFlag( Spot source, Spot target );
+    void updatePawnSpecialMoveFlag( Spot source, Spot target );
 }

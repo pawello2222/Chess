@@ -63,7 +63,7 @@ class BoardManager
         clearAllFlags();
         moveValidator.updateLastMoveFlags( sourceSpot, targetSpot );
         moveValidator.updateCheckFlag();
-        moveValidator.updateSpecialMoveFlag( sourceSpot, targetSpot );
+        moveValidator.updatePawnSpecialMoveFlag( sourceSpot, targetSpot );
     }
 
     private void promotePawn( Piece piece )

@@ -23,7 +23,7 @@ public class Board extends JPanel
 
     private List< EndGameListener > listeners = new ArrayList<>();
 
-    private BoardManager boardManager;
+    private IBoardManager boardManager;
 
     private Spot[][] spots;
     private List< Piece > pieces = new ArrayList<>();
@@ -106,7 +106,7 @@ public class Board extends JPanel
 
     public void updateValidMoveFlags( Spot spot )
     {
-        boardManager.updateValidMoveFlags( spot );
+        boardManager.updateMovements( spot );
     }
 
     void setBgImage( Image bgImage )

@@ -12,7 +12,7 @@ import java.awt.*;
  *
  * @author Pawel Wiszenko
  */
-class BoardManager
+class BoardManager implements IBoardManager
 {
     private Board board;
     private IMoveValidator moveValidator;
@@ -27,7 +27,14 @@ class BoardManager
         moveValidator = new MoveValidator( spots );
     }
 
-    void movePiece( Spot sourceSpot, Spot targetSpot )
+    @Override
+    public void updateMovements( Spot spot )
+    {
+        moveValidator.updateValidMoveFlags( spot );
+    }
+
+    @Override
+    public void movePiece( Spot sourceSpot, Spot targetSpot )
     {
         Piece sourcePiece = sourceSpot.getPiece();
 
@@ -64,6 +71,39 @@ class BoardManager
         moveValidator.updateFlagsAfterMove( sourceSpot, targetSpot );
     }
 
+    @Override
+    public void nextTurn()
+    {
+        for ( Piece piece : board.getPieces() )
+            piece.setActive( !piece.isActive() );
+
+        if ( moveValidator.getPossibleMovesCount() > 0 )
+            switchGameState();
+        else
+            endGame();
+    }
+
+    private void switchGameState()
+    {
+        if ( board.getGameState() == GameState.RUNNING_WHITE )
+            board.setGameState( GameState.RUNNING_BLACK );
+        else if ( board.getGameState() == GameState.RUNNING_BLACK )
+            board.setGameState( GameState.RUNNING_WHITE );
+    }
+
+    private void endGame()
+    {
+        if ( board.getGameState() == GameState.RUNNING_WHITE )
+            board.setGameState( GameState.CHECKMATE_WIN_WHITE );
+        else if ( board.getGameState() == GameState.RUNNING_BLACK )
+            board.setGameState( GameState.CHECKMATE_WIN_BLACK );
+
+        for ( Piece piece : board.getPieces() )
+            piece.setActive( false );
+
+        board.endGame();
+    }
+
     private void promotePawn( Piece piece )
     {
         String chosenType;
@@ -88,42 +128,5 @@ class BoardManager
                 null,
                 possibilities,
                 possibilities[ 3 ] );
-    }
-
-    void nextTurn()
-    {
-        for ( Piece piece : board.getPieces() )
-            piece.setActive( !piece.isActive() );
-
-        if ( moveValidator.getPossibleMovesCount() > 0 )
-            switchPlayer();
-        else
-            endGame();
-    }
-
-    private void switchPlayer()
-    {
-        if ( board.getGameState() == GameState.RUNNING_WHITE )
-            board.setGameState( GameState.RUNNING_BLACK );
-        else if ( board.getGameState() == GameState.RUNNING_BLACK )
-            board.setGameState( GameState.RUNNING_WHITE );
-    }
-
-    private void endGame()
-    {
-        if ( board.getGameState() == GameState.RUNNING_WHITE )
-            board.setGameState( GameState.CHECKMATE_WIN_WHITE );
-        else if ( board.getGameState() == GameState.RUNNING_BLACK )
-            board.setGameState( GameState.CHECKMATE_WIN_BLACK );
-
-        for ( Piece piece : board.getPieces() )
-            piece.setActive( false );
-
-        board.endGame();
-    }
-
-    void updateValidMoveFlags( Spot spot )
-    {
-        moveValidator.updateValidMoveFlags( spot );
     }
 }

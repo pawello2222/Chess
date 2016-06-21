@@ -19,13 +19,15 @@ public class MoveValidator implements IMoveValidator
         this.spots = spots;
     }
 
-    //todo: remove iscolorwhite
+    //TODO: isColorWhite: boolean -> PieceColor
 
     @Override
     public void updateValidMoveFlags( Spot spot )
     {
         if ( spot == null || spot.getPiece() == null || !spot.getPiece().isActive() )
             return;
+
+        clearFlagsByType( FlagType.VALID_MOVE );
 
         sourceSpot = spot;
         sourcePiece = spot.getPiece();
@@ -58,6 +60,46 @@ public class MoveValidator implements IMoveValidator
                 updateKingMoves( spot, isColorWhite );
                 break;
         }
+    }
+
+    @Override
+    public void updateFlagsAfterMove( Spot source, Spot target )
+    {
+        clearAllFlags();
+        updateLastMoveFlags( source, target );
+        updateCheckFlag();
+        updatePawnSpecialMoveFlag( source, target );
+    }
+
+    @Override
+    public int getPossibleMovesCount()
+    {
+        int possibleMoves = 0;
+
+        for ( int column = 0; column < 8; column++ )
+            for ( int row = 0; row < 8; row++ )
+            {
+                possibleMoves += countValidMoveFlags( spots[ column ][ row ] );
+                clearFlagsByType( FlagType.VALID_MOVE );
+            }
+        return possibleMoves;
+    }
+
+    private int countValidMoveFlags( Spot spot )
+    {
+        int count = 0;
+
+        if ( spot == null || spot.getPiece() == null || !spot.getPiece().isActive() )
+            return 0;
+
+        updateValidMoveFlags( spot );
+
+        for ( int column = 0; column < 8; column++ )
+            for ( int row = 0; row < 8; row++ )
+                if ( spots[ column ][ row ].isValidMoveFlag() )
+                    count++;
+
+        return count;
     }
 
     private void updatePawnMoves( Spot spot, boolean isColorWhite )
@@ -98,11 +140,11 @@ public class MoveValidator implements IMoveValidator
             nextSpot = getNextSpot( spot, Direction.values()[ i ], isColorWhite );
 
             while( nextSpot != null
-                   && ( nextSpot.getPiece() == null || nextSpot.hasPieceColor( sourcePiece.getColor() ) ) )
+                   && ( nextSpot.getPiece() == null || nextSpot.getPiece().getColor() != sourcePiece.getColor() ) )
             {
                 updateValidMoveFlag( nextSpot, true, true );
 
-                if ( nextSpot.getPiece() != null && !nextSpot.hasPieceColor( sourcePiece.getColor() ) )
+                if ( nextSpot.getPiece() != null && nextSpot.getPiece().getColor() != sourcePiece.getColor() )
                     break;
 
                 nextSpot = getNextSpot( nextSpot, Direction.values()[ i ], isColorWhite );
@@ -197,7 +239,7 @@ public class MoveValidator implements IMoveValidator
             validFree = true;
 
         boolean validOpponent = false;
-        if ( !spot.hasPieceColor( activeColor ) )
+        if ( spot.getPiece() != null && spot.getPiece().getColor() != activeColor )
             validOpponent = true;
 
         if ( validWhenFree && validWhenOpponent )
@@ -209,15 +251,13 @@ public class MoveValidator implements IMoveValidator
             spot.setValidMoveFlag( true );
     }
 
-    @Override
-    public void updateLastMoveFlags( Spot source, Spot target )
+    private void updateLastMoveFlags( Spot source, Spot target )
     {
         source.setLastMoveFlag( true );
         target.setLastMoveFlag( true );
     }
 
-    @Override
-    public void updateCheckFlag()
+    private void updateCheckFlag()
     {
         PieceColor opponentColor = getOppositePieceColor( sourcePiece.getColor() );
         Spot kingSpot = getKingSpot( opponentColor );
@@ -225,8 +265,7 @@ public class MoveValidator implements IMoveValidator
             kingSpot.setCheckFlag( true );
     }
 
-    @Override
-    public void updatePawnSpecialMoveFlag( Spot source, Spot target )
+    private void updatePawnSpecialMoveFlag( Spot source, Spot target )
     {
         if ( target.hasPieceType( PieceType.PAWN )
              && Math.abs( target.getRow() - source.getRow() ) == 2 )
@@ -243,6 +282,43 @@ public class MoveValidator implements IMoveValidator
             target.setValidMoveFlag( true );
             target.setEnPassantFlag( true );
         }
+    }
+
+    private void clearAllFlags()
+    {
+        clearFlagsByType( FlagType.VALID_MOVE );
+        clearFlagsByType( FlagType.LAST_MOVE );
+        clearFlagsByType( FlagType.CHECK );
+        clearFlagsByType( FlagType.EN_PASSANT );
+        clearFlagsByType( FlagType.SPECIAL_MOVE );
+    }
+
+    private void clearFlagsByType( FlagType flagType )
+    {
+        for ( int column = 0; column < 8; column++ )
+            for ( int row = 0; row < 8; row++ )
+                switch( flagType )
+                {
+                    case VALID_MOVE:
+                        spots[ column ][ row ].setValidMoveFlag( false );
+                        break;
+
+                    case LAST_MOVE:
+                        spots[ column ][ row ].setLastMoveFlag( false );
+                        break;
+
+                    case CHECK:
+                        spots[ column ][ row ].setCheckFlag( false );
+                        break;
+
+                    case EN_PASSANT:
+                        spots[ column ][ row ].setEnPassantFlag( false );
+                        break;
+
+                    case SPECIAL_MOVE:
+                        spots[ column ][ row ].setSpecialMoveFlag( false );
+                        break;
+                }
     }
 
     private boolean isSpotCapturable( Spot spot, PieceColor color )
@@ -273,13 +349,13 @@ public class MoveValidator implements IMoveValidator
             if ( i <= 3 && isPieceAtSpot( tmpSpot, PieceType.KNIGHT, getOppositePieceColor( color ) ) )
                 return true;
 
-            while( nextSpot != null && ( nextSpot.getPiece() == null || !nextSpot.hasPieceColor( color ) ) )
+            while( nextSpot != null && ( nextSpot.getPiece() == null || nextSpot.getPiece().getColor() != color ) )
             {
-                if ( !nextSpot.hasPieceColor( color ) )
+                if ( nextSpot.getPiece() != null && nextSpot.getPiece().getColor() != color )
                 {
-                    if( nextSpot.hasPieceType( PieceType.QUEEN )
-                        || nextSpot.hasPieceType( PieceType.ROOK ) && i <= 3
-                        || nextSpot.hasPieceType( PieceType.BISHOP ) && i >= 4 )
+                    if( nextSpot.getPiece().getType() == PieceType.QUEEN
+                        || nextSpot.getPiece().getType() == PieceType.ROOK && i <= 3
+                        || nextSpot.getPiece().getType() == PieceType.BISHOP && i >= 4 )
                         return true;
                     else
                         break;
@@ -341,8 +417,10 @@ public class MoveValidator implements IMoveValidator
     {
         for ( int column = 0; column < 8; column++ )
             for ( int row = 0; row < 8; row++ )
-                if( spots[ column ][ row ].hasPieceType( PieceType.KING )
-                    && spots[ column ][ row ].hasPieceColor( pieceColor ) )
+                if( spots[ column ][ row ].getPiece() != null
+                    && spots[ column ][ row ].getPiece().getType() == PieceType.KING
+                    && spots[ column ][ row ].getPiece().getColor() == pieceColor )
+
                     return spots[ column ][ row ];
 
         return null;
@@ -356,7 +434,8 @@ public class MoveValidator implements IMoveValidator
     private static boolean isPieceAtSpot( Spot spot, PieceType type, PieceColor color )
     {
         return spot != null
-               && spot.hasPieceType( type )
-               && spot.hasPieceColor( color );
+               && spot.getPiece() != null
+               && spot.getPiece().getType() == type
+               && spot.getPiece().getColor() == color;
     }
 }

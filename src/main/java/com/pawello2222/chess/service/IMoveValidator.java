@@ -11,9 +11,7 @@ public interface IMoveValidator
 {
     void updateValidMoveFlags( Spot spot );
 
-    void updateLastMoveFlags( Spot source, Spot target );
+    void updateFlagsAfterMove( Spot source, Spot target );
 
-    void updateCheckFlag();
-
-    void updatePawnSpecialMoveFlag( Spot source, Spot target );
+    int getPossibleMovesCount();
 }

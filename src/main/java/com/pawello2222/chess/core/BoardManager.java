@@ -41,11 +41,12 @@ class BoardManager
         }
         else if ( targetSpot.isSpecialMoveFlag() && targetSpot.getPiece() == null )
         {
-            int sourceColumn = targetSpot.getColumn() == 2 ? 0 : 7;
-            int targetColumn = targetSpot.getColumn() == 2 ? 3 : 5;
-            spots[ targetColumn ][ targetSpot.getRow() ].setPiece( spots[ sourceColumn ][ targetSpot.getRow() ].getPiece() );
-            spots[ targetColumn ][ targetSpot.getRow() ].getPiece().setCoordinatesToSpot( spots[ targetColumn ][ targetSpot.getRow() ] );
-            spots[ sourceColumn ][ targetSpot.getRow() ].setPiece( null );
+            Spot source = spots[ targetSpot.getColumn() == 2 ? 0 : 7 ][ targetSpot.getRow() ];
+            Spot target = spots[ targetSpot.getColumn() == 2 ? 3 : 5 ][ targetSpot.getRow() ];
+
+            target.setPiece( source.getPiece() );
+            target.getPiece().setCoordinatesToSpot( target );
+            source.setPiece( null );
         }
         else if ( targetSpot.getPiece() != null )
             board.getPieces().remove( targetSpot.getPiece() );
@@ -60,10 +61,7 @@ class BoardManager
         if ( sourcePiece.getType() == PieceType.PAWN && targetSpot.getRow() == promotionRow )
             promotePawn( targetSpot.getPiece() );
 
-        clearAllFlags();
-        moveValidator.updateLastMoveFlags( sourceSpot, targetSpot );
-        moveValidator.updateCheckFlag();
-        moveValidator.updatePawnSpecialMoveFlag( sourceSpot, targetSpot );
+        moveValidator.updateFlagsAfterMove( sourceSpot, targetSpot );
     }
 
     private void promotePawn( Piece piece )
@@ -97,16 +95,7 @@ class BoardManager
         for ( Piece piece : board.getPieces() )
             piece.setActive( !piece.isActive() );
 
-        int possibleMoves = 0;
-
-        for ( int column = 0; column < 8; column++ )
-            for ( int row = 0; row < 8; row++ )
-            {
-                possibleMoves += countValidMoveFlags( spots[ column ][ row ] );
-                clearFlagsByType( FlagType.VALID_MOVE );
-            }
-
-        if ( possibleMoves > 0 )
+        if ( moveValidator.getPossibleMovesCount() > 0 )
             switchPlayer();
         else
             endGame();
@@ -135,61 +124,6 @@ class BoardManager
 
     void updateValidMoveFlags( Spot spot )
     {
-        clearFlagsByType( FlagType.VALID_MOVE );
         moveValidator.updateValidMoveFlags( spot );
-    }
-
-    private void clearAllFlags()
-    {
-        clearFlagsByType( FlagType.VALID_MOVE );
-        clearFlagsByType( FlagType.LAST_MOVE );
-        clearFlagsByType( FlagType.CHECK );
-        clearFlagsByType( FlagType.EN_PASSANT );
-        clearFlagsByType( FlagType.SPECIAL_MOVE );
-    }
-
-    private void clearFlagsByType( FlagType flagType )
-    {
-        for ( int column = 0; column < 8; column++ )
-            for ( int row = 0; row < 8; row++ )
-                switch( flagType )
-                {
-                    case VALID_MOVE:
-                        spots[ column ][ row ].setValidMoveFlag( false );
-                        break;
-
-                    case LAST_MOVE:
-                        spots[ column ][ row ].setLastMoveFlag( false );
-                        break;
-
-                    case CHECK:
-                        spots[ column ][ row ].setCheckFlag( false );
-                        break;
-
-                    case EN_PASSANT:
-                        spots[ column ][ row ].setEnPassantFlag( false );
-                        break;
-
-                    case SPECIAL_MOVE:
-                        spots[ column ][ row ].setSpecialMoveFlag( false );
-                        break;
-                }
-    }
-
-    private int countValidMoveFlags( Spot spot )
-    {
-        int count = 0;
-
-        if ( spot == null || spot.getPiece() == null || !spot.getPiece().isActive() )
-            return 0;
-
-        moveValidator.updateValidMoveFlags( spot );
-
-        for ( int column = 0; column < 8; column++ )
-            for ( int row = 0; row < 8; row++ )
-                if ( spots[ column ][ row ].isValidMoveFlag() )
-                    count++;
-
-        return count;
     }
 }

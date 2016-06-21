@@ -28,14 +28,14 @@ class BoardCreator
         this.board = board;
     }
 
-    void initializeBoard( String bgImageName ) throws InvalidResourceException
+    void initializeBoard( String bgImageName, boolean reversed ) throws InvalidResourceException
     {
         Image bgImage = BoardCreator.loadResource( bgImageName );
         board.setBgImage( bgImage );
         board.setPreferredSize( new Dimension( bgImage.getWidth( board ),
                                               bgImage.getHeight( board ) ) );
 
-        Spot[][] spots = initializeSpots();
+        Spot[][] spots = initializeSpots( reversed );
         board.setSpots( spots );
 
         List< Piece > pieces = initializePieces( spots );
@@ -50,15 +50,15 @@ class BoardCreator
         return new ImageIcon( bgImageURL ).getImage();
     }
 
-    private Spot[][] initializeSpots()
+    private Spot[][] initializeSpots( boolean reversed )
     {
         Spot[][] spots = new Spot[ 8 ][ 8 ];
 
         for ( int column = 0; column < 8; column++ )
             for ( int row = 0; row < 8; row++ )
             {
-                int x = board.isReversed() ? 7 - column : column;
-                int y = board.isReversed() ? 7 - row : row;
+                int x = reversed ? 7 - column : column;
+                int y = reversed ? 7 - row : row;
 
                 spots[ column ][ row ] = new Spot();
                 spots[ column ][ row ].setX( Board.BOARD_OFFSET_X + Spot.SPOT_WIDTH * x );

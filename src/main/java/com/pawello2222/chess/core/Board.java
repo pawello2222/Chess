@@ -30,18 +30,15 @@ public class Board extends JPanel
 
     private GameState gameState;
 
-    private boolean reversed;
-
     Board( boolean reversed )
     {
-        this.reversed = reversed;
         this.gameState = GameState.RUNNING_WHITE;
 
         BoardCreator boardCreator = new BoardCreator( this );
 
         try
         {
-            boardCreator.initializeBoard( "BOARD.png" );
+            boardCreator.initializeBoard( "BOARD.png", reversed );
         }
         catch ( InvalidResourceException e )
         {
@@ -145,10 +142,5 @@ public class Board extends JPanel
     void setGameState( GameState gameState )
     {
         this.gameState = gameState;
-    }
-
-    boolean isReversed()
-    {
-        return reversed;
     }
 }

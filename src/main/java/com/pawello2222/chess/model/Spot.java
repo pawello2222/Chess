@@ -22,6 +22,7 @@ public class Spot
     private boolean lastMoveFlag;
     private boolean checkFlag;
     private boolean enPassantFlag;
+    private boolean specialMoveFlag;
 
     public Spot()
     {
@@ -116,5 +117,15 @@ public class Spot
     public void setEnPassantFlag( boolean enPassantFlag )
     {
         this.enPassantFlag = enPassantFlag;
+    }
+
+    public boolean isSpecialMoveFlag()
+    {
+        return specialMoveFlag;
+    }
+
+    public void setSpecialMoveFlag( boolean specialMoveFlag )
+    {
+        this.specialMoveFlag = specialMoveFlag;
     }
 }

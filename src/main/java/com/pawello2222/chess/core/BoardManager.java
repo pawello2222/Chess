@@ -34,12 +34,18 @@ class BoardManager
         if ( sourcePiece.isUnmoved() )
             sourcePiece.setUnmoved( false );
 
-        if ( sourcePiece.getType() == PieceType.PAWN
-             && targetSpot.getColumn() != sourceSpot.getColumn()
-             && targetSpot.getPiece() == null )
+        if ( targetSpot.isEnPassantFlag() )
         {
             board.getPieces().remove( spots[ targetSpot.getColumn() ][ sourceSpot.getRow() ].getPiece() );
             spots[ targetSpot.getColumn() ][ sourceSpot.getRow() ].setPiece( null );
+        }
+        else if ( targetSpot.isSpecialMoveFlag() && targetSpot.getPiece() == null )
+        {
+            int sourceColumn = targetSpot.getColumn() == 2 ? 0 : 7;
+            int targetColumn = targetSpot.getColumn() == 2 ? 3 : 5;
+            spots[ targetColumn ][ targetSpot.getRow() ].setPiece( spots[ sourceColumn ][ targetSpot.getRow() ].getPiece() );
+            spots[ targetColumn ][ targetSpot.getRow() ].getPiece().setCoordinatesToSpot( spots[ targetColumn ][ targetSpot.getRow() ] );
+            spots[ sourceColumn ][ targetSpot.getRow() ].setPiece( null );
         }
         else if ( targetSpot.getPiece() != null )
             board.getPieces().remove( targetSpot.getPiece() );
@@ -53,6 +59,11 @@ class BoardManager
         int promotionRow = sourcePiece.getColor() == PieceColor.WHITE ? 0 : 7;
         if ( sourcePiece.getType() == PieceType.PAWN && targetSpot.getRow() == promotionRow )
             promotePawn( targetSpot.getPiece() );
+
+        clearAllFlags();
+        moveValidator.updateLastMoveFlags( sourceSpot, targetSpot );
+        moveValidator.updateCheckFlag();
+        moveValidator.updateSpecialMoveFlag( sourceSpot, targetSpot );
     }
 
     private void promotePawn( Piece piece )
@@ -81,13 +92,8 @@ class BoardManager
                 possibilities[ 3 ] );
     }
 
-    void nextTurn( Spot sourceSpot, Spot targetSpot )
+    void nextTurn()
     {
-        clearAllFlags();
-        moveValidator.updateLastMoveFlags( sourceSpot, targetSpot );
-        moveValidator.updateCheckFlag();
-        moveValidator.updateEnPassantFlag( sourceSpot, targetSpot );
-
         for ( Piece piece : board.getPieces() )
             piece.setActive( !piece.isActive() );
 
@@ -139,6 +145,7 @@ class BoardManager
         clearFlagsByType( FlagType.LAST_MOVE );
         clearFlagsByType( FlagType.CHECK );
         clearFlagsByType( FlagType.EN_PASSANT );
+        clearFlagsByType( FlagType.SPECIAL_MOVE );
     }
 
     private void clearFlagsByType( FlagType flagType )
@@ -161,6 +168,10 @@ class BoardManager
 
                     case EN_PASSANT:
                         spots[ column ][ row ].setEnPassantFlag( false );
+                        break;
+
+                    case SPECIAL_MOVE:
+                        spots[ column ][ row ].setSpecialMoveFlag( false );
                         break;
                 }
     }

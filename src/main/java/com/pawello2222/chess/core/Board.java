@@ -98,7 +98,7 @@ public class Board extends JPanel
     public void movePiece( Spot sourceSpot, Spot targetSpot )
     {
         boardManager.movePiece( sourceSpot, targetSpot );
-        boardManager.nextTurn( sourceSpot, targetSpot );
+        boardManager.nextTurn();
     }
 
     public void setFocusOnPiece( Piece piece )

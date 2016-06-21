@@ -10,5 +10,6 @@ public enum FlagType
     VALID_MOVE,
     LAST_MOVE,
     CHECK,
-    EN_PASSANT
+    EN_PASSANT,
+    SPECIAL_MOVE
 }

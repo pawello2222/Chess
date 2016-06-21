@@ -80,11 +80,11 @@ public class MoveValidator implements IMoveValidator
         nextSpot = getNextSpot( spot, Side.NE, isColorWhite );
         updateValidMoveFlag( nextSpot, false, true );
 
-        nextSpot = getNextSpot( spot, Side.W, isColorWhite );
-        updateEnPassantFlag( nextSpot );
+        nextSpot = getNextSpot( spot, Side.NW, isColorWhite );
+        updateEnPassantFlag( nextSpot, getNextSpot( spot, Side.W, isColorWhite ) );
 
-        nextSpot = getNextSpot( spot, Side.E, isColorWhite );
-        updateEnPassantFlag( nextSpot );
+        nextSpot = getNextSpot( spot, Side.NE, isColorWhite );
+        updateEnPassantFlag( nextSpot, getNextSpot( spot, Side.E, isColorWhite ) );
     }
 
     private void updateLineMoves( Spot spot, boolean isColorWhite, int sideBegin, int sideEnd )
@@ -127,15 +127,47 @@ public class MoveValidator implements IMoveValidator
 
     private void updateKingMoves( Spot spot, boolean isColorWhite )
     {
-        Spot nextSpot;
+        Piece kingPiece = spot.getPiece();
 
         for( int i = 0; i <= 7; i++ )
         {
+            Spot nextSpot;
+
             nextSpot = getNextSpot( spot, Side.values()[ i ], isColorWhite );
             updateValidMoveFlag( nextSpot, true, true );
         }
 
-        //TODO: castling
+        if ( kingPiece.isUnmoved() && !isSpotCapturable( spot, kingPiece.getColor() ) )
+        {
+            Spot[] nextSpots = new Spot[ 5 ];
+            nextSpots[ 0 ] = spot;
+
+            Side sideE = isColorWhite ? Side.E : Side.W;
+            Side sideW = isColorWhite ? Side.W : Side.E;
+
+            for ( int i = 1; i < 4; i ++ )
+                nextSpots[ i ] = getNextSpot( nextSpots[ i - 1 ], sideE, isColorWhite );
+
+            if ( nextSpots[ 1 ].getPiece() == null && !isSpotCapturable( nextSpots[ 1 ], kingPiece.getColor() )
+                 && nextSpots[ 2 ].getPiece() == null && !isSpotCapturable( nextSpots[ 2 ], kingPiece.getColor() )
+                 && nextSpots[ 3 ].getPiece() != null && nextSpots[ 3 ].getPiece().isUnmoved() )
+            {
+                updateValidMoveFlag( nextSpots[ 2 ], true, false );
+                nextSpots[ 2 ].setSpecialMoveFlag( true );
+            }
+
+            for ( int i = 1; i < 5; i ++ )
+                nextSpots[ i ] = getNextSpot( nextSpots[ i - 1 ], sideW, isColorWhite );
+
+            if ( nextSpots[ 1 ].getPiece() == null && !isSpotCapturable( nextSpots[ 1 ], kingPiece.getColor() )
+                 && nextSpots[ 2 ].getPiece() == null && !isSpotCapturable( nextSpots[ 2 ], kingPiece.getColor() )
+                 && nextSpots[ 3 ].getPiece() == null
+                 && nextSpots[ 4 ].getPiece() != null && nextSpots[ 4 ].getPiece().isUnmoved() )
+            {
+                updateValidMoveFlag( nextSpots[ 2 ], true, false );
+                nextSpots[ 2 ].setSpecialMoveFlag( true );
+            }
+        }
     }
 
     private void updateValidMoveFlag( Spot spot, boolean validWhenFree, boolean validWhenOpponent )
@@ -192,21 +224,26 @@ public class MoveValidator implements IMoveValidator
     }
 
     @Override
-    public void updateEnPassantFlag( Spot source, Spot target )
+    public void updateSpecialMoveFlag( Spot source, Spot target )
     {
         if ( target.getPiece().getType() == PieceType.PAWN
              && Math.abs( target.getRow() - source.getRow() ) == 2 )
-            target.setEnPassantFlag( true );
+            target.setSpecialMoveFlag( true );
     }
 
-    private void updateEnPassantFlag( Spot spot )
+    private void updateEnPassantFlag( Spot target, Spot enPassant )
     {
-        if ( spot == null )
+        if ( target == null || enPassant == null )
             return;
 
-        Piece targetPiece = spot.getPiece();
-        if ( targetPiece != null && targetPiece.getColor() != sourcePiece.getColor() && spot.isEnPassantFlag() )
-            getNextSpot( spot, Side.N, sourcePiece.getColor() == PieceColor.WHITE ).setValidMoveFlag( true );
+        if ( target.getPiece() == null
+             && enPassant.getPiece() != null
+             && enPassant.getPiece().getType() == PieceType.PAWN
+             && enPassant.isSpecialMoveFlag() )
+        {
+            target.setValidMoveFlag( true );
+            target.setEnPassantFlag( true );
+        }
     }
 
     private boolean isSpotCapturable( Spot spot, PieceColor color )
@@ -251,8 +288,6 @@ public class MoveValidator implements IMoveValidator
 
                 nextSpot = getNextSpot( nextSpot, Side.values()[ i ], color == PieceColor.WHITE );
             }
-
-            //TODO: castling
         }
 
         return false;

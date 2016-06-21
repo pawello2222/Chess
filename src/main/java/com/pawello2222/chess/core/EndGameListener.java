@@ -1,7 +1,7 @@
 package com.pawello2222.chess.core;
 
 /**
- * << Class Name >>.
+ * End game listener.
  *
  * @author Pawel Wiszenko
  */

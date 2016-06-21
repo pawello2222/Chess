@@ -28,6 +28,14 @@ class BoardCreator
         this.board = board;
     }
 
+    static Image loadResource( String resourceName ) throws InvalidResourceException
+    {
+        URL bgImageURL = Board.class.getClassLoader().getResource( resourceName );
+        if ( bgImageURL == null )
+            throw new InvalidResourceException( resourceName );
+        return new ImageIcon( bgImageURL ).getImage();
+    }
+
     void initializeBoard( String bgImageName, boolean reversed ) throws InvalidResourceException
     {
         Image bgImage = BoardCreator.loadResource( bgImageName );
@@ -40,14 +48,6 @@ class BoardCreator
 
         List< Piece > pieces = initializePieces( spots );
         board.setPieces( pieces );
-    }
-
-    static Image loadResource( String resourceName ) throws InvalidResourceException
-    {
-        URL bgImageURL = Board.class.getClassLoader().getResource( resourceName );
-        if ( bgImageURL == null )
-            throw new InvalidResourceException( resourceName );
-        return new ImageIcon( bgImageURL ).getImage();
     }
 
     private Spot[][] initializeSpots( boolean reversed )

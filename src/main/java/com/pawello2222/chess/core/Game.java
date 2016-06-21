@@ -51,9 +51,7 @@ public class Game extends JFrame implements EndGameListener
     private JMenuBar initMenuBar()
     {
         JMenuBar menuBar = new JMenuBar();
-
         menuBar.add( initGameMenu() );
-
         return menuBar;
     }
 
@@ -83,6 +81,7 @@ public class Game extends JFrame implements EndGameListener
     {
         if ( board != null )
             this.remove( board );
+
         board = new Board( reversed );
         board.addListener( this );
         this.add( board );
@@ -120,6 +119,9 @@ public class Game extends JFrame implements EndGameListener
     public void endGame()
     {
         int result = getEndGameDialogResult();
+        if ( result < 0 )
+            result = 2;
+
         actionListeners[ result ].actionPerformed( null );
     }
 

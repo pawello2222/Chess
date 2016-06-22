@@ -1,14 +1,11 @@
 package com.pawello2222.chess.core;
 
-import com.pawello2222.chess.exception.InvalidResourceException;
 import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.PieceColor;
 import com.pawello2222.chess.model.PieceType;
 import com.pawello2222.chess.model.Spot;
 
-import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +16,7 @@ import java.util.List;
  *
  * @author Pawel Wiszenko
  */
-class BoardCreator
+class BoardCreator implements IBoardCreator
 {
     private Board board;
 
@@ -28,17 +25,10 @@ class BoardCreator
         this.board = board;
     }
 
-    static Image loadResource( String resourceName ) throws InvalidResourceException
+    @Override
+    public void initializeBoard( String bgImageName, boolean reversed ) throws InvalidResourceException
     {
-        URL bgImageURL = Board.class.getClassLoader().getResource( resourceName );
-        if ( bgImageURL == null )
-            throw new InvalidResourceException( resourceName );
-        return new ImageIcon( bgImageURL ).getImage();
-    }
-
-    void initializeBoard( String bgImageName, boolean reversed ) throws InvalidResourceException
-    {
-        Image bgImage = BoardCreator.loadResource( bgImageName );
+        Image bgImage = IBoardCreator.loadResource( bgImageName );
         board.setBgImage( bgImage );
         board.setPreferredSize( new Dimension( bgImage.getWidth( board ),
                                               bgImage.getHeight( board ) ) );
@@ -99,7 +89,7 @@ class BoardCreator
     private Piece createPiece( Spot[][] spots, int row, int column, PieceColor color, PieceType type )
             throws InvalidResourceException
     {
-        Image pieceImage = loadResource( color + "_" + type + ".png" );
+        Image pieceImage = IBoardCreator.loadResource( color + "_" + type + ".png" );
         Piece piece = new Piece( pieceImage, color, type, color == PieceColor.WHITE );
         spots[ column ][ row ].setPiece( piece );
         piece.setCoordinatesToSpot( spots[ column ][ row ] );

@@ -9,7 +9,7 @@ import com.pawello2222.chess.model.Spot;
  */
 interface IBoardManager
 {
-    void updateMovements( Spot spot );
+    void updatePossibleMoves( Spot spot );
 
     void movePiece( Spot sourceSpot, Spot targetSpot );
 

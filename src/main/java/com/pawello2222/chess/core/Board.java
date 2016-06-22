@@ -1,6 +1,5 @@
 package com.pawello2222.chess.core;
 
-import com.pawello2222.chess.exception.InvalidResourceException;
 import com.pawello2222.chess.model.*;
 import com.pawello2222.chess.service.*;
 
@@ -21,7 +20,7 @@ public class Board extends JPanel
 
     private Image bgImage;
 
-    private List< EndGameListener > listeners = new ArrayList<>();
+    private List< GameObserver > observers = new ArrayList<>();
 
     private IBoardManager boardManager;
 
@@ -82,14 +81,14 @@ public class Board extends JPanel
                                 Spot.SPOT_WIDTH - 2 * offset, Spot.SPOT_HEIGHT - 2 * offset, 10, 10 );
     }
 
-    void addListener( EndGameListener newListener )
+    void addListener( GameObserver newListener )
     {
-        listeners.add( newListener );
+        observers.add( newListener );
     }
 
     void endGame()
     {
-        listeners.forEach( EndGameListener::endGame );
+        observers.forEach( GameObserver::endGame );
     }
 
     public void movePiece( Spot sourceSpot, Spot targetSpot )
@@ -104,9 +103,9 @@ public class Board extends JPanel
         pieces.add( piece );
     }
 
-    public void updateValidMoveFlags( Spot spot )
+    public void updateMoves( Spot spot )
     {
-        boardManager.updateMovements( spot );
+        boardManager.updatePossibleMoves( spot );
     }
 
     void setBgImage( Image bgImage )

@@ -28,7 +28,7 @@ class BoardManager implements IBoardManager
     }
 
     @Override
-    public void updateMovements( Spot spot )
+    public void updatePossibleMoves( Spot spot )
     {
         moveValidator.updateValidMoveFlags( spot );
     }
@@ -111,7 +111,7 @@ class BoardManager implements IBoardManager
             chosenType = getPromotionDialogResult();
         while ( chosenType == null );
 
-        Image pieceImage = BoardCreator.loadResource( piece.getColor() + "_" + chosenType.toUpperCase() + ".png" );
+        Image pieceImage = IBoardCreator.loadResource( piece.getColor() + "_" + chosenType.toUpperCase() + ".png" );
         piece.setImage( pieceImage );
         piece.setType( PieceType.valueOf( chosenType.toUpperCase() ) );
     }

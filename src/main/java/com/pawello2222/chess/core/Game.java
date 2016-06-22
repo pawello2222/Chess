@@ -1,6 +1,5 @@
 package com.pawello2222.chess.core;
 
-import com.pawello2222.chess.exception.InvalidResourceException;
 import com.pawello2222.chess.model.GameState;
 
 import javax.swing.*;
@@ -12,7 +11,7 @@ import java.awt.event.ActionListener;
  *
  * @author Pawel Wiszenko
  */
-public class Game extends JFrame implements EndGameListener
+public class Game extends JFrame implements GameObserver
 {
     private Board board;
 
@@ -23,7 +22,7 @@ public class Game extends JFrame implements EndGameListener
         this.setTitle( "Chess" );
         try
         {
-            this.setIconImage( BoardCreator.loadResource( "ICON.png" ) );
+            this.setIconImage( IBoardCreator.loadResource( "ICON.png" ) );
         }
         catch ( InvalidResourceException e )
         {

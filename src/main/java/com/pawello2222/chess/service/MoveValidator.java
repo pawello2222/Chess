@@ -24,10 +24,10 @@ public class MoveValidator implements IMoveValidator
     @Override
     public void updateValidMoveFlags( Spot spot )
     {
+        clearFlagsByType( FlagType.VALID_MOVE );
+
         if ( spot == null || spot.getPiece() == null || !spot.getPiece().isActive() )
             return;
-
-        clearFlagsByType( FlagType.VALID_MOVE );
 
         sourceSpot = spot;
         sourcePiece = spot.getPiece();

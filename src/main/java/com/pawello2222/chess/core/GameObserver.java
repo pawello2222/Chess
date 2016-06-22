@@ -5,7 +5,7 @@ package com.pawello2222.chess.core;
  *
  * @author Pawel Wiszenko
  */
-interface EndGameListener
+interface GameObserver
 {
     void endGame();
 }

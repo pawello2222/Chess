@@ -118,10 +118,8 @@ public class Game extends JFrame implements GameObserver
     public void endGame()
     {
         int result = getEndGameDialogResult();
-        if ( result < 0 )
-            result = 2;
-
-        actionListeners[ result ].actionPerformed( null );
+        if ( result > 0 )
+            actionListeners[ result ].actionPerformed( null );
     }
 
     public static void main( String[] args )

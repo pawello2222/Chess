@@ -2,7 +2,7 @@ package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.*;
 
-// TODO: refactoring: class is too large
+import static com.pawello2222.chess.utils.SpotUtils.*;
 
 /**
  *  Move validator class implementation.
@@ -106,26 +106,26 @@ class MoveValidatorImpl implements MoveValidator
     {
         Spot nextSpot;
 
-        nextSpot = getNextSpot( spot, Direction.N, sourceColor );
+        nextSpot = getNextSpot( spots, spot, Direction.N, sourceColor );
         updateValidMoveFlag( nextSpot, true, false );
 
         if ( nextSpot != null && nextSpot.isEmpty() && sourcePiece.isUnmoved() )
         {
-            nextSpot = getNextSpot( nextSpot, Direction.N, sourceColor );
+            nextSpot = getNextSpot( spots, nextSpot, Direction.N, sourceColor );
             updateValidMoveFlag( nextSpot, true, false );
         }
 
-        nextSpot = getNextSpot( spot, Direction.NW, sourceColor );
+        nextSpot = getNextSpot( spots, spot, Direction.NW, sourceColor );
         updateValidMoveFlag( nextSpot, false, true );
 
-        nextSpot = getNextSpot( spot, Direction.NE, sourceColor );
+        nextSpot = getNextSpot( spots, spot, Direction.NE, sourceColor );
         updateValidMoveFlag( nextSpot, false, true );
 
-        nextSpot = getNextSpot( spot, Direction.NW, sourceColor );
-        updateEnPassantFlag( nextSpot, getNextSpot( spot, Direction.W, sourceColor ) );
+        nextSpot = getNextSpot( spots, spot, Direction.NW, sourceColor );
+        updateEnPassantFlag( nextSpot, getNextSpot( spots, spot, Direction.W, sourceColor ) );
 
-        nextSpot = getNextSpot( spot, Direction.NE, sourceColor );
-        updateEnPassantFlag( nextSpot, getNextSpot( spot, Direction.E, sourceColor ) );
+        nextSpot = getNextSpot( spots, spot, Direction.NE, sourceColor );
+        updateEnPassantFlag( nextSpot, getNextSpot( spots, spot, Direction.E, sourceColor ) );
     }
 
     private void updateLineMoves( Spot spot, int sideBegin, int sideEnd )
@@ -134,17 +134,17 @@ class MoveValidatorImpl implements MoveValidator
 
         for( int i = sideBegin; i <= sideEnd; i++ )
         {
-            nextSpot = getNextSpot( spot, Direction.values()[ i ], sourceColor );
+            nextSpot = getNextSpot( spots, spot, Direction.values()[ i ], sourceColor );
 
-            while( nextSpot != null
-                   && ( nextSpot.isEmpty() || nextSpot.getPiece().getColor() != sourcePiece.getColor() ) )
+            PieceColor opponentColor = getOppositePieceColor( sourceColor );
+            while( nextSpot != null && ( nextSpot.isEmpty() || nextSpot.hasPieceColor( opponentColor ) ) )
             {
                 updateValidMoveFlag( nextSpot, true, true );
 
-                if ( nextSpot.getPiece() != null && nextSpot.getPiece().getColor() != sourcePiece.getColor() )
+                if ( !nextSpot.isEmpty() && nextSpot.hasPieceColor( opponentColor ) )
                     break;
 
-                nextSpot = getNextSpot( nextSpot, Direction.values()[ i ], sourceColor );
+                nextSpot = getNextSpot( spots, nextSpot, Direction.values()[ i ], sourceColor );
             }
         }
     }
@@ -155,13 +155,13 @@ class MoveValidatorImpl implements MoveValidator
 
         for( int i = 0; i <= 3; i++ )
         {
-            nextSpot = getNextSpot( spot, Direction.values()[ i ], sourceColor );
-            oldSpot = getNextSpot( nextSpot, Direction.values()[ i ], sourceColor );
+            nextSpot = getNextSpot( spots, spot, Direction.values()[ i ], sourceColor );
+            oldSpot = getNextSpot( spots, nextSpot, Direction.values()[ i ], sourceColor );
 
-            nextSpot = getNextSpot( oldSpot, Direction.values()[ ( i + 1 ) % 4 ], sourceColor );
+            nextSpot = getNextSpot( spots, oldSpot, Direction.values()[ ( i + 1 ) % 4 ], sourceColor );
             updateValidMoveFlag( nextSpot, true, true );
 
-            nextSpot = getNextSpot( oldSpot, Direction.values()[ ( i + 3 ) % 4 ], sourceColor );
+            nextSpot = getNextSpot( spots, oldSpot, Direction.values()[ ( i + 3 ) % 4 ], sourceColor );
             updateValidMoveFlag( nextSpot, true, true );
         }
     }
@@ -174,36 +174,36 @@ class MoveValidatorImpl implements MoveValidator
         {
             Spot nextSpot;
 
-            nextSpot = getNextSpot( spot, Direction.values()[ i ], sourceColor );
+            nextSpot = getNextSpot( spots, spot, Direction.values()[ i ], sourceColor );
             updateValidMoveFlag( nextSpot, true, true );
         }
 
-        if ( kingPiece.isUnmoved() && !isSpotCapturable( spot, kingPiece.getColor() ) )
+        if ( kingPiece.isUnmoved() && !isSpotCapturable( spots, spot, kingPiece.getColor() ) )
         {
             Spot[] nextSpots = new Spot[ 5 ];
             nextSpots[ 0 ] = spot;
 
-            Direction directionE = sourcePiece.getColor() == PieceColor.WHITE ? Direction.E : Direction.W;
-            Direction directionW = sourcePiece.getColor() == PieceColor.WHITE ? Direction.W : Direction.E;
+            Direction directionE = sourceColor == PieceColor.WHITE ? Direction.E : Direction.W;
+            Direction directionW = sourceColor == PieceColor.WHITE ? Direction.W : Direction.E;
 
             for ( int i = 1; i < 4; i ++ )
-                nextSpots[ i ] = getNextSpot( nextSpots[ i - 1 ], directionE, sourceColor );
+                nextSpots[ i ] = getNextSpot( spots, nextSpots[ i - 1 ], directionE, sourceColor );
 
-            if ( nextSpots[ 1 ].getPiece() == null && !isSpotCapturable( nextSpots[ 1 ], kingPiece.getColor() )
-                 && nextSpots[ 2 ].getPiece() == null && !isSpotCapturable( nextSpots[ 2 ], kingPiece.getColor() )
-                 && nextSpots[ 3 ].getPiece() != null && nextSpots[ 3 ].getPiece().isUnmoved() )
+            if ( nextSpots[ 1 ].isEmpty() && !isSpotCapturable( spots, nextSpots[ 1 ], kingPiece.getColor() )
+                 && nextSpots[ 2 ].isEmpty() && !isSpotCapturable( spots, nextSpots[ 2 ], kingPiece.getColor() )
+                 && !nextSpots[ 3 ].isEmpty() && nextSpots[ 3 ].getPiece().isUnmoved() )
             {
                 updateValidMoveFlag( nextSpots[ 2 ], true, false );
                 nextSpots[ 2 ].setSpecialMoveFlag( true );
             }
 
             for ( int i = 1; i < 5; i ++ )
-                nextSpots[ i ] = getNextSpot( nextSpots[ i - 1 ], directionW, sourceColor );
+                nextSpots[ i ] = getNextSpot( spots, nextSpots[ i - 1 ], directionW, sourceColor );
 
-            if ( nextSpots[ 1 ].getPiece() == null && !isSpotCapturable( nextSpots[ 1 ], kingPiece.getColor() )
-                 && nextSpots[ 2 ].getPiece() == null && !isSpotCapturable( nextSpots[ 2 ], kingPiece.getColor() )
-                 && nextSpots[ 3 ].getPiece() == null
-                 && nextSpots[ 4 ].getPiece() != null && nextSpots[ 4 ].getPiece().isUnmoved() )
+            if ( nextSpots[ 1 ].isEmpty() && !isSpotCapturable( spots, nextSpots[ 1 ], kingPiece.getColor() )
+                 && nextSpots[ 2 ].isEmpty() && !isSpotCapturable( spots, nextSpots[ 2 ], kingPiece.getColor() )
+                 && nextSpots[ 3 ].isEmpty()
+                 && !nextSpots[ 4 ].isEmpty() && nextSpots[ 4 ].getPiece().isUnmoved() )
             {
                 updateValidMoveFlag( nextSpots[ 2 ], true, false );
                 nextSpots[ 2 ].setSpecialMoveFlag( true );
@@ -220,7 +220,7 @@ class MoveValidatorImpl implements MoveValidator
         spot.setPiece( sourcePiece );
         sourceSpot.setPiece( null );
 
-        if ( isSpotCapturable( getKingSpot( sourceColor ), sourceColor ) )
+        if ( isSpotCapturable( spots, getKingSpot( spots, sourceColor ), sourceColor ) )
         {
             spot.setPiece( oldPiece );
             sourceSpot.setPiece( sourcePiece );
@@ -235,7 +235,8 @@ class MoveValidatorImpl implements MoveValidator
             validFree = true;
 
         boolean validOpponent = false;
-        if ( spot.getPiece() != null && spot.getPiece().getColor() != sourceColor )
+        PieceColor opponentColor = getOppositePieceColor( sourceColor );
+        if ( !spot.isEmpty() && spot.hasPieceColor( opponentColor ) )
             validOpponent = true;
 
         if ( validWhenFree && validWhenOpponent )
@@ -256,8 +257,8 @@ class MoveValidatorImpl implements MoveValidator
     private void updateCheckFlag()
     {
         PieceColor opponentColor = getOppositePieceColor( sourceColor );
-        Spot kingSpot = getKingSpot( opponentColor );
-        if ( kingSpot != null && isSpotCapturable( kingSpot, opponentColor ) )
+        Spot kingSpot = getKingSpot( spots, opponentColor );
+        if ( kingSpot != null && isSpotCapturable( spots, kingSpot, opponentColor ) )
             kingSpot.setCheckFlag( true );
     }
 
@@ -315,123 +316,5 @@ class MoveValidatorImpl implements MoveValidator
                         spots[ column ][ row ].setSpecialMoveFlag( false );
                         break;
                 }
-    }
-
-    private boolean isSpotCapturable( Spot spot, PieceColor pieceColor )
-    {
-        Spot nextSpot, tmpSpot, oldSpot;
-
-        nextSpot = getNextSpot( spot, Direction.NW, pieceColor );
-        if ( isPieceAtSpot( nextSpot, PieceType.PAWN, getOppositePieceColor( pieceColor ) ) )
-            return true;
-
-        nextSpot = getNextSpot( spot, Direction.NE, pieceColor );
-        if ( isPieceAtSpot( nextSpot, PieceType.PAWN, getOppositePieceColor( pieceColor ) ) )
-            return true;
-
-        for( int i = 0; i <= 7; i++ )
-        {
-            nextSpot = getNextSpot( spot, Direction.values()[ i ], pieceColor );
-            if ( isPieceAtSpot( nextSpot, PieceType.KING, getOppositePieceColor( pieceColor ) ) )
-                return true;
-
-            oldSpot = getNextSpot( nextSpot, Direction.values()[ i ], pieceColor );
-
-            tmpSpot = getNextSpot( oldSpot, Direction.values()[ ( i + 1 ) % 4 ], pieceColor );
-            if ( i <= 3 && isPieceAtSpot( tmpSpot, PieceType.KNIGHT, getOppositePieceColor( pieceColor ) ) )
-                return true;
-
-            tmpSpot = getNextSpot( oldSpot, Direction.values()[ ( i + 3 ) % 4 ], pieceColor );
-            if ( i <= 3 && isPieceAtSpot( tmpSpot, PieceType.KNIGHT, getOppositePieceColor( pieceColor ) ) )
-                return true;
-
-            while( nextSpot != null && ( nextSpot.isEmpty() || nextSpot.getPiece().getColor() != pieceColor ) )
-            {
-                if ( nextSpot.getPiece() != null && nextSpot.getPiece().getColor() != pieceColor )
-                {
-                    if( nextSpot.getPiece().getType() == PieceType.QUEEN
-                        || nextSpot.getPiece().getType() == PieceType.ROOK && i <= 3
-                        || nextSpot.getPiece().getType() == PieceType.BISHOP && i >= 4 )
-                        return true;
-                    else
-                        break;
-                }
-
-                nextSpot = getNextSpot( nextSpot, Direction.values()[ i ], pieceColor );
-            }
-        }
-
-        return false;
-    }
-
-    private Spot getNextSpot( Spot spot, Direction direction, PieceColor pieceColor )
-    {
-        if ( spot == null )
-            return null;
-
-        int diff = pieceColor == PieceColor.WHITE ? -1 : 1;
-
-        switch( direction )
-        {
-            case N:
-                if ( spot.getRow() + diff < 0 || spot.getRow() + diff > 7 )
-                    break;
-                return spots[ spot.getColumn() ][ spot.getRow() + diff ];
-
-            case E:
-                if ( spot.getColumn() - diff < 0 || spot.getColumn() - diff > 7 )
-                    break;
-                return spots[ spot.getColumn() - diff ][ spot.getRow() ];
-
-            case S:
-                if ( spot.getRow() - diff < 0 || spot.getRow() - diff > 7 )
-                    break;
-                return spots[ spot.getColumn() ][ spot.getRow() - diff ];
-
-            case W:
-                if ( spot.getColumn() + diff < 0 || spot.getColumn() + diff > 7 )
-                    break;
-                return spots[ spot.getColumn() + diff ][ spot.getRow() ];
-
-            case NE:
-                return getNextSpot( getNextSpot( spot, Direction.N, pieceColor ), Direction.E, pieceColor );
-
-            case SE:
-                return getNextSpot( getNextSpot( spot, Direction.S, pieceColor ), Direction.E, pieceColor );
-
-            case SW:
-                return getNextSpot( getNextSpot( spot, Direction.S, pieceColor ), Direction.W, pieceColor );
-
-            case NW:
-                return getNextSpot( getNextSpot( spot, Direction.N, pieceColor ), Direction.W, pieceColor );
-        }
-
-        return null;
-    }
-
-    private Spot getKingSpot( PieceColor pieceColor )
-    {
-        for ( int column = 0; column < 8; column++ )
-            for ( int row = 0; row < 8; row++ )
-                if( spots[ column ][ row ].getPiece() != null
-                    && spots[ column ][ row ].getPiece().getType() == PieceType.KING
-                    && spots[ column ][ row ].getPiece().getColor() == pieceColor )
-
-                    return spots[ column ][ row ];
-
-        return null;
-    }
-
-    private static PieceColor getOppositePieceColor( PieceColor pieceColor )
-    {
-        return pieceColor == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
-    }
-
-    private static boolean isPieceAtSpot( Spot spot, PieceType type, PieceColor color )
-    {
-        return spot != null
-               && spot.getPiece() != null
-               && spot.getPiece().getType() == type
-               && spot.getPiece().getColor() == color;
     }
 }

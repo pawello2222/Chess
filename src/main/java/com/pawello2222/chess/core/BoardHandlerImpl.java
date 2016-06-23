@@ -49,6 +49,12 @@ class BoardHandlerImpl extends BoardHandlerBase
     @Override
     public void movePiece( Spot sourceSpot, Spot targetSpot )
     {
+        executeMove( sourceSpot, targetSpot );
+        nextTurn();
+    }
+
+    private void executeMove( Spot sourceSpot, Spot targetSpot )
+    {
         Piece sourcePiece = sourceSpot.getPiece();
 
         if ( sourcePiece.isUnmoved() )
@@ -81,8 +87,9 @@ class BoardHandlerImpl extends BoardHandlerBase
         if ( sourcePiece.getType() == PieceType.PAWN && targetSpot.getRow() == promotionRow )
             promotePawn( targetSpot.getPiece() );
 
+        updateGraphics();
+
         moveValidator.updateFlagsAfterMove( sourceSpot, targetSpot );
-        nextTurn();
     }
 
     private void promotePawn( Piece piece )
@@ -127,7 +134,7 @@ class BoardHandlerImpl extends BoardHandlerBase
         if ( moveValidator.getPossibleMovesCount() > 0 )
             switchGameState();
         else
-            endGame();
+            endOfGame();
     }
 
     private void switchGameState()
@@ -138,7 +145,7 @@ class BoardHandlerImpl extends BoardHandlerBase
             board.setGameState( GameState.RUNNING_WHITE );
     }
 
-    private void endGame()
+    private void endOfGame()
     {
         if ( board.isGameState( GameState.RUNNING_WHITE ) )
             board.setGameState( GameState.CHECKMATE_WIN_WHITE );

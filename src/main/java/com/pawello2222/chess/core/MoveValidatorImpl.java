@@ -13,6 +13,7 @@ class MoveValidatorImpl implements MoveValidator
 
     private Spot sourceSpot;
     private Piece sourcePiece;
+    private PieceColor sourceColor;
 
     MoveValidatorImpl( Spot[][] spots )
     {
@@ -60,6 +61,7 @@ class MoveValidatorImpl implements MoveValidator
 
         sourceSpot = spot;
         sourcePiece = spot.getPiece();
+        sourceColor = sourcePiece.getColor();
 
         switch ( sourcePiece.getType() )
         {
@@ -102,26 +104,26 @@ class MoveValidatorImpl implements MoveValidator
     {
         Spot nextSpot;
 
-        nextSpot = getNextSpot( spot, Direction.N, sourcePiece.getColor() );
+        nextSpot = getNextSpot( spot, Direction.N, sourceColor );
         updateValidMoveFlag( nextSpot, true, false );
 
         if ( nextSpot != null && nextSpot.isEmpty() && sourcePiece.isUnmoved() )
         {
-            nextSpot = getNextSpot( nextSpot, Direction.N, sourcePiece.getColor() );
+            nextSpot = getNextSpot( nextSpot, Direction.N, sourceColor );
             updateValidMoveFlag( nextSpot, true, false );
         }
 
-        nextSpot = getNextSpot( spot, Direction.NW, sourcePiece.getColor() );
+        nextSpot = getNextSpot( spot, Direction.NW, sourceColor );
         updateValidMoveFlag( nextSpot, false, true );
 
-        nextSpot = getNextSpot( spot, Direction.NE, sourcePiece.getColor() );
+        nextSpot = getNextSpot( spot, Direction.NE, sourceColor );
         updateValidMoveFlag( nextSpot, false, true );
 
-        nextSpot = getNextSpot( spot, Direction.NW, sourcePiece.getColor() );
-        updateEnPassantFlag( nextSpot, getNextSpot( spot, Direction.W, sourcePiece.getColor() ) );
+        nextSpot = getNextSpot( spot, Direction.NW, sourceColor );
+        updateEnPassantFlag( nextSpot, getNextSpot( spot, Direction.W, sourceColor ) );
 
-        nextSpot = getNextSpot( spot, Direction.NE, sourcePiece.getColor() );
-        updateEnPassantFlag( nextSpot, getNextSpot( spot, Direction.E, sourcePiece.getColor() ) );
+        nextSpot = getNextSpot( spot, Direction.NE, sourceColor );
+        updateEnPassantFlag( nextSpot, getNextSpot( spot, Direction.E, sourceColor ) );
     }
 
     private void updateLineMoves( Spot spot, int sideBegin, int sideEnd )
@@ -130,7 +132,7 @@ class MoveValidatorImpl implements MoveValidator
 
         for( int i = sideBegin; i <= sideEnd; i++ )
         {
-            nextSpot = getNextSpot( spot, Direction.values()[ i ], sourcePiece.getColor() );
+            nextSpot = getNextSpot( spot, Direction.values()[ i ], sourceColor );
 
             while( nextSpot != null
                    && ( nextSpot.isEmpty() || nextSpot.getPiece().getColor() != sourcePiece.getColor() ) )
@@ -140,7 +142,7 @@ class MoveValidatorImpl implements MoveValidator
                 if ( nextSpot.getPiece() != null && nextSpot.getPiece().getColor() != sourcePiece.getColor() )
                     break;
 
-                nextSpot = getNextSpot( nextSpot, Direction.values()[ i ], sourcePiece.getColor() );
+                nextSpot = getNextSpot( nextSpot, Direction.values()[ i ], sourceColor );
             }
         }
     }
@@ -151,13 +153,13 @@ class MoveValidatorImpl implements MoveValidator
 
         for( int i = 0; i <= 3; i++ )
         {
-            nextSpot = getNextSpot( spot, Direction.values()[ i ], sourcePiece.getColor() );
-            oldSpot = getNextSpot( nextSpot, Direction.values()[ i ], sourcePiece.getColor() );
+            nextSpot = getNextSpot( spot, Direction.values()[ i ], sourceColor );
+            oldSpot = getNextSpot( nextSpot, Direction.values()[ i ], sourceColor );
 
-            nextSpot = getNextSpot( oldSpot, Direction.values()[ ( i + 1 ) % 4 ], sourcePiece.getColor() );
+            nextSpot = getNextSpot( oldSpot, Direction.values()[ ( i + 1 ) % 4 ], sourceColor );
             updateValidMoveFlag( nextSpot, true, true );
 
-            nextSpot = getNextSpot( oldSpot, Direction.values()[ ( i + 3 ) % 4 ], sourcePiece.getColor() );
+            nextSpot = getNextSpot( oldSpot, Direction.values()[ ( i + 3 ) % 4 ], sourceColor );
             updateValidMoveFlag( nextSpot, true, true );
         }
     }
@@ -170,7 +172,7 @@ class MoveValidatorImpl implements MoveValidator
         {
             Spot nextSpot;
 
-            nextSpot = getNextSpot( spot, Direction.values()[ i ], sourcePiece.getColor() );
+            nextSpot = getNextSpot( spot, Direction.values()[ i ], sourceColor );
             updateValidMoveFlag( nextSpot, true, true );
         }
 
@@ -183,7 +185,7 @@ class MoveValidatorImpl implements MoveValidator
             Direction directionW = sourcePiece.getColor() == PieceColor.WHITE ? Direction.W : Direction.E;
 
             for ( int i = 1; i < 4; i ++ )
-                nextSpots[ i ] = getNextSpot( nextSpots[ i - 1 ], directionE, sourcePiece.getColor() );
+                nextSpots[ i ] = getNextSpot( nextSpots[ i - 1 ], directionE, sourceColor );
 
             if ( nextSpots[ 1 ].getPiece() == null && !isSpotCapturable( nextSpots[ 1 ], kingPiece.getColor() )
                  && nextSpots[ 2 ].getPiece() == null && !isSpotCapturable( nextSpots[ 2 ], kingPiece.getColor() )
@@ -194,7 +196,7 @@ class MoveValidatorImpl implements MoveValidator
             }
 
             for ( int i = 1; i < 5; i ++ )
-                nextSpots[ i ] = getNextSpot( nextSpots[ i - 1 ], directionW, sourcePiece.getColor() );
+                nextSpots[ i ] = getNextSpot( nextSpots[ i - 1 ], directionW, sourceColor );
 
             if ( nextSpots[ 1 ].getPiece() == null && !isSpotCapturable( nextSpots[ 1 ], kingPiece.getColor() )
                  && nextSpots[ 2 ].getPiece() == null && !isSpotCapturable( nextSpots[ 2 ], kingPiece.getColor() )
@@ -216,8 +218,7 @@ class MoveValidatorImpl implements MoveValidator
         spot.setPiece( sourcePiece );
         sourceSpot.setPiece( null );
 
-        PieceColor activeColor = sourcePiece.getColor();
-        if ( isSpotCapturable( getKingSpot( activeColor ), activeColor ) )
+        if ( isSpotCapturable( getKingSpot( sourceColor ), sourceColor ) )
         {
             spot.setPiece( oldPiece );
             sourceSpot.setPiece( sourcePiece );
@@ -232,7 +233,7 @@ class MoveValidatorImpl implements MoveValidator
             validFree = true;
 
         boolean validOpponent = false;
-        if ( spot.getPiece() != null && spot.getPiece().getColor() != activeColor )
+        if ( spot.getPiece() != null && spot.getPiece().getColor() != sourceColor )
             validOpponent = true;
 
         if ( validWhenFree && validWhenOpponent )
@@ -252,7 +253,7 @@ class MoveValidatorImpl implements MoveValidator
 
     private void updateCheckFlag()
     {
-        PieceColor opponentColor = getOppositePieceColor( sourcePiece.getColor() );
+        PieceColor opponentColor = getOppositePieceColor( sourceColor );
         Spot kingSpot = getKingSpot( opponentColor );
         if ( kingSpot != null && isSpotCapturable( kingSpot, opponentColor ) )
             kingSpot.setCheckFlag( true );

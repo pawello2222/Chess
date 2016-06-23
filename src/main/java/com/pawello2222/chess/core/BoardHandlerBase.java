@@ -8,7 +8,7 @@ import com.pawello2222.chess.model.Spot;
  *
  * @author Pawel Wiszenko
  */
-abstract class BoardHandlerBase implements IGraphicsHandler, IMoveHandler
+abstract class BoardHandlerBase implements GraphicsHandler, MoveHandler
 {
     @Override
     public abstract void updateGraphics();

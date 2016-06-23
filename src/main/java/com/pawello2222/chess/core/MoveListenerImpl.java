@@ -11,7 +11,7 @@ import java.awt.event.MouseEvent;
  *
  * @author Pawel Wiszenko
  */
-class MoveListener extends MoveListenerBase
+class MoveListenerImpl extends MoveListenerBase
 {
     private BoardHandlerBase boardHandler;
 
@@ -19,7 +19,7 @@ class MoveListener extends MoveListenerBase
     private Spot sourceSpot;
     private Piece dragPiece;
 
-    MoveListener( BoardHandlerBase boardHandler, Spot[][] spots )
+    MoveListenerImpl( BoardHandlerBase boardHandler, Spot[][] spots )
     {
         this.boardHandler = boardHandler;
         this.spots = spots;

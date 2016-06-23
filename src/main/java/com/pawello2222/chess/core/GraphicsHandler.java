@@ -7,7 +7,7 @@ import com.pawello2222.chess.model.Piece;
  *
  * @author Pawel Wiszenko
  */
-interface IGraphicsHandler
+interface GraphicsHandler
 {
     void updateGraphics();
 

@@ -12,14 +12,14 @@ import java.util.List;
  *
  * @author Pawel Wiszenko
  */
-class BoardHandler extends BoardHandlerBase
+class BoardHandlerImpl extends BoardHandlerBase
 {
     private Board board;
-    private IMoveValidator moveValidator;
+    private MoveValidator moveValidator;
     private Spot[][] spots;
     private List< Piece > pieces;
 
-    BoardHandler( Board board, IMoveValidator moveValidator, Spot[][] spots, List< Piece > pieces )
+    BoardHandlerImpl( Board board, MoveValidator moveValidator, Spot[][] spots, List< Piece > pieces )
     {
         this.board = board;
         this.moveValidator = moveValidator;

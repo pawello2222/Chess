@@ -24,7 +24,7 @@ class MainFactory
         Spot[][] spots = initializeSpots( reversed );
         List< Piece > pieces = initializePieces( spots );
         Board board =  new Board( image, spots, pieces );
-        IMoveValidator moveValidator = getMoveValidator( spots );
+        MoveValidator moveValidator = getMoveValidator( spots );
         BoardHandlerBase boardHandler = getBoardHandler( board, moveValidator, spots, pieces );
         MoveListenerBase moveListener = getMoveListener( boardHandler, spots );
         board.setMoveListener( moveListener );
@@ -32,20 +32,20 @@ class MainFactory
         return board;
     }
 
-    private static IMoveValidator getMoveValidator( Spot[][] spots )
+    private static MoveValidator getMoveValidator( Spot[][] spots )
     {
-        return new MoveValidator( spots );
+        return new MoveValidatorImpl( spots );
     }
 
     private static MoveListenerBase getMoveListener( BoardHandlerBase boardHandler, Spot[][] spots )
     {
-        return new MoveListener( boardHandler, spots );
+        return new MoveListenerImpl( boardHandler, spots );
     }
 
-    private static BoardHandlerBase getBoardHandler( Board board, IMoveValidator moveValidator,
+    private static BoardHandlerBase getBoardHandler( Board board, MoveValidator moveValidator,
                                                      Spot[][] spots, List< Piece > pieces )
     {
-        return new BoardHandler( board, moveValidator, spots, pieces );
+        return new BoardHandlerImpl( board, moveValidator, spots, pieces );
     }
 
     private static Spot[][] initializeSpots( boolean reversed )

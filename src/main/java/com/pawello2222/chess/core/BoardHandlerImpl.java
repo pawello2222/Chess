@@ -1,6 +1,5 @@
 package com.pawello2222.chess.core;
 
-import com.pawello2222.chess.exception.InvalidResourceException;
 import com.pawello2222.chess.model.*;
 import com.pawello2222.chess.utils.ResourceLoader;
 
@@ -99,16 +98,8 @@ class BoardHandlerImpl extends BoardHandlerBase
             chosenType = getPromotionDialogResult();
         while ( chosenType == null );
 
-        try
-        {
-            piece.setImage( ResourceLoader.loadResource( piece.getColor() + "_" + chosenType.toUpperCase() + ".png" ) );
-        }
-        catch ( InvalidResourceException e )
-        {
-            System.out.println( e.getMessage() );
-            System.exit( -1 );
-        }
-
+        piece.setImage( ResourceLoader.loadImageExitOnEx(
+                piece.getColor() + "_" + chosenType.toUpperCase() + ".png" ) );
         piece.setType( PieceType.valueOf( chosenType.toUpperCase() ) );
     }
 

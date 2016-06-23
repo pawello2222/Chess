@@ -1,6 +1,5 @@
 package com.pawello2222.chess.core;
 
-import com.pawello2222.chess.exception.InvalidResourceException;
 import com.pawello2222.chess.model.GameState;
 import com.pawello2222.chess.utils.ResourceLoader;
 
@@ -21,24 +20,17 @@ public class Game extends JFrame implements EndOfGameListener
 
     private Game()
     {
-        this.setTitle( "Chess" );
-        try
-        {
-            this.setIconImage( ResourceLoader.loadResource( "ICON.png" ) );
-        }
-        catch ( InvalidResourceException e )
-        {
-            System.out.println( e.getMessage() );
-            System.exit( -1 );
-        }
+        setTitle( "Chess" );
+        setIconImage( ResourceLoader.loadImageExitOnEx( "ICON.png" ) );
 
         initActionListeners();
-        this.setJMenuBar( initMenuBar() );
+        setJMenuBar( initMenuBar() );
         startNewGame( false );
 
-        this.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
-        this.setLocationRelativeTo( null );
-        this.setVisible( true );
+        setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
+        setLocationRelativeTo( null );
+        setResizable( false );
+        setVisible( true );
     }
 
     private void initActionListeners()
@@ -46,7 +38,7 @@ public class Game extends JFrame implements EndOfGameListener
         actionListeners = new ActionListener[ 3 ];
         actionListeners[ 0 ] = event -> startNewGame( false );
         actionListeners[ 1 ] = event -> startNewGame( true );
-        actionListeners[ 2 ] = event -> this.dispose();
+        actionListeners[ 2 ] = event -> dispose();
     }
 
     private JMenuBar initMenuBar()
@@ -81,12 +73,12 @@ public class Game extends JFrame implements EndOfGameListener
     private void startNewGame( boolean reversed )
     {
         if ( board != null )
-            this.remove( board );
+            remove( board );
 
         board = MainFactory.getBoard( reversed );
         board.addGameEndListener( this );
-        this.add( board );
-        this.pack();
+        add( board );
+        pack();
     }
 
     private int getEndGameDialogResult()

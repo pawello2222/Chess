@@ -15,38 +15,39 @@ public abstract class SpotUtils
     public static boolean isSpotCapturable( Spot[][] spots, Spot spot, PieceColor pieceColor )
     {
         Spot nextSpot, tmpSpot, oldSpot;
+        PieceColor opponentColor = getOppositePieceColor( pieceColor );
 
         nextSpot = getNextSpot( spots, spot, Direction.NW, pieceColor );
-        if ( isPieceAtSpot( nextSpot, PieceType.PAWN, getOppositePieceColor( pieceColor ) ) )
+        if ( isPieceAtSpot( nextSpot, PieceType.PAWN, opponentColor ) )
             return true;
 
         nextSpot = getNextSpot( spots, spot, Direction.NE, pieceColor );
-        if ( isPieceAtSpot( nextSpot, PieceType.PAWN, getOppositePieceColor( pieceColor ) ) )
+        if ( isPieceAtSpot( nextSpot, PieceType.PAWN, opponentColor ) )
             return true;
 
         for( int i = 0; i <= 7; i++ )
         {
             nextSpot = getNextSpot( spots, spot, Direction.values()[ i ], pieceColor );
-            if ( isPieceAtSpot( nextSpot, PieceType.KING, getOppositePieceColor( pieceColor ) ) )
+            if ( isPieceAtSpot( nextSpot, PieceType.KING, opponentColor ) )
                 return true;
 
             oldSpot = getNextSpot( spots, nextSpot, Direction.values()[ i ], pieceColor );
 
             tmpSpot = getNextSpot( spots, oldSpot, Direction.values()[ ( i + 1 ) % 4 ], pieceColor );
-            if ( i <= 3 && isPieceAtSpot( tmpSpot, PieceType.KNIGHT, getOppositePieceColor( pieceColor ) ) )
+            if ( i <= 3 && isPieceAtSpot( tmpSpot, PieceType.KNIGHT, opponentColor ) )
                 return true;
 
             tmpSpot = getNextSpot( spots, oldSpot, Direction.values()[ ( i + 3 ) % 4 ], pieceColor );
-            if ( i <= 3 && isPieceAtSpot( tmpSpot, PieceType.KNIGHT, getOppositePieceColor( pieceColor ) ) )
+            if ( i <= 3 && isPieceAtSpot( tmpSpot, PieceType.KNIGHT, opponentColor ) )
                 return true;
 
-            while( nextSpot != null && ( nextSpot.isEmpty() || nextSpot.getPiece().getColor() != pieceColor ) )
+            while( nextSpot != null && ( nextSpot.isEmpty() || nextSpot.hasPieceColor( opponentColor ) ) )
             {
-                if ( nextSpot.getPiece() != null && nextSpot.getPiece().getColor() != pieceColor )
+                if ( nextSpot.hasPieceColor( opponentColor ) )
                 {
-                    if( nextSpot.getPiece().getType() == PieceType.QUEEN
-                        || nextSpot.getPiece().getType() == PieceType.ROOK && i <= 3
-                        || nextSpot.getPiece().getType() == PieceType.BISHOP && i >= 4 )
+                    if( nextSpot.hasPieceType( PieceType.QUEEN )
+                        || nextSpot.hasPieceType( PieceType.ROOK ) && i <= 3
+                        || nextSpot.hasPieceType( PieceType.BISHOP ) && i >= 4 )
                         return true;
                     else
                         break;
@@ -116,13 +117,13 @@ public abstract class SpotUtils
         return null;
     }
 
-    public static Spot getKingSpot( Spot[][] spots, PieceColor pieceColor )
+    public static Spot getKingSpot( Spot[][] spots, PieceColor kingColor )
     {
         for ( int column = 0; column < 8; column++ )
             for ( int row = 0; row < 8; row++ )
-                if( spots[ column ][ row ].getPiece() != null
-                    && spots[ column ][ row ].getPiece().getType() == PieceType.KING
-                    && spots[ column ][ row ].getPiece().getColor() == pieceColor )
+                if( !spots[ column ][ row ].isEmpty()
+                    && spots[ column ][ row ].hasPieceType( PieceType.KING )
+                    && spots[ column ][ row ].hasPieceColor( kingColor ) )
 
                     return spots[ column ][ row ];
 
@@ -136,9 +137,6 @@ public abstract class SpotUtils
 
     private static boolean isPieceAtSpot( Spot spot, PieceType type, PieceColor color )
     {
-        return spot != null
-               && spot.getPiece() != null
-               && spot.getPiece().getType() == type
-               && spot.getPiece().getColor() == color;
+        return spot != null && spot.hasPieceType( type ) && spot.hasPieceColor( color );
     }
 }

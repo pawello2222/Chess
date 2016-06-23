@@ -13,12 +13,29 @@ import java.net.URL;
  */
 public abstract class ResourceLoader
 {
-    public static Image loadResource( String resourceName ) throws InvalidResourceException
+    public static Image loadImage( String imageName ) throws InvalidResourceException
     {
-        URL bgImageURL = ResourceLoader.class.getClassLoader().getResource( resourceName );
+        URL bgImageURL = ResourceLoader.class.getClassLoader().getResource( imageName );
         if ( bgImageURL == null )
-            throw new InvalidResourceException( resourceName );
+            throw new InvalidResourceException( imageName );
 
         return new ImageIcon( bgImageURL ).getImage();
+    }
+
+    public static Image loadImageExitOnEx( String imageName )
+    {
+        Image image = null;
+
+        try
+        {
+            image = ResourceLoader.loadImage( imageName );
+        }
+        catch ( InvalidResourceException e )
+        {
+            System.out.println( e.getMessage() );
+            System.exit( -1 );
+        }
+
+        return image;
     }
 }

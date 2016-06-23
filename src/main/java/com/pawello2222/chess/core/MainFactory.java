@@ -1,6 +1,5 @@
 package com.pawello2222.chess.core;
 
-import com.pawello2222.chess.exception.InvalidResourceException;
 import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.PieceColor;
 import com.pawello2222.chess.model.PieceType;
@@ -16,11 +15,11 @@ import java.util.List;
  *
  * @author Pawel Wiszenko
  */
-class MainFactory
+abstract class MainFactory
 {
     static Board getBoard( boolean reversed )
     {
-        Image image = ResourceLoader.loadResource( "BOARD.png" );
+        Image image = ResourceLoader.loadImageExitOnEx( "BOARD.png" );
         Spot[][] spots = initializeSpots( reversed );
         List< Piece > pieces = initializePieces( spots );
         Board board =  new Board( image, spots, pieces );
@@ -68,7 +67,7 @@ class MainFactory
         return spots;
     }
 
-    private static List< Piece > initializePieces( Spot[][] spots ) throws InvalidResourceException
+    private static List< Piece > initializePieces( Spot[][] spots )
     {
         List< Piece > pieces = new ArrayList<>();
 
@@ -95,9 +94,8 @@ class MainFactory
     }
 
     private static Piece createPiece( Spot[][] spots, int row, int column, PieceColor color, PieceType type )
-            throws InvalidResourceException
     {
-        Image pieceImage = ResourceLoader.loadResource( color + "_" + type + ".png" );
+        Image pieceImage = ResourceLoader.loadImageExitOnEx( color + "_" + type + ".png" );
         Piece piece = new Piece( pieceImage, color, type, color == PieceColor.WHITE );
         spots[ column ][ row ].setPiece( piece );
         piece.setCoordinatesToSpot( spots[ column ][ row ] );

@@ -125,7 +125,7 @@ public class Game extends JFrame implements EndOfGameListener
     public void endOfGame()
     {
         int result = getEndGameDialogResult();
-        if ( result > 0 )
+        if ( result >= 0 )
             actionListeners[ result ].actionPerformed( null );
     }
 

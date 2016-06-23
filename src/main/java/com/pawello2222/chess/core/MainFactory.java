@@ -1,5 +1,6 @@
 package com.pawello2222.chess.core;
 
+import com.pawello2222.chess.exception.InvalidResourceException;
 import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.PieceColor;
 import com.pawello2222.chess.model.PieceType;
@@ -11,37 +12,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Board factory.
+ * Main factory.
  *
  * @author Pawel Wiszenko
  */
-public class BoardFactory
+class MainFactory
 {
-    public static Board getBoard( boolean reversed )
+    static Board getBoard( boolean reversed )
     {
         Image image = ResourceLoader.loadResource( "BOARD.png" );
         Spot[][] spots = initializeSpots( reversed );
         List< Piece > pieces = initializePieces( spots );
         Board board =  new Board( image, spots, pieces );
-        MoveValidator moveValidator = getMoveValidator( spots );
-        BoardHandler boardHandler = getBoardHandler( board, moveValidator, spots, pieces );
-        MoveListener moveListener = getMoveListener( boardHandler, spots );
+        IMoveValidator moveValidator = getMoveValidator( spots );
+        BoardHandlerBase boardHandler = getBoardHandler( board, moveValidator, spots, pieces );
+        MoveListenerBase moveListener = getMoveListener( boardHandler, spots );
         board.setMoveListener( moveListener );
 
         return board;
     }
 
-    private static MoveValidator getMoveValidator( Spot[][] spots )
+    private static IMoveValidator getMoveValidator( Spot[][] spots )
     {
         return new MoveValidator( spots );
     }
 
-    private static MoveListener getMoveListener( BoardHandler boardHandler, Spot[][] spots )
+    private static MoveListenerBase getMoveListener( BoardHandlerBase boardHandler, Spot[][] spots )
     {
         return new MoveListener( boardHandler, spots );
     }
 
-    private static BoardHandler getBoardHandler( Board board, IMoveValidator moveValidator, Spot[][] spots, List< Piece > pieces )
+    private static BoardHandlerBase getBoardHandler( Board board, IMoveValidator moveValidator,
+                                                     Spot[][] spots, List< Piece > pieces )
     {
         return new BoardHandler( board, moveValidator, spots, pieces );
     }

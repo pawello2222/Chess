@@ -17,7 +17,7 @@ public class Board extends JPanel
     static final int BOARD_OFFSET_X = 10;
     static final int BOARD_OFFSET_Y = 10;
 
-    private GameObserver observer;
+    private List< GameEndListener > gameEndListeners;
 
     private Image bgImage;
     private Spot[][] spots;
@@ -26,6 +26,8 @@ public class Board extends JPanel
 
     Board( Image bgImage, Spot[][] spots, List< Piece > pieces )
     {
+        this.gameEndListeners = new ArrayList<>();
+
         this.bgImage = bgImage;
         this.spots = spots;
         this.pieces = pieces;
@@ -66,7 +68,18 @@ public class Board extends JPanel
 
     void endGame()
     {
-        observer.endGame();
+        gameEndListeners.forEach( GameEndListener::endGame );
+    }
+
+    void addGameEndListener( GameEndListener listener )
+    {
+        gameEndListeners.add( listener );
+    }
+
+    void setMoveListener( MoveListenerBase moveListener )
+    {
+        addMouseListener( moveListener );
+        addMouseMotionListener( moveListener );
     }
 
     GameState getGameState()
@@ -77,16 +90,5 @@ public class Board extends JPanel
     void setGameState( GameState gameState )
     {
         this.gameState = gameState;
-    }
-
-    public void setObserver( GameObserver observer )
-    {
-        this.observer = observer;
-    }
-
-    public void setMoveListener( MoveListener moveListener )
-    {
-        this.addMouseListener( moveListener );
-        this.addMouseMotionListener( moveListener );
     }
 }

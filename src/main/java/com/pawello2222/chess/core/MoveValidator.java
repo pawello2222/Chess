@@ -7,14 +7,14 @@ import com.pawello2222.chess.model.*;
  *
  * @author Pawel Wiszenko
  */
-public class MoveValidator implements IMoveValidator
+class MoveValidator implements IMoveValidator
 {
     private Spot[][] spots;
 
     private Spot sourceSpot;
     private Piece sourcePiece;
 
-    public MoveValidator( Spot[][] spots )
+    MoveValidator( Spot[][] spots )
     {
         this.spots = spots;
     }

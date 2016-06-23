@@ -7,7 +7,7 @@ import com.pawello2222.chess.model.Spot;
  *
  * @author Pawel Wiszenko
  */
-public interface IMoveHandler
+interface IMoveHandler
 {
     void updatePossibleMoves( Spot spot );
 

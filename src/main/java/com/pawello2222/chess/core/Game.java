@@ -1,5 +1,6 @@
 package com.pawello2222.chess.core;
 
+import com.pawello2222.chess.exception.InvalidResourceException;
 import com.pawello2222.chess.model.GameState;
 import com.pawello2222.chess.utils.ResourceLoader;
 
@@ -12,7 +13,7 @@ import java.awt.event.ActionListener;
  *
  * @author Pawel Wiszenko
  */
-public class Game extends JFrame implements GameObserver
+public class Game extends JFrame implements GameEndListener
 {
     private Board board;
 
@@ -82,8 +83,8 @@ public class Game extends JFrame implements GameObserver
         if ( board != null )
             this.remove( board );
 
-        board = BoardFactory.getBoard( reversed );
-        board.setObserver( this );
+        board = MainFactory.getBoard( reversed );
+        board.addGameEndListener( this );
         this.add( board );
         this.pack();
     }

@@ -3,11 +3,11 @@ package com.pawello2222.chess.core;
 import com.pawello2222.chess.model.Spot;
 
 /**
- * Piece move validator interface.
+ * Move validator interface.
  *
  * @author Pawel Wiszenko
  */
-public interface IMoveValidator
+interface IMoveValidator
 {
     void updateValidMoveFlags( Spot spot );
 

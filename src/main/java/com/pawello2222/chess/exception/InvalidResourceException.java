@@ -1,4 +1,4 @@
-package com.pawello2222.chess.core;
+package com.pawello2222.chess.exception;
 
 /**
  * Invalid resource exception class.

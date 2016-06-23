@@ -1,10 +1,10 @@
 package com.pawello2222.chess.core;
 
+import com.pawello2222.chess.exception.InvalidResourceException;
 import com.pawello2222.chess.model.*;
 import com.pawello2222.chess.utils.ResourceLoader;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.List;
 
 /**
@@ -12,14 +12,14 @@ import java.util.List;
  *
  * @author Pawel Wiszenko
  */
-public class BoardHandler implements IMoveHandler, IGraphicsHandler
+class BoardHandler extends BoardHandlerBase
 {
     private Board board;
     private IMoveValidator moveValidator;
     private Spot[][] spots;
     private List< Piece > pieces;
 
-    public BoardHandler( Board board, IMoveValidator moveValidator, Spot[][] spots, List< Piece > pieces )
+    BoardHandler( Board board, IMoveValidator moveValidator, Spot[][] spots, List< Piece > pieces )
     {
         this.board = board;
         this.moveValidator = moveValidator;
@@ -34,7 +34,7 @@ public class BoardHandler implements IMoveHandler, IGraphicsHandler
     }
 
     @Override
-    public void setFocusOnPiece( Piece piece )
+    public void setFocusOn( Piece piece )
     {
         pieces.remove( piece );
         pieces.add( piece );
@@ -92,8 +92,16 @@ public class BoardHandler implements IMoveHandler, IGraphicsHandler
             chosenType = getPromotionDialogResult();
         while ( chosenType == null );
 
-        Image pieceImage = ResourceLoader.loadResource( piece.getColor() + "_" + chosenType.toUpperCase() + ".png" );
-        piece.setImage( pieceImage );
+        try
+        {
+            piece.setImage( ResourceLoader.loadResource( piece.getColor() + "_" + chosenType.toUpperCase() + ".png" ) );
+        }
+        catch ( InvalidResourceException e )
+        {
+            System.out.println( e.getMessage() );
+            System.exit( -1 );
+        }
+
         piece.setType( PieceType.valueOf( chosenType.toUpperCase() ) );
     }
 
@@ -111,7 +119,7 @@ public class BoardHandler implements IMoveHandler, IGraphicsHandler
                 possibilities[ 3 ] );
     }
 
-    public void nextTurn()
+    private void nextTurn()
     {
         for ( Piece piece : pieces )
             piece.setActive( !piece.isActive() );

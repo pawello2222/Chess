@@ -1,7 +1,7 @@
 package com.pawello2222.chess.utils;
 
 import com.pawello2222.chess.core.Board;
-import com.pawello2222.chess.core.InvalidResourceException;
+import com.pawello2222.chess.exception.InvalidResourceException;
 
 import javax.swing.*;
 import java.awt.*;

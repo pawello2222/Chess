@@ -5,27 +5,23 @@ import com.pawello2222.chess.model.Spot;
 
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 
 /**
- * Piece move listener class.
+ * Move listener class.
  *
  * @author Pawel Wiszenko
  */
-public class MoveListener implements MouseListener, MouseMotionListener
+class MoveListener extends MoveListenerBase
 {
-    private IMoveHandler moveHandler;
-    private IGraphicsHandler graphicsHandler;
+    private BoardHandlerBase boardHandler;
 
     private Spot[][] spots;
     private Spot sourceSpot;
     private Piece dragPiece;
 
-    public MoveListener( BoardHandler boardHandler, Spot[][] spots )
+    MoveListener( BoardHandlerBase boardHandler, Spot[][] spots )
     {
-        this.moveHandler = boardHandler;
-        this.graphicsHandler = boardHandler;
+        this.boardHandler = boardHandler;
         this.spots = spots;
     }
 
@@ -44,7 +40,7 @@ public class MoveListener implements MouseListener, MouseMotionListener
                 {
                     sourceSpot = spot;
                     dragPiece = spot.getPiece();
-                    graphicsHandler.setFocusOnPiece( dragPiece );
+                    boardHandler.setFocusOn( dragPiece );
                 }
                 break;
 
@@ -60,7 +56,7 @@ public class MoveListener implements MouseListener, MouseMotionListener
         {
             dragPiece.setX( e.getPoint().x - dragPiece.getWidth() / 2 );
             dragPiece.setY( e.getPoint().y - dragPiece.getHeight() / 2 );
-            graphicsHandler.updateGraphics();
+            boardHandler.updateGraphics();
         }
     }
 
@@ -73,7 +69,7 @@ public class MoveListener implements MouseListener, MouseMotionListener
             if ( targetSpot == null || !targetSpot.isValidMoveFlag() || targetSpot == sourceSpot )
                 dragPiece.setCoordinatesToSpot( sourceSpot );
             else
-                moveHandler.movePiece( sourceSpot, targetSpot );
+                boardHandler.movePiece( sourceSpot, targetSpot );
 
             sourceSpot = null;
             dragPiece = null;
@@ -83,39 +79,13 @@ public class MoveListener implements MouseListener, MouseMotionListener
     }
 
     @Override
-    public void mouseClicked( MouseEvent e )
-    {
-
-    }
-
-    @Override
-    public void mouseEntered( MouseEvent e )
-    {
-
-    }
-
-    @Override
-    public void mouseExited( MouseEvent e )
-    {
-
-    }
-
-    @Override
     public void mouseMoved( MouseEvent e )
     {
         if( dragPiece == null )
         {
-            moveHandler.updatePossibleMoves( getSpotFromXY( e.getPoint().x, e.getPoint().y ) );
-            graphicsHandler.updateGraphics();
+            boardHandler.updatePossibleMoves( getSpotFromXY( e.getPoint().x, e.getPoint().y ) );
+            boardHandler.updateGraphics();
         }
-    }
-
-    private boolean isMouseOverSpot( Spot spot, int x, int y )
-    {
-        return spot.getX() <= x
-               && spot.getX() + Spot.SPOT_WIDTH >= x
-               && spot.getY() <= y
-               && spot.getY() + Spot.SPOT_HEIGHT >= y;
     }
 
     private Spot getSpotFromXY( int x, int y )
@@ -126,5 +96,13 @@ public class MoveListener implements MouseListener, MouseMotionListener
                     return spots[ column ][ row ];
 
         return null;
+    }
+
+    private boolean isMouseOverSpot( Spot spot, int x, int y )
+    {
+        return spot.getX() <= x
+               && spot.getX() + Spot.SPOT_WIDTH >= x
+               && spot.getY() <= y
+               && spot.getY() + Spot.SPOT_HEIGHT >= y;
     }
 }

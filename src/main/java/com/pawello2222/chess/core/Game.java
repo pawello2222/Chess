@@ -84,14 +84,10 @@ public class Game extends JFrame implements EndOfGameListener
     private int getEndGameDialogResult()
     {
         Object[] options = { "Yes (White)", "Yes (Black)", "No" };
-        String title = null, message = null;
+        String title = "Stalemate";
+        String message = "It's a draw.";
 
-        if ( board.isGameState( GameState.STALEMATE ) )
-        {
-            title = "Stalemate";
-            message = "It's a draw.";
-        }
-        else if ( board.isGameState( GameState.CHECKMATE_WIN_WHITE ) )
+        if ( board.isGameState( GameState.CHECKMATE_WIN_WHITE ) )
         {
             title = "Checkmate";
             message = "White player wins!";

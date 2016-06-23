@@ -37,7 +37,7 @@ class MoveValidatorImpl implements MoveValidator
     {
         int count = 0;
 
-        if ( spot == null || spot.getPiece() == null || !spot.getPiece().isActive() )
+        if ( spot == null || spot.isEmpty() || !spot.getPiece().isActive() )
             return 0;
 
         updateValidMoveFlags( spot );
@@ -55,7 +55,7 @@ class MoveValidatorImpl implements MoveValidator
     {
         clearFlagsByType( FlagType.VALID_MOVE );
 
-        if ( spot == null || spot.getPiece() == null || !spot.getPiece().isActive() )
+        if ( spot == null || spot.isEmpty() || !spot.getPiece().isActive() )
             return;
 
         sourceSpot = spot;
@@ -105,7 +105,7 @@ class MoveValidatorImpl implements MoveValidator
         nextSpot = getNextSpot( spot, Direction.N, sourcePiece.getColor() );
         updateValidMoveFlag( nextSpot, true, false );
 
-        if ( nextSpot != null && nextSpot.getPiece() == null && sourcePiece.isUnmoved() )
+        if ( nextSpot != null && nextSpot.isEmpty() && sourcePiece.isUnmoved() )
         {
             nextSpot = getNextSpot( nextSpot, Direction.N, sourcePiece.getColor() );
             updateValidMoveFlag( nextSpot, true, false );
@@ -133,7 +133,7 @@ class MoveValidatorImpl implements MoveValidator
             nextSpot = getNextSpot( spot, Direction.values()[ i ], sourcePiece.getColor() );
 
             while( nextSpot != null
-                   && ( nextSpot.getPiece() == null || nextSpot.getPiece().getColor() != sourcePiece.getColor() ) )
+                   && ( nextSpot.isEmpty() || nextSpot.getPiece().getColor() != sourcePiece.getColor() ) )
             {
                 updateValidMoveFlag( nextSpot, true, true );
 
@@ -228,7 +228,7 @@ class MoveValidatorImpl implements MoveValidator
         sourceSpot.setPiece( sourcePiece );
 
         boolean validFree = false;
-        if ( spot.getPiece() == null )
+        if ( spot.isEmpty() )
             validFree = true;
 
         boolean validOpponent = false;
@@ -342,7 +342,7 @@ class MoveValidatorImpl implements MoveValidator
             if ( i <= 3 && isPieceAtSpot( tmpSpot, PieceType.KNIGHT, getOppositePieceColor( pieceColor ) ) )
                 return true;
 
-            while( nextSpot != null && ( nextSpot.getPiece() == null || nextSpot.getPiece().getColor() != pieceColor ) )
+            while( nextSpot != null && ( nextSpot.isEmpty() || nextSpot.getPiece().getColor() != pieceColor ) )
             {
                 if ( nextSpot.getPiece() != null && nextSpot.getPiece().getColor() != pieceColor )
                 {

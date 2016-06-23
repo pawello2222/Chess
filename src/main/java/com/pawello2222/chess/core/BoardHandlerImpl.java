@@ -65,7 +65,7 @@ class BoardHandlerImpl extends BoardHandlerBase
             pieces.remove( spots[ targetSpot.getColumn() ][ sourceSpot.getRow() ].getPiece() );
             spots[ targetSpot.getColumn() ][ sourceSpot.getRow() ].setPiece( null );
         }
-        else if ( targetSpot.isSpecialMoveFlag() && targetSpot.getPiece() == null )
+        else if ( targetSpot.isSpecialMoveFlag() && targetSpot.isEmpty() )
         {
             Spot source = spots[ targetSpot.getColumn() == 2 ? 0 : 7 ][ targetSpot.getRow() ];
             Spot target = spots[ targetSpot.getColumn() == 2 ? 3 : 5 ][ targetSpot.getRow() ];

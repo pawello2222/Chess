@@ -149,6 +149,6 @@ public class Spot
 
     public boolean hasPieceType( PieceType pieceType )
     {
-        return this.piece != null && this.piece.getType() == pieceType;
+        return !isEmpty() && this.piece.getType() == pieceType;
     }
 }

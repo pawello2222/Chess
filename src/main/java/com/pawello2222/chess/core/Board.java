@@ -17,21 +17,21 @@ public class Board extends JPanel
     static final int BOARD_OFFSET_X = 10;
     static final int BOARD_OFFSET_Y = 10;
 
-    private List< GameEndListener > gameEndListeners;
+    private List< EndOfGameListener > endOfGameListeners;
+    private GameState gameState;
 
     private Image bgImage;
     private Spot[][] spots;
     private List< Piece > pieces = new ArrayList<>();
-    private GameState gameState;
 
     Board( Image bgImage, Spot[][] spots, List< Piece > pieces )
     {
-        this.gameEndListeners = new ArrayList<>();
+        endOfGameListeners = new ArrayList<>();
+        gameState = GameState.RUNNING_WHITE;
 
         this.bgImage = bgImage;
         this.spots = spots;
         this.pieces = pieces;
-        this.gameState = GameState.RUNNING_WHITE;
 
         setPreferredSize( new Dimension( bgImage.getWidth( this ),
                                          bgImage.getHeight( this ) ) );
@@ -66,14 +66,14 @@ public class Board extends JPanel
                                 Spot.SPOT_WIDTH - 2 * offset, Spot.SPOT_HEIGHT - 2 * offset, 10, 10 );
     }
 
-    void endGame()
+    void endOfGame()
     {
-        gameEndListeners.forEach( GameEndListener::endGame );
+        endOfGameListeners.forEach( EndOfGameListener::endOfGame );
     }
 
-    void addGameEndListener( GameEndListener listener )
+    void addGameEndListener( EndOfGameListener listener )
     {
-        gameEndListeners.add( listener );
+        endOfGameListeners.add( listener );
     }
 
     void setMoveListener( MoveListenerBase moveListener )
@@ -82,9 +82,9 @@ public class Board extends JPanel
         addMouseMotionListener( moveListener );
     }
 
-    GameState getGameState()
+    boolean isGameState( GameState gameState )
     {
-        return gameState;
+        return this.gameState == gameState;
     }
 
     void setGameState( GameState gameState )

@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.util.List;
 
 /**
- * Board handler.
+ * Board handler class implementation.
  *
  * @author Pawel Wiszenko
  */
@@ -132,22 +132,22 @@ class BoardHandlerImpl extends BoardHandlerBase
 
     private void switchGameState()
     {
-        if ( board.getGameState() == GameState.RUNNING_WHITE )
+        if ( board.isGameState( GameState.RUNNING_WHITE ) )
             board.setGameState( GameState.RUNNING_BLACK );
-        else if ( board.getGameState() == GameState.RUNNING_BLACK )
+        else if ( board.isGameState( GameState.RUNNING_BLACK ) )
             board.setGameState( GameState.RUNNING_WHITE );
     }
 
     private void endGame()
     {
-        if ( board.getGameState() == GameState.RUNNING_WHITE )
+        if ( board.isGameState( GameState.RUNNING_WHITE ) )
             board.setGameState( GameState.CHECKMATE_WIN_WHITE );
-        else if ( board.getGameState() == GameState.RUNNING_BLACK )
+        else if ( board.isGameState( GameState.RUNNING_BLACK ) )
             board.setGameState( GameState.CHECKMATE_WIN_BLACK );
 
         for ( Piece piece : pieces )
             piece.setActive( false );
 
-        board.endGame();
+        board.endOfGame();
     }
 }

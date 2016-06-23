@@ -13,7 +13,7 @@ import java.awt.event.ActionListener;
  *
  * @author Pawel Wiszenko
  */
-public class Game extends JFrame implements GameEndListener
+public class Game extends JFrame implements EndOfGameListener
 {
     private Board board;
 
@@ -92,14 +92,19 @@ public class Game extends JFrame implements GameEndListener
     private int getEndGameDialogResult()
     {
         Object[] options = { "Yes (White)", "Yes (Black)", "No" };
-        String title = "Stalemate";
-        String message = "It's a draw.";
-        if ( board.getGameState() == GameState.CHECKMATE_WIN_WHITE )
+        String title = null, message = null;
+
+        if ( board.isGameState( GameState.STALEMATE ) )
+        {
+            title = "Stalemate";
+            message = "It's a draw.";
+        }
+        else if ( board.isGameState( GameState.CHECKMATE_WIN_WHITE ) )
         {
             title = "Checkmate";
             message = "White player wins!";
         }
-        else if ( board.getGameState() == GameState.CHECKMATE_WIN_BLACK )
+        else if ( board.isGameState( GameState.CHECKMATE_WIN_BLACK ) )
         {
             title = "Checkmate";
             message = "Black player wins!";
@@ -117,7 +122,7 @@ public class Game extends JFrame implements GameEndListener
     }
 
     @Override
-    public void endGame()
+    public void endOfGame()
     {
         int result = getEndGameDialogResult();
         if ( result > 0 )

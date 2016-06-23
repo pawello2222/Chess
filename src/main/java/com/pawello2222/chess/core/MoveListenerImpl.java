@@ -7,7 +7,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
 /**
- * Move listener class.
+ * Move listener class implementation.
  *
  * @author Pawel Wiszenko
  */

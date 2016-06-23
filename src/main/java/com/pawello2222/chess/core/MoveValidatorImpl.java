@@ -3,7 +3,7 @@ package com.pawello2222.chess.core;
 import com.pawello2222.chess.model.*;
 
 /**
- * Piece move validator class.
+ *  Move validator class implementation.
  *
  * @author Pawel Wiszenko
  */

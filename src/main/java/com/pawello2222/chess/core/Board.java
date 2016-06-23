@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Pawel Wiszenko
  */
-public class Board extends JPanel
+class Board extends JPanel
 {
     static final int BOARD_OFFSET_X = 10;
     static final int BOARD_OFFSET_Y = 10;

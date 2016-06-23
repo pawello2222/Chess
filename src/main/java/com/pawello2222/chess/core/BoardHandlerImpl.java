@@ -83,8 +83,8 @@ class BoardHandlerImpl extends BoardHandlerBase
 
         updateGraphics();
 
-        int promotionRow = sourcePiece.getColor() == PieceColor.WHITE ? 0 : 7;
-        if ( sourcePiece.getType() == PieceType.PAWN && targetSpot.getRow() == promotionRow )
+        int promotionRow = targetSpot.hasPieceColor( PieceColor.WHITE ) ? 0 : 7;
+        if ( targetSpot.hasPieceType( PieceType.PAWN ) && targetSpot.getRow() == promotionRow )
             promotePawn( targetSpot.getPiece() );
 
         updateGraphics();

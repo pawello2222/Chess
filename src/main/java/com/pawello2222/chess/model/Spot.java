@@ -134,14 +134,6 @@ public class Spot
         return this.piece == null;
     }
 
-    public PieceType getPieceType()
-    {
-        if ( this.piece == null )
-            return null;
-
-        return this.piece.getType();
-    }
-
     public boolean hasPieceColor( PieceColor pieceColor )
     {
         return this.piece != null && this.piece.getColor() == pieceColor;

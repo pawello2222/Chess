@@ -2,6 +2,8 @@ package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.*;
 
+// TODO: refactoring: class is too large
+
 /**
  *  Move validator class implementation.
  *

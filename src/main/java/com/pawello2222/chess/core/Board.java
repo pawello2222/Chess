@@ -1,7 +1,6 @@
 package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.*;
-import com.pawello2222.chess.service.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,38 +17,22 @@ public class Board extends JPanel
     static final int BOARD_OFFSET_X = 10;
     static final int BOARD_OFFSET_Y = 10;
 
+    private GameObserver observer;
+
     private Image bgImage;
-
-    private List< GameObserver > observers = new ArrayList<>();
-
-    private IBoardManager boardManager;
-
     private Spot[][] spots;
     private List< Piece > pieces = new ArrayList<>();
-
     private GameState gameState;
 
-    Board( boolean reversed )
+    Board( Image bgImage, Spot[][] spots, List< Piece > pieces )
     {
+        this.bgImage = bgImage;
+        this.spots = spots;
+        this.pieces = pieces;
         this.gameState = GameState.RUNNING_WHITE;
 
-        BoardCreator boardCreator = new BoardCreator( this );
-
-        try
-        {
-            boardCreator.initializeBoard( "BOARD.png", reversed );
-        }
-        catch ( InvalidResourceException e )
-        {
-            System.out.println( e.getMessage() );
-            System.exit( -1 );
-        }
-
-        boardManager = new BoardManager( this );
-
-        MoveListener moveListener = new MoveListener( this );
-        this.addMouseListener( moveListener );
-        this.addMouseMotionListener( moveListener );
+        setPreferredSize( new Dimension( bgImage.getWidth( this ),
+                                         bgImage.getHeight( this ) ) );
     }
 
     @Override
@@ -81,56 +64,9 @@ public class Board extends JPanel
                                 Spot.SPOT_WIDTH - 2 * offset, Spot.SPOT_HEIGHT - 2 * offset, 10, 10 );
     }
 
-    void addListener( GameObserver newListener )
-    {
-        observers.add( newListener );
-    }
-
     void endGame()
     {
-        observers.forEach( GameObserver::endGame );
-    }
-
-    public void movePiece( Spot sourceSpot, Spot targetSpot )
-    {
-        boardManager.movePiece( sourceSpot, targetSpot );
-        boardManager.nextTurn();
-    }
-
-    public void setFocusOnPiece( Piece piece )
-    {
-        pieces.remove( piece );
-        pieces.add( piece );
-    }
-
-    public void updateMoves( Spot spot )
-    {
-        boardManager.updatePossibleMoves( spot );
-    }
-
-    void setBgImage( Image bgImage )
-    {
-        this.bgImage = bgImage;
-    }
-
-    public Spot[][] getSpots()
-    {
-        return spots;
-    }
-
-    void setSpots( Spot[][] spots )
-    {
-        this.spots = spots;
-    }
-
-    List< Piece > getPieces()
-    {
-        return pieces;
-    }
-
-    void setPieces( List< Piece > pieces )
-    {
-        this.pieces = pieces;
+        observer.endGame();
     }
 
     GameState getGameState()
@@ -141,5 +77,16 @@ public class Board extends JPanel
     void setGameState( GameState gameState )
     {
         this.gameState = gameState;
+    }
+
+    public void setObserver( GameObserver observer )
+    {
+        this.observer = observer;
+    }
+
+    public void setMoveListener( MoveListener moveListener )
+    {
+        this.addMouseListener( moveListener );
+        this.addMouseMotionListener( moveListener );
     }
 }

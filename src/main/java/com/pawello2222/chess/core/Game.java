@@ -1,6 +1,7 @@
 package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.GameState;
+import com.pawello2222.chess.utils.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +23,7 @@ public class Game extends JFrame implements GameObserver
         this.setTitle( "Chess" );
         try
         {
-            this.setIconImage( IBoardCreator.loadResource( "ICON.png" ) );
+            this.setIconImage( ResourceLoader.loadResource( "ICON.png" ) );
         }
         catch ( InvalidResourceException e )
         {
@@ -81,8 +82,8 @@ public class Game extends JFrame implements GameObserver
         if ( board != null )
             this.remove( board );
 
-        board = new Board( reversed );
-        board.addListener( this );
+        board = BoardFactory.getBoard( reversed );
+        board.setObserver( this );
         this.add( board );
         this.pack();
     }

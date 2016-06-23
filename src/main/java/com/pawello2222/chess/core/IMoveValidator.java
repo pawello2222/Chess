@@ -1,4 +1,4 @@
-package com.pawello2222.chess.service;
+package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.Spot;
 

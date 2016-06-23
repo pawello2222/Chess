@@ -5,11 +5,11 @@ package com.pawello2222.chess.core;
  *
  * @author Pawel Wiszenko
  */
-class InvalidResourceException extends RuntimeException
+public class InvalidResourceException extends RuntimeException
 {
     private String resource;
 
-    InvalidResourceException( String resource )
+    public InvalidResourceException( String resource )
     {
         this.resource = resource;
     }

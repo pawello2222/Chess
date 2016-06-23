@@ -1,30 +1,43 @@
 package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.*;
-import com.pawello2222.chess.service.IMoveValidator;
-import com.pawello2222.chess.service.MoveValidator;
+import com.pawello2222.chess.utils.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 /**
- * Board manager class.
+ * Board handler.
  *
  * @author Pawel Wiszenko
  */
-class BoardManager implements IBoardManager
+public class BoardHandler implements IMoveHandler, IGraphicsHandler
 {
     private Board board;
     private IMoveValidator moveValidator;
-
     private Spot[][] spots;
+    private List< Piece > pieces;
 
-    BoardManager( Board board )
+    public BoardHandler( Board board, IMoveValidator moveValidator, Spot[][] spots, List< Piece > pieces )
     {
         this.board = board;
-        this.spots = board.getSpots();
+        this.moveValidator = moveValidator;
+        this.spots = spots;
+        this.pieces = pieces;
+    }
 
-        moveValidator = new MoveValidator( spots );
+    @Override
+    public void updateGraphics()
+    {
+        board.repaint();
+    }
+
+    @Override
+    public void setFocusOnPiece( Piece piece )
+    {
+        pieces.remove( piece );
+        pieces.add( piece );
     }
 
     @Override
@@ -43,7 +56,7 @@ class BoardManager implements IBoardManager
 
         if ( targetSpot.isEnPassantFlag() )
         {
-            board.getPieces().remove( spots[ targetSpot.getColumn() ][ sourceSpot.getRow() ].getPiece() );
+            pieces.remove( spots[ targetSpot.getColumn() ][ sourceSpot.getRow() ].getPiece() );
             spots[ targetSpot.getColumn() ][ sourceSpot.getRow() ].setPiece( null );
         }
         else if ( targetSpot.isSpecialMoveFlag() && targetSpot.getPiece() == null )
@@ -56,25 +69,51 @@ class BoardManager implements IBoardManager
             source.setPiece( null );
         }
         else if ( targetSpot.getPiece() != null )
-            board.getPieces().remove( targetSpot.getPiece() );
+            pieces.remove( targetSpot.getPiece() );
 
         targetSpot.setPiece( sourcePiece );
         targetSpot.getPiece().setCoordinatesToSpot( targetSpot );
         sourceSpot.setPiece( null );
 
-        board.repaint();
+        updateGraphics();
 
         int promotionRow = sourcePiece.getColor() == PieceColor.WHITE ? 0 : 7;
         if ( sourcePiece.getType() == PieceType.PAWN && targetSpot.getRow() == promotionRow )
             promotePawn( targetSpot.getPiece() );
 
         moveValidator.updateFlagsAfterMove( sourceSpot, targetSpot );
+        nextTurn();
     }
 
-    @Override
+    private void promotePawn( Piece piece )
+    {
+        String chosenType;
+        do
+            chosenType = getPromotionDialogResult();
+        while ( chosenType == null );
+
+        Image pieceImage = ResourceLoader.loadResource( piece.getColor() + "_" + chosenType.toUpperCase() + ".png" );
+        piece.setImage( pieceImage );
+        piece.setType( PieceType.valueOf( chosenType.toUpperCase() ) );
+    }
+
+    private String getPromotionDialogResult()
+    {
+        Object[] possibilities = { "Knight", "Bishop", "Rook", "Queen" };
+
+        return ( String ) JOptionPane.showInputDialog(
+                board.getParent(),
+                "Choose promotion",
+                "Promotion",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                possibilities,
+                possibilities[ 3 ] );
+    }
+
     public void nextTurn()
     {
-        for ( Piece piece : board.getPieces() )
+        for ( Piece piece : pieces )
             piece.setActive( !piece.isActive() );
 
         if ( moveValidator.getPossibleMovesCount() > 0 )
@@ -98,35 +137,9 @@ class BoardManager implements IBoardManager
         else if ( board.getGameState() == GameState.RUNNING_BLACK )
             board.setGameState( GameState.CHECKMATE_WIN_BLACK );
 
-        for ( Piece piece : board.getPieces() )
+        for ( Piece piece : pieces )
             piece.setActive( false );
 
         board.endGame();
-    }
-
-    private void promotePawn( Piece piece )
-    {
-        String chosenType;
-        do
-            chosenType = getPromotionDialogResult();
-        while ( chosenType == null );
-
-        Image pieceImage = IBoardCreator.loadResource( piece.getColor() + "_" + chosenType.toUpperCase() + ".png" );
-        piece.setImage( pieceImage );
-        piece.setType( PieceType.valueOf( chosenType.toUpperCase() ) );
-    }
-
-    private String getPromotionDialogResult()
-    {
-        Object[] possibilities = { "Knight", "Bishop", "Rook", "Queen" };
-
-        return ( String ) JOptionPane.showInputDialog(
-                board.getParent(),
-                "Choose promotion",
-                "Promotion",
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                possibilities,
-                possibilities[ 3 ] );
     }
 }

@@ -4,43 +4,49 @@ import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.PieceColor;
 import com.pawello2222.chess.model.PieceType;
 import com.pawello2222.chess.model.Spot;
+import com.pawello2222.chess.utils.ResourceLoader;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Board creator.
- *
- * Helper class to initialize and populate board.
+ * Board factory.
  *
  * @author Pawel Wiszenko
  */
-class BoardCreator implements IBoardCreator
+public class BoardFactory
 {
-    private Board board;
-
-    BoardCreator( Board board )
+    public static Board getBoard( boolean reversed )
     {
-        this.board = board;
-    }
-
-    @Override
-    public void initializeBoard( String bgImageName, boolean reversed ) throws InvalidResourceException
-    {
-        Image bgImage = IBoardCreator.loadResource( bgImageName );
-        board.setBgImage( bgImage );
-        board.setPreferredSize( new Dimension( bgImage.getWidth( board ),
-                                              bgImage.getHeight( board ) ) );
-
+        Image image = ResourceLoader.loadResource( "BOARD.png" );
         Spot[][] spots = initializeSpots( reversed );
-        board.setSpots( spots );
-
         List< Piece > pieces = initializePieces( spots );
-        board.setPieces( pieces );
+        Board board =  new Board( image, spots, pieces );
+        MoveValidator moveValidator = getMoveValidator( spots );
+        BoardHandler boardHandler = getBoardHandler( board, moveValidator, spots, pieces );
+        MoveListener moveListener = getMoveListener( boardHandler, spots );
+        board.setMoveListener( moveListener );
+
+        return board;
     }
 
-    private Spot[][] initializeSpots( boolean reversed )
+    private static MoveValidator getMoveValidator( Spot[][] spots )
+    {
+        return new MoveValidator( spots );
+    }
+
+    private static MoveListener getMoveListener( BoardHandler boardHandler, Spot[][] spots )
+    {
+        return new MoveListener( boardHandler, spots );
+    }
+
+    private static BoardHandler getBoardHandler( Board board, IMoveValidator moveValidator, Spot[][] spots, List< Piece > pieces )
+    {
+        return new BoardHandler( board, moveValidator, spots, pieces );
+    }
+
+    private static Spot[][] initializeSpots( boolean reversed )
     {
         Spot[][] spots = new Spot[ 8 ][ 8 ];
 
@@ -60,7 +66,7 @@ class BoardCreator implements IBoardCreator
         return spots;
     }
 
-    private List< Piece > initializePieces( Spot[][] spots ) throws InvalidResourceException
+    private static List< Piece > initializePieces( Spot[][] spots ) throws InvalidResourceException
     {
         List< Piece > pieces = new ArrayList<>();
 
@@ -86,10 +92,10 @@ class BoardCreator implements IBoardCreator
         return pieces;
     }
 
-    private Piece createPiece( Spot[][] spots, int row, int column, PieceColor color, PieceType type )
+    private static Piece createPiece( Spot[][] spots, int row, int column, PieceColor color, PieceType type )
             throws InvalidResourceException
     {
-        Image pieceImage = IBoardCreator.loadResource( color + "_" + type + ".png" );
+        Image pieceImage = ResourceLoader.loadResource( color + "_" + type + ".png" );
         Piece piece = new Piece( pieceImage, color, type, color == PieceColor.WHITE );
         spots[ column ][ row ].setPiece( piece );
         piece.setCoordinatesToSpot( spots[ column ][ row ] );

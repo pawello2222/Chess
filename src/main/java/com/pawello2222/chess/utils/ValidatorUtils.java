@@ -119,13 +119,10 @@ public abstract class ValidatorUtils
 
     public static Spot getKingSpot( Spot[][] spots, PieceColor kingColor )
     {
-        for ( int column = 0; column < 8; column++ )
-            for ( int row = 0; row < 8; row++ )
-                if( !spots[ column ][ row ].isEmpty()
-                    && spots[ column ][ row ].hasPieceType( PieceType.KING )
-                    && spots[ column ][ row ].hasPieceColor( kingColor ) )
-
-                    return spots[ column ][ row ];
+        for ( Spot[] row: spots )
+            for ( Spot spot : row )
+                if( spot.hasPieceType( PieceType.KING ) && spot.hasPieceColor( kingColor ) )
+                    return spot;
 
         return null;
     }

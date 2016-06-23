@@ -138,7 +138,9 @@ class BoardHandlerImpl extends BoardHandlerBase
 
     private void endOfGame()
     {
-        if ( board.isGameState( GameState.RUNNING_WHITE ) )
+        if ( !moveValidator.isCheckFlagSet() )
+            board.setGameState( GameState.STALEMATE );
+        else if ( board.isGameState( GameState.RUNNING_WHITE ) )
             board.setGameState( GameState.CHECKMATE_WIN_WHITE );
         else if ( board.isGameState( GameState.RUNNING_BLACK ) )
             board.setGameState( GameState.CHECKMATE_WIN_BLACK );

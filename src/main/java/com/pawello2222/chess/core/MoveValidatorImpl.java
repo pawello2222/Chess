@@ -54,6 +54,17 @@ class MoveValidatorImpl implements MoveValidator
     }
 
     @Override
+    public boolean isCheckFlagSet()
+    {
+        for ( int column = 0; column < 8; column++ )
+            for ( int row = 0; row < 8; row++ )
+                if ( spots[ column ][ row ].isCheckFlag() )
+                    return true;
+
+        return false;
+    }
+
+    @Override
     public void updateValidMoveFlags( Spot spot )
     {
         clearFlagsByType( FlagType.VALID_MOVE );

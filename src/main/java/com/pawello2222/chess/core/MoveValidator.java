@@ -11,6 +11,8 @@ interface MoveValidator
 {
     int getPossibleMovesCount();
 
+    boolean isCheckFlagSet();
+
     void updateValidMoveFlags( Spot spot );
 
     void updateFlagsAfterMove( Spot source, Spot target );

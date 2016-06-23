@@ -13,7 +13,7 @@ import java.net.URL;
  */
 public abstract class ResourceLoader
 {
-    public static Image loadImage( String imageName ) throws InvalidResourceException
+    private static Image loadImage( String imageName ) throws InvalidResourceException
     {
         URL bgImageURL = ResourceLoader.class.getClassLoader().getResource( imageName );
         if ( bgImageURL == null )

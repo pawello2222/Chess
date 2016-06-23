@@ -2,7 +2,7 @@ package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.*;
 
-import static com.pawello2222.chess.utils.SpotUtils.*;
+import static com.pawello2222.chess.utils.ValidatorUtils.*;
 
 /**
  *  Move validator class implementation.
@@ -27,41 +27,30 @@ class MoveValidatorImpl implements MoveValidator
     {
         int possibleMoves = 0;
 
-        for ( int column = 0; column < 8; column++ )
-            for ( int row = 0; row < 8; row++ )
+        for ( Spot[] row : spots )
+            for ( Spot spot : row )
             {
-                possibleMoves += countValidMoveFlags( spots[ column ][ row ] );
+                possibleMoves += countValidMoveFlags( spot );
                 clearFlagsByType( FlagType.VALID_MOVE );
             }
         return possibleMoves;
     }
 
-    private int countValidMoveFlags( Spot spot )
+    private int countValidMoveFlags( Spot source )
     {
         int count = 0;
 
-        if ( spot == null || spot.isEmpty() || !spot.getPiece().isActive() )
+        if ( source == null || source.isEmpty() || !source.getPiece().isActive() )
             return 0;
 
-        updateValidMoveFlags( spot );
+        updateValidMoveFlags( source );
 
-        for ( int column = 0; column < 8; column++ )
-            for ( int row = 0; row < 8; row++ )
-                if ( spots[ column ][ row ].isValidMoveFlag() )
+        for ( Spot[] row : spots )
+            for ( Spot spot : row )
+                if ( spot.isValidMoveFlag() )
                     count++;
 
         return count;
-    }
-
-    @Override
-    public boolean isCheckFlagSet()
-    {
-        for ( int column = 0; column < 8; column++ )
-            for ( int row = 0; row < 8; row++ )
-                if ( spots[ column ][ row ].isCheckFlag() )
-                    return true;
-
-        return false;
     }
 
     @Override
@@ -301,28 +290,28 @@ class MoveValidatorImpl implements MoveValidator
 
     private void clearFlagsByType( FlagType flagType )
     {
-        for ( int column = 0; column < 8; column++ )
-            for ( int row = 0; row < 8; row++ )
+        for ( Spot[] row : spots )
+            for ( Spot spot : row )
                 switch( flagType )
                 {
                     case VALID_MOVE:
-                        spots[ column ][ row ].setValidMoveFlag( false );
+                        spot.setValidMoveFlag( false );
                         break;
 
                     case LAST_MOVE:
-                        spots[ column ][ row ].setLastMoveFlag( false );
+                        spot.setLastMoveFlag( false );
                         break;
 
                     case CHECK:
-                        spots[ column ][ row ].setCheckFlag( false );
+                        spot.setCheckFlag( false );
                         break;
 
                     case EN_PASSANT:
-                        spots[ column ][ row ].setEnPassantFlag( false );
+                        spot.setEnPassantFlag( false );
                         break;
 
                     case SPECIAL_MOVE:
-                        spots[ column ][ row ].setSpecialMoveFlag( false );
+                        spot.setSpecialMoveFlag( false );
                         break;
                 }
     }

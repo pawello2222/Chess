@@ -42,17 +42,17 @@ class Board extends JPanel
     {
         graphics.drawImage( bgImage, 0, 0, null );
 
-        for ( int column = 0; column < 8; column++ )
-            for ( int row = 0; row < 8; row++ )
+        for ( Spot[] row : spots )
+            for ( Spot spot : row )
             {
-                if ( spots[ column ][ row ].isValidMoveFlag() )
-                    drawHighlightedRect( graphics, spots[ column ][ row ], Color.GREEN, 4 );
+                if ( spot.isValidMoveFlag() )
+                    drawHighlightedRect( graphics, spot, Color.GREEN, 4 );
 
-                if ( spots[ column ][ row ].isLastMoveFlag() )
-                    drawHighlightedRect( graphics, spots[ column ][ row ], Color.YELLOW, 2 );
+                if ( spot.isLastMoveFlag() )
+                    drawHighlightedRect( graphics, spot, Color.YELLOW, 2 );
 
-                if ( spots[ column ][ row ].isCheckFlag() )
-                    drawHighlightedRect( graphics, spots[ column ][ row ], Color.RED, 6 );
+                if ( spot.isCheckFlag() )
+                    drawHighlightedRect( graphics, spot, Color.RED, 6 );
             }
 
         for ( Piece piece : pieces )

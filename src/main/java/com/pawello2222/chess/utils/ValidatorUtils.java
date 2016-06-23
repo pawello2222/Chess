@@ -6,11 +6,11 @@ import com.pawello2222.chess.model.PieceType;
 import com.pawello2222.chess.model.Spot;
 
 /**
- * Spot and piece utils.
+ * Validator utils.
  *
  * @author Pawel Wiszenko
  */
-public abstract class SpotUtils
+public abstract class ValidatorUtils
 {
     public static boolean isSpotCapturable( Spot[][] spots, Spot spot, PieceColor pieceColor )
     {

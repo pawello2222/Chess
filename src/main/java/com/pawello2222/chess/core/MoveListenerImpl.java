@@ -90,10 +90,10 @@ class MoveListenerImpl extends MoveListenerBase
 
     private Spot getSpotFromXY( int x, int y )
     {
-        for ( int column = 0; column < 8; column++ )
-            for ( int row = 0; row < 8; row++ )
-                if( isMouseOverSpot( spots[ column ][ row ], x, y ) )
-                    return spots[ column ][ row ];
+        for ( Spot[] row : spots )
+            for ( Spot spot : row )
+                if( isMouseOverSpot( spot, x, y ) )
+                    return spot;
 
         return null;
     }

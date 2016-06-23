@@ -1,10 +1,10 @@
 package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.*;
-import com.pawello2222.chess.utils.ResourceLoader;
 
-import javax.swing.*;
 import java.util.List;
+
+import static com.pawello2222.chess.utils.BoardUtils.*;
 
 /**
  * Board handler class implementation.
@@ -48,73 +48,15 @@ class BoardHandlerImpl extends BoardHandlerBase
     @Override
     public void movePiece( Spot sourceSpot, Spot targetSpot )
     {
-        executeMove( sourceSpot, targetSpot );
-        nextTurn();
-    }
-
-    private void executeMove( Spot sourceSpot, Spot targetSpot )
-    {
-        Piece sourcePiece = sourceSpot.getPiece();
-
-        if ( sourcePiece.isUnmoved() )
-            sourcePiece.setUnmoved( false );
-
-        if ( targetSpot.isEnPassantFlag() )
-        {
-            pieces.remove( spots[ targetSpot.getColumn() ][ sourceSpot.getRow() ].getPiece() );
-            spots[ targetSpot.getColumn() ][ sourceSpot.getRow() ].setPiece( null );
-        }
-        else if ( targetSpot.isSpecialMoveFlag() && targetSpot.isEmpty() )
-        {
-            Spot source = spots[ targetSpot.getColumn() == 2 ? 0 : 7 ][ targetSpot.getRow() ];
-            Spot target = spots[ targetSpot.getColumn() == 2 ? 3 : 5 ][ targetSpot.getRow() ];
-
-            target.setPiece( source.getPiece() );
-            target.getPiece().setCoordinatesToSpot( target );
-            source.setPiece( null );
-        }
-        else if ( targetSpot.getPiece() != null )
-            pieces.remove( targetSpot.getPiece() );
-
-        targetSpot.setPiece( sourcePiece );
-        targetSpot.getPiece().setCoordinatesToSpot( targetSpot );
-        sourceSpot.setPiece( null );
-
+        executeMove( spots, pieces, sourceSpot, targetSpot );
         updateGraphics();
 
-        int promotionRow = targetSpot.hasPieceColor( PieceColor.WHITE ) ? 0 : 7;
-        if ( targetSpot.hasPieceType( PieceType.PAWN ) && targetSpot.getRow() == promotionRow )
-            promotePawn( targetSpot.getPiece() );
-
+        checkPawnPromotion( board.getParent(), targetSpot );
         updateGraphics();
 
         moveValidator.updateFlagsAfterMove( sourceSpot, targetSpot );
-    }
 
-    private void promotePawn( Piece piece )
-    {
-        String chosenType;
-        do
-            chosenType = getPromotionDialogResult();
-        while ( chosenType == null );
-
-        piece.setImage( ResourceLoader.loadImageExitOnEx(
-                piece.getColor() + "_" + chosenType.toUpperCase() + ".png" ) );
-        piece.setType( PieceType.valueOf( chosenType.toUpperCase() ) );
-    }
-
-    private String getPromotionDialogResult()
-    {
-        Object[] possibilities = { "Knight", "Bishop", "Rook", "Queen" };
-
-        return ( String ) JOptionPane.showInputDialog(
-                board.getParent(),
-                "Choose promotion",
-                "Promotion",
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                possibilities,
-                possibilities[ 3 ] );
+        nextTurn();
     }
 
     private void nextTurn()
@@ -138,7 +80,7 @@ class BoardHandlerImpl extends BoardHandlerBase
 
     private void endOfGame()
     {
-        if ( !moveValidator.isCheckFlagSet() )
+        if ( !isCheckFlagSet( spots ) )
             board.setGameState( GameState.STALEMATE );
         else if ( board.isGameState( GameState.RUNNING_WHITE ) )
             board.setGameState( GameState.CHECKMATE_WIN_WHITE );

@@ -22,13 +22,18 @@ abstract class MainFactory
         Image image = ResourceLoader.loadImageExitOnEx( "BOARD.png" );
         Spot[][] spots = initializeSpots( reversed );
         List< Piece > pieces = initializePieces( spots );
-        Board board =  new Board( image, spots, pieces );
+        Board board =  getBoard( image, spots, pieces );
         MoveValidator moveValidator = getMoveValidator( spots );
         BoardHandlerBase boardHandler = getBoardHandler( board, moveValidator, spots, pieces );
         MoveListenerBase moveListener = getMoveListener( boardHandler, spots );
         board.setMoveListener( moveListener );
 
         return board;
+    }
+
+    private static Board getBoard( Image image, Spot[][] spots, List< Piece > pieces )
+    {
+        return new Board( image, spots, pieces );
     }
 
     private static MoveValidator getMoveValidator( Spot[][] spots )

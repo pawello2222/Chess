@@ -1,9 +1,12 @@
 package com.pawello2222.chess.core;
 
+import com.pawello2222.chess.exception.ConnectionException;
+import com.pawello2222.chess.exception.SocketCreationException;
 import com.pawello2222.chess.model.*;
 import com.pawello2222.chess.net.NetworkHandlerBase;
 import com.pawello2222.chess.net.NetworkHandlerImpl;
 import com.pawello2222.chess.utils.ResourceLoader;
+import javafx.util.Pair;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -16,23 +19,61 @@ import java.util.List;
  */
 abstract class MainFactory
 {
-    static Board getBoard( boolean reversed, NetworkGame networkGame )
+    static Board initBoard( boolean reversed, NetworkGame networkGame, String param1, String param2 )
+            throws ConnectionException, SocketCreationException
+    {
+        NetworkHandlerBase networkHandler = getNetworkHandler( networkGame );
+
+        if ( networkHandler != null && networkGame == NetworkGame.SERVER )
+        {
+            int port = Integer.parseInt( param1 );
+            int timeout = Integer.parseInt( param2 );
+
+            // TODO: validation
+            try
+            {
+                networkHandler.startServer( port, timeout );
+            }
+            catch ( ConnectionException e )
+            {
+                System.out.println( "conn" );
+            }
+            catch ( InterruptedException e )
+            {
+                System.out.println( "interrupt" );
+            }
+        }
+        else if ( networkHandler != null && networkGame == NetworkGame.CLIENT )
+        {
+            int port = Integer.parseInt( param2 );
+
+            // TODO: validation
+            networkHandler.startClient( param1, port );
+        }
+
+        Pair< Board, BoardHandlerBase > pair = getBoardWithHandler( reversed, networkHandler );
+        if ( networkHandler != null )
+            networkHandler.addNetworkReceiver( pair.getValue() );
+
+        return pair.getKey();
+    }
+
+    private static Pair< Board, BoardHandlerBase > getBoardWithHandler( boolean reversed,
+                                                                        NetworkHandlerBase networkHandler )
     {
         Image image = ResourceLoader.loadImageExitOnEx( "BOARD.png" );
         Spot[][] spots = initializeSpots( reversed );
         List< Piece > pieces = initializePieces( spots );
+
         Board board =  getBoard( image, spots, pieces );
-        NetworkHandlerBase networkHandler = null;
-        if ( networkGame != NetworkGame.DISABLED )
-            networkHandler = getNetworkHandler();
+
         MoveValidator moveValidator = getMoveValidator( spots );
         BoardHandlerBase boardHandler = getBoardHandler( board, moveValidator, networkHandler, spots, pieces );
         MoveListenerBase moveListener = getMoveListener( boardHandler, spots );
-        board.setMoveListener( moveListener );
-        if ( networkHandler != null )
-            networkHandler.addNetworkReceiver( boardHandler );
 
-        return board;
+        board.setMoveListener( moveListener );
+
+        return new Pair<>( board, boardHandler );
     }
 
     private static Board getBoard( Image image, Spot[][] spots, List< Piece > pieces )
@@ -40,14 +81,11 @@ abstract class MainFactory
         return new Board( image, spots, pieces );
     }
 
-    private static NetworkHandlerBase getNetworkHandler()
+    private static BoardHandlerBase getBoardHandler( Board board, MoveValidator moveValidator,
+                                                     NetworkHandlerBase networkHandler,
+                                                     Spot[][] spots, List< Piece > pieces )
     {
-        return new NetworkHandlerImpl();
-    }
-
-    private static MoveValidator getMoveValidator( Spot[][] spots )
-    {
-        return new MoveValidatorImpl( spots );
+        return new BoardHandlerImpl( board, moveValidator, networkHandler, spots, pieces );
     }
 
     private static MoveListenerBase getMoveListener( BoardHandlerBase boardHandler, Spot[][] spots )
@@ -55,11 +93,17 @@ abstract class MainFactory
         return new MoveListenerImpl( boardHandler, spots );
     }
 
-    private static BoardHandlerBase getBoardHandler( Board board, MoveValidator moveValidator,
-                                                     NetworkHandlerBase networkHandler,
-                                                     Spot[][] spots, List< Piece > pieces )
+    private static MoveValidator getMoveValidator( Spot[][] spots )
     {
-        return new BoardHandlerImpl( board, moveValidator, networkHandler, spots, pieces );
+        return new MoveValidatorImpl( spots );
+    }
+
+    private static NetworkHandlerBase getNetworkHandler( NetworkGame networkGame )
+    {
+        if ( networkGame == NetworkGame.DISABLED )
+            return null;
+
+        return new NetworkHandlerImpl( networkGame );
     }
 
     private static Spot[][] initializeSpots( boolean reversed )

@@ -1,13 +1,14 @@
 package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.*;
+import com.pawello2222.chess.net.NetworkHandlerBase;
 
 import java.util.List;
 
 import static com.pawello2222.chess.utils.BoardUtils.*;
 
 /**
- * Board handler class implementation.
+ * Board handler implementation class.
  *
  * @author Pawel Wiszenko
  */
@@ -15,13 +16,16 @@ class BoardHandlerImpl extends BoardHandlerBase
 {
     private Board board;
     private MoveValidator moveValidator;
+    private NetworkHandlerBase networkHandler;
     private Spot[][] spots;
     private List< Piece > pieces;
 
-    BoardHandlerImpl( Board board, MoveValidator moveValidator, Spot[][] spots, List< Piece > pieces )
+    BoardHandlerImpl( Board board, MoveValidator moveValidator, NetworkHandlerBase networkHandler,
+                      Spot[][] spots, List< Piece > pieces )
     {
         this.board = board;
         this.moveValidator = moveValidator;
+        this.networkHandler = networkHandler;
         this.spots = spots;
         this.pieces = pieces;
     }
@@ -57,6 +61,16 @@ class BoardHandlerImpl extends BoardHandlerBase
         moveValidator.updateFlagsAfterMove( sourceSpot, targetSpot );
 
         nextTurn();
+        if ( networkHandler != null )
+            networkHandler.sendMove( sourceSpot, targetSpot );
+
+        //TODO: disable pieces when idle
+    }
+
+    @Override
+    public void receiveMove( Spot sourceSpot, Spot targetSpot )
+    {
+        movePiece( sourceSpot, targetSpot );
     }
 
     private void nextTurn()

@@ -5,7 +5,7 @@ import com.pawello2222.chess.model.*;
 import static com.pawello2222.chess.utils.ValidatorUtils.*;
 
 /**
- *  Move validator class implementation.
+ *  Move validator implementation class.
  *
  * @author Pawel Wiszenko
  */

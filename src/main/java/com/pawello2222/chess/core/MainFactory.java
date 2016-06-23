@@ -1,9 +1,8 @@
 package com.pawello2222.chess.core;
 
-import com.pawello2222.chess.model.Piece;
-import com.pawello2222.chess.model.PieceColor;
-import com.pawello2222.chess.model.PieceType;
-import com.pawello2222.chess.model.Spot;
+import com.pawello2222.chess.model.*;
+import com.pawello2222.chess.net.NetworkHandlerBase;
+import com.pawello2222.chess.net.NetworkHandlerImpl;
 import com.pawello2222.chess.utils.ResourceLoader;
 
 import java.awt.*;
@@ -17,16 +16,21 @@ import java.util.List;
  */
 abstract class MainFactory
 {
-    static Board getBoard( boolean reversed )
+    static Board getBoard( boolean reversed, NetworkGame networkGame )
     {
         Image image = ResourceLoader.loadImageExitOnEx( "BOARD.png" );
         Spot[][] spots = initializeSpots( reversed );
         List< Piece > pieces = initializePieces( spots );
         Board board =  getBoard( image, spots, pieces );
+        NetworkHandlerBase networkHandler = null;
+        if ( networkGame != NetworkGame.DISABLED )
+            networkHandler = getNetworkHandler();
         MoveValidator moveValidator = getMoveValidator( spots );
-        BoardHandlerBase boardHandler = getBoardHandler( board, moveValidator, spots, pieces );
+        BoardHandlerBase boardHandler = getBoardHandler( board, moveValidator, networkHandler, spots, pieces );
         MoveListenerBase moveListener = getMoveListener( boardHandler, spots );
         board.setMoveListener( moveListener );
+        if ( networkHandler != null )
+            networkHandler.addNetworkReceiver( boardHandler );
 
         return board;
     }
@@ -34,6 +38,11 @@ abstract class MainFactory
     private static Board getBoard( Image image, Spot[][] spots, List< Piece > pieces )
     {
         return new Board( image, spots, pieces );
+    }
+
+    private static NetworkHandlerBase getNetworkHandler()
+    {
+        return new NetworkHandlerImpl();
     }
 
     private static MoveValidator getMoveValidator( Spot[][] spots )
@@ -47,9 +56,10 @@ abstract class MainFactory
     }
 
     private static BoardHandlerBase getBoardHandler( Board board, MoveValidator moveValidator,
+                                                     NetworkHandlerBase networkHandler,
                                                      Spot[][] spots, List< Piece > pieces )
     {
-        return new BoardHandlerImpl( board, moveValidator, spots, pieces );
+        return new BoardHandlerImpl( board, moveValidator, networkHandler, spots, pieces );
     }
 
     private static Spot[][] initializeSpots( boolean reversed )

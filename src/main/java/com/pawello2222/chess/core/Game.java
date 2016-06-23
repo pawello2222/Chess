@@ -1,6 +1,7 @@
 package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.GameState;
+import com.pawello2222.chess.model.NetworkGame;
 import com.pawello2222.chess.utils.ResourceLoader;
 
 import javax.swing.*;
@@ -70,12 +71,12 @@ public class Game extends JFrame implements EndOfGameListener
         return menu;
     }
 
-    private void startNewGame( boolean reversed )
+    private void startNewGame( boolean reversed, NetworkGame networkGame )
     {
         if ( board != null )
             remove( board );
 
-        board = MainFactory.getBoard( reversed );
+        board = MainFactory.getBoard( reversed, networkGame );
         board.addGameEndListener( this );
         add( board );
         pack();

@@ -1,7 +1,5 @@
 package com.pawello2222.chess.core;
 
-import com.pawello2222.chess.exception.ConnectionException;
-import com.pawello2222.chess.exception.SocketCreationException;
 import com.pawello2222.chess.model.GameState;
 import com.pawello2222.chess.model.NetworkGame;
 import com.pawello2222.chess.utils.ResourceLoader;
@@ -17,7 +15,7 @@ import java.net.UnknownHostException;
  *
  * @author Pawel Wiszenko
  */
-public class Game extends JFrame implements EndOfGameListener
+public class Game extends JFrame implements EndOfGameListener, MessageDisplayer
 {
     private Board board;
 
@@ -30,7 +28,7 @@ public class Game extends JFrame implements EndOfGameListener
 
         initActionListeners();
         setJMenuBar( initMenuBar() );
-        startNewGame( false, NetworkGame.DISABLED, "", "" );
+        startNewGame( false, NetworkGame.DISABLED, null );
 
         setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
         setLocationRelativeTo( null );
@@ -38,11 +36,51 @@ public class Game extends JFrame implements EndOfGameListener
         setVisible( true );
     }
 
+    @Override
+    public void endOfGame()
+    {
+        int result = getEndGameDialogResult();
+        if ( result >= 0 )
+            actionListeners[ 0 ][ result ].actionPerformed( null );
+    }
+
+    @Override
+    public void displayMessage( String message )
+    {
+        displayMessage( "Message", message );
+    }
+
+    @Override
+    public void displayMessage( String title, String message )
+    {
+        JOptionPane.showConfirmDialog( this,
+                                       message,
+                                       title,
+                                       JOptionPane.DEFAULT_OPTION,
+                                       JOptionPane.PLAIN_MESSAGE );
+    }
+
+    @Override
+    public void displayError( String message )
+    {
+        JOptionPane.showConfirmDialog( this,
+                                       message,
+                                       "Error",
+                                       JOptionPane.DEFAULT_OPTION,
+                                       JOptionPane.ERROR_MESSAGE );
+    }
+
+    @Override
+    public Component getComponent()
+    {
+        return this;
+    }
+
     private void initActionListeners()
     {
         actionListeners = new ActionListener[ 2 ][ 3 ];
-        actionListeners[ 0 ][ 0 ] = event -> startNewGame( false, NetworkGame.DISABLED, "", "" );
-        actionListeners[ 0 ][ 1 ] = event -> startNewGame( true, NetworkGame.DISABLED, "", "" );
+        actionListeners[ 0 ][ 0 ] = event -> startNewGame( false, NetworkGame.DISABLED, null );
+        actionListeners[ 0 ][ 1 ] = event -> startNewGame( true, NetworkGame.DISABLED, null );
         actionListeners[ 0 ][ 2 ] = event -> dispose();
 
         actionListeners[ 1 ][ 0 ] = event ->
@@ -57,7 +95,8 @@ public class Game extends JFrame implements EndOfGameListener
                                                          "Host game",
                                                          JOptionPane.PLAIN_MESSAGE );
 
-            startNewGame( false, NetworkGame.SERVER, port, timeout );
+            String[] params = { port, timeout };
+            startNewGame( false, NetworkGame.SERVER, params );
         };
         actionListeners[ 1 ][ 1 ] = event ->
         {
@@ -71,7 +110,8 @@ public class Game extends JFrame implements EndOfGameListener
                                                          "Join game",
                                                          JOptionPane.PLAIN_MESSAGE );
 
-            startNewGame( true, NetworkGame.CLIENT, serverName, port );
+            String[] params = { serverName, port };
+            startNewGame( true, NetworkGame.CLIENT, params );
         };
         actionListeners[ 1 ][ 2 ] = event ->
         {
@@ -85,10 +125,7 @@ public class Game extends JFrame implements EndOfGameListener
                 hostname = "Cannot retrieve host name. Unknown host.";
             }
 
-            JOptionPane.showConfirmDialog( this,
-                                         hostname,
-                                         "Host name",
-                                         JOptionPane.DEFAULT_OPTION );
+            displayMessage( "Host name", hostname );
         };
     }
 
@@ -144,28 +181,25 @@ public class Game extends JFrame implements EndOfGameListener
         return menu;
     }
 
-    private void startNewGame( boolean reversed, NetworkGame networkGame, String param1, String param2 )
+    private void startNewGame( boolean reversed, NetworkGame networkGame, String[] params )
     {
         setEnabled( false );
-        if ( board != null )
-            remove( board );
 
-        try
-        {
-            board = MainFactory.initBoard( reversed, networkGame, param1, param2 );
-            board.addGameEndListener( this );
-        }
-        catch ( ConnectionException e )
-        {
-            displayError( e.getMessage() );
-        }
-        catch ( SocketCreationException e )
-        {
-            displayError( e.getMessage() );
-        }
+        Board newBoard = MainFactory.getBoard( this, reversed, networkGame, params );
 
-        add( board );
-        pack();
+        if ( newBoard != null )
+        {
+            if ( board != null )
+                remove( board );
+            add( newBoard );
+            pack();
+
+            board = newBoard;
+            board.addEndOfGameListener( this );
+        }
+        else
+            displayError( "Invalid game parameters" );
+
         setEnabled( true );
     }
 
@@ -187,7 +221,7 @@ public class Game extends JFrame implements EndOfGameListener
         }
 
         return JOptionPane.showOptionDialog(
-                board.getParent(),
+                this,
                 message + " Do you want to start a new game?",
                 title,
                 JOptionPane.DEFAULT_OPTION,
@@ -195,23 +229,6 @@ public class Game extends JFrame implements EndOfGameListener
                 null,
                 options,
                 options[ 0 ] );
-    }
-
-    @Override
-    public void endOfGame()
-    {
-        int result = getEndGameDialogResult();
-        if ( result >= 0 )
-            actionListeners[ 0 ][ result ].actionPerformed( null );
-    }
-
-    private void displayError( String message )
-    {
-        JOptionPane.showConfirmDialog( this,
-                                       message,
-                                       "Error",
-                                       JOptionPane.DEFAULT_OPTION,
-                                       JOptionPane.WARNING_MESSAGE );
     }
 
     public static void main( String[] args )

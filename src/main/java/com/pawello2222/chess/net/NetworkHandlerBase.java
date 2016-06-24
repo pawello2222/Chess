@@ -1,6 +1,6 @@
 package com.pawello2222.chess.net;
 
-import com.pawello2222.chess.exception.ConnectionException;
+import com.pawello2222.chess.core.MessageDisplayer;
 import com.pawello2222.chess.model.Spot;
 
 /**
@@ -13,9 +13,11 @@ public abstract class NetworkHandlerBase implements NetworkSender
     @Override
     public abstract void sendMove( Spot sourceSpot, Spot targetSpot );
 
-    public abstract void startServer( int port, int timeout ) throws ConnectionException, InterruptedException;
+    public abstract void initServer( int port, int timeout );
 
-    public abstract void startClient( String hostname, int port ) throws ConnectionException;
+    public abstract void initClient( String serverName, int port );
 
     public abstract void addNetworkReceiver( NetworkReceiver networkReceiver );
+
+    public abstract void setMessageDisplayer( MessageDisplayer messageDisplayer );
 }

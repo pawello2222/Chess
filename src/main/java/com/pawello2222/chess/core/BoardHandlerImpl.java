@@ -20,12 +20,11 @@ class BoardHandlerImpl extends BoardHandlerBase
     private Spot[][] spots;
     private List< Piece > pieces;
 
-    BoardHandlerImpl( Board board, MoveValidator moveValidator, NetworkHandlerBase networkHandler,
+    BoardHandlerImpl( Board board, MoveValidator moveValidator,
                       Spot[][] spots, List< Piece > pieces )
     {
         this.board = board;
         this.moveValidator = moveValidator;
-        this.networkHandler = networkHandler;
         this.spots = spots;
         this.pieces = pieces;
     }
@@ -68,9 +67,10 @@ class BoardHandlerImpl extends BoardHandlerBase
     }
 
     @Override
-    public void receiveMove( Spot sourceSpot, Spot targetSpot )
+    public void receiveMove( int[] sourceSpot, int[] targetSpot )
     {
-        movePiece( sourceSpot, targetSpot );
+        movePiece( spots[ sourceSpot[ 0 ] ][ sourceSpot[ 1 ] ],
+                   spots[ targetSpot[ 0 ] ][ targetSpot[ 1 ] ] );
     }
 
     private void nextTurn()
@@ -105,5 +105,11 @@ class BoardHandlerImpl extends BoardHandlerBase
             piece.setActive( false );
 
         board.endOfGame();
+    }
+
+    @Override
+    public void setNetworkHandler( NetworkHandlerBase networkHandler )
+    {
+        this.networkHandler = networkHandler;
     }
 }

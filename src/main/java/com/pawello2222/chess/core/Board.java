@@ -71,7 +71,7 @@ class Board extends JPanel
         endOfGameListeners.forEach( EndOfGameListener::endOfGame );
     }
 
-    void addGameEndListener( EndOfGameListener listener )
+    void addEndOfGameListener( EndOfGameListener listener )
     {
         endOfGameListeners.add( listener );
     }

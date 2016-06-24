@@ -69,7 +69,7 @@ class MoveListenerImpl extends MoveListenerBase
             if ( targetSpot == null || !targetSpot.isValidMoveFlag() || targetSpot == sourceSpot )
                 dragPiece.setCoordinatesToSpot( sourceSpot );
             else
-                boardHandler.movePiece( sourceSpot, targetSpot );
+                boardHandler.movePiece( sourceSpot, targetSpot, true );
 
             sourceSpot = null;
             dragPiece = null;

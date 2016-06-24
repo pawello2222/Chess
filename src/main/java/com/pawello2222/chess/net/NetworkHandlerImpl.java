@@ -25,7 +25,6 @@ class NetworkHandlerImpl extends NetworkHandlerBase
 
     private NetworkGame networkGame;
 
-    private volatile Thread activeThread;
     private volatile Thread listenThread;
     private volatile ServerSocket serverSocket;
     private volatile Socket socket;
@@ -43,11 +42,13 @@ class NetworkHandlerImpl extends NetworkHandlerBase
     {
         try
         {
-            outputStream.writeUTF( "1113" );
+            outputStream.writeUTF( sourceSpot.getColumn() + "" + sourceSpot.getRow() + ""
+                                   + targetSpot.getColumn() + "" + targetSpot.getRow() + "X" );
+            startListening();
         }
         catch ( IOException e )
         {
-            messageDisplayer.displayError( "Output error" );
+            messageDisplayer.displayError( "Cannot send move. Connection lost." );
         }
     }
 
@@ -60,7 +61,7 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         }
         catch ( IOException e )
         {
-            throw new NetworkException( "Cannot create a socket on port " + port + " with timeout: " + timeout );
+            throw new NetworkException( "Cannot create a socket on port " + port + " with timeout: " + timeout + "ms." );
         }
     }
 
@@ -73,7 +74,7 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         }
         catch ( IOException e )
         {
-            throw new NetworkException( "Cannot close server socket" );
+            throw new NetworkException( "Cannot close server socket." );
         }
     }
 
@@ -86,7 +87,7 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         }
         catch ( IOException e )
         {
-            throw new NetworkException( "Cannot close socket" );
+            throw new NetworkException( "Cannot close socket." );
         }
     }
 
@@ -110,7 +111,7 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         Thread.UncaughtExceptionHandler exceptionHandler = ( thread, e ) ->
         {
             messageDisplayer.displayError( e.getMessage() );
-            stopServer();
+            stopNetwork();
         };
 
         Runnable serverTask = () ->
@@ -121,25 +122,17 @@ class NetworkHandlerImpl extends NetworkHandlerBase
                 inputStream = new DataInputStream( socket.getInputStream() );
                 outputStream = new DataOutputStream( socket.getOutputStream() );
 
-                messageDisplayer.displayMessage( "Connected with opponent" );
-                startListening();
+                messageDisplayer.displayMessage( "Connected with opponent." );
             }
             catch ( IOException e )
             {
-                throw new NetworkException( "Cannot connect with opponent" );
+                throw new NetworkException( "Cannot connect with opponent." );
             }
         };
 
-        activeThread = new Thread( serverTask );
-        activeThread.setUncaughtExceptionHandler( exceptionHandler );
-        activeThread.start();
-    }
-
-    private void stopServer()
-    {
-        stopListening();
-        closeSocket();
-        closeServerSocket();
+        Thread thread = new Thread( serverTask );
+        thread.setUncaughtExceptionHandler( exceptionHandler );
+        thread.start();
     }
 
     @Override
@@ -152,7 +145,7 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         catch ( NetworkException e )
         {
             messageDisplayer.displayError( e.getMessage() );
-            stopClient();
+            stopNetwork();
         }
     }
 
@@ -164,19 +157,13 @@ class NetworkHandlerImpl extends NetworkHandlerBase
             inputStream = new DataInputStream( socket.getInputStream() );
             outputStream = new DataOutputStream( socket.getOutputStream() );
 
-            messageDisplayer.displayMessage( "Connected with opponent" );
+            messageDisplayer.displayMessage( "Connected with opponent." );
             startListening();
         }
         catch ( IOException e )
         {
-            throw new NetworkException( "Cannot connect with opponent" );
+            throw new NetworkException( "Cannot connect with opponent." );
         }
-    }
-
-    private void stopClient()
-    {
-        stopListening();
-        closeSocket();
     }
 
     private void startListening()
@@ -203,23 +190,40 @@ class NetworkHandlerImpl extends NetworkHandlerBase
             listenThread.interrupt();
     }
 
+    private void stopNetwork()
+    {
+        dispatchReceivers();
+        stopListening();
+        closeSocket();
+        closeServerSocket();
+    }
+
     private void receiveMove()
     {
-        String input = null;
+        String input;
         try
         {
             input = inputStream.readUTF();
+
         }
         catch ( IOException e )
         {
-            throw new NetworkException( "Input error" );
+            throw new NetworkException( "Cannot receive opponent move. Connection lost." );
         }
 
-        int[] sourceSpot = { 1, 1 };
-        int[] targetSpot = { 1, 2 };
+        System.out.println( input );
+        int[] sourceSpot = { Integer.parseInt( input.substring( 0, 1 ) ),
+                             Integer.parseInt( input.substring( 1, 2 ) ) };
+        int[] targetSpot = { Integer.parseInt( input.substring( 2, 3 ) ),
+                             Integer.parseInt( input.substring( 3, 4 ) ) };
 
         for ( NetworkReceiver networkReceiver : networkReceivers )
             networkReceiver.receiveMove( sourceSpot, targetSpot );
+    }
+
+    private void dispatchReceivers()
+    {
+        networkReceivers.forEach( NetworkReceiver::dispatchReceiver );
     }
 
     @Override

@@ -22,7 +22,7 @@ public abstract class BoardHandlerBase implements GraphicsHandler, MoveHandler, 
     public abstract void updatePossibleMoves( Spot spot );
 
     @Override
-    public abstract void movePiece( Spot sourceSpot, Spot targetSpot );
+    public abstract void movePiece( Spot sourceSpot, Spot targetSpot, boolean shouldSendMove );
 
     @Override
     public abstract void receiveMove( int[] sourceSpot, int[] targetSpot );

@@ -8,4 +8,6 @@ package com.pawello2222.chess.net;
 public interface NetworkReceiver
 {
     void receiveMove( int[] sourceSpot, int[] targetSpot );
+
+    void dispatchReceiver();
 }

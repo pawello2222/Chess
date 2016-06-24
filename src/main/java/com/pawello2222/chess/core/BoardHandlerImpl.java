@@ -49,7 +49,7 @@ class BoardHandlerImpl extends BoardHandlerBase
     }
 
     @Override
-    public void movePiece( Spot sourceSpot, Spot targetSpot )
+    public void movePiece( Spot sourceSpot, Spot targetSpot, boolean shouldSendMove )
     {
         executeMove( spots, pieces, sourceSpot, targetSpot );
         updateGraphics();
@@ -60,7 +60,7 @@ class BoardHandlerImpl extends BoardHandlerBase
         moveValidator.updateFlagsAfterMove( sourceSpot, targetSpot );
 
         nextTurn();
-        if ( networkHandler != null )
+        if ( networkHandler != null && shouldSendMove )
             networkHandler.sendMove( sourceSpot, targetSpot );
 
         //TODO: disable pieces when idle
@@ -70,7 +70,13 @@ class BoardHandlerImpl extends BoardHandlerBase
     public void receiveMove( int[] sourceSpot, int[] targetSpot )
     {
         movePiece( spots[ sourceSpot[ 0 ] ][ sourceSpot[ 1 ] ],
-                   spots[ targetSpot[ 0 ] ][ targetSpot[ 1 ] ] );
+                   spots[ targetSpot[ 0 ] ][ targetSpot[ 1 ] ], false );
+    }
+
+    @Override
+    public void dispatchReceiver()
+    {
+        networkHandler = null;
     }
 
     private void nextTurn()

@@ -2,33 +2,33 @@ package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.GameState;
 import com.pawello2222.chess.model.NetworkGame;
+import com.pawello2222.chess.model.Piece;
+import com.pawello2222.chess.model.Spot;
 import com.pawello2222.chess.utils.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.List;
+
+import static com.pawello2222.chess.core.MainFactory.*;
 
 /**
  * Main game frame.
  *
  * @author Pawel Wiszenko
  */
-public class Game extends JFrame implements EndOfGameListener, MessageDisplayer
+class Game extends GameBase
 {
-    private Board board;
-
-    private ActionListener[][] actionListeners;
+    private MainMenu mainMenu;
+    private GameHandlerBase gameHandler;
+    private JPanel board;
+    private Spot[][] spots;
+    private List< Piece > pieces;
 
     private Game()
     {
         setTitle( "Chess" );
         setIconImage( ResourceLoader.loadImageExitOnEx( "ICON.png" ) );
-
-        initActionListeners();
-        setJMenuBar( initMenuBar() );
-        startNewGame( false, NetworkGame.DISABLED, null );
 
         setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
         setLocationRelativeTo( null );
@@ -36,12 +36,58 @@ public class Game extends JFrame implements EndOfGameListener, MessageDisplayer
         setVisible( true );
     }
 
-    @Override
-    public void endOfGame()
+    Game( MainMenu mainMenu, boolean reversed )
     {
-        int result = getEndGameDialogResult();
-        if ( result >= 0 )
-            actionListeners[ 0 ][ result ].actionPerformed( null );
+        this();
+
+        this.mainMenu = mainMenu;
+        initGame( reversed );
+    }
+
+    Game( MainMenu mainMenu, boolean reversed, NetworkGame networkGame, String[] params )
+    {
+        this( mainMenu, reversed );
+
+        initNetwork( networkGame, params );
+    }
+
+    private void initGame( boolean reversed )
+    {
+        Image image = ResourceLoader.loadImageExitOnEx( "BOARD.png" );
+        spots = getSpots( reversed );
+        pieces = getPieces( spots );
+        board = getBoard( image, spots, pieces );
+        gameHandler = getGameHandler( this, spots, pieces );
+
+        MoveListenerBase moveListener = getMoveListener( gameHandler, spots );
+        board.addMouseListener( moveListener );
+        board.addMouseMotionListener( moveListener );
+    }
+
+    private void initNetwork( NetworkGame networkGame, String[] params )
+    {
+
+    }
+
+    @Override
+    public void endOfGame( GameState gameState )
+    {
+        Object[] options = { "Yes (White)", "Yes (Black)", "No" };
+        String title = "Stalemate";
+        String message = "It's a draw.";
+
+        if ( gameState == GameState.CHECKMATE_WIN_WHITE )
+        {
+            title = "Checkmate";
+            message = "White player wins!";
+        }
+        else if ( gameState == GameState.CHECKMATE_WIN_BLACK )
+        {
+            title = "Checkmate";
+            message = "Black player wins!";
+        }
+
+        displayMessage( title, message );
     }
 
     @Override
@@ -68,171 +114,5 @@ public class Game extends JFrame implements EndOfGameListener, MessageDisplayer
                                        "Error",
                                        JOptionPane.DEFAULT_OPTION,
                                        JOptionPane.ERROR_MESSAGE );
-    }
-
-    @Override
-    public Component getComponent()
-    {
-        return this;
-    }
-
-    private void initActionListeners()
-    {
-        actionListeners = new ActionListener[ 2 ][ 3 ];
-        actionListeners[ 0 ][ 0 ] = event -> startNewGame( false, NetworkGame.DISABLED, null );
-        actionListeners[ 0 ][ 1 ] = event -> startNewGame( true, NetworkGame.DISABLED, null );
-        actionListeners[ 0 ][ 2 ] = event -> dispose();
-
-        actionListeners[ 1 ][ 0 ] = event ->
-        {
-            String port = JOptionPane.showInputDialog( this,
-                                           "Specify port number:",
-                                           "Host game",
-                                           JOptionPane.PLAIN_MESSAGE );
-
-            String timeout = JOptionPane.showInputDialog( this,
-                                                         "Specify timeout:",
-                                                         "Host game",
-                                                         JOptionPane.PLAIN_MESSAGE );
-
-            String[] params = { port, timeout };
-            startNewGame( false, NetworkGame.SERVER, params );
-        };
-        actionListeners[ 1 ][ 1 ] = event ->
-        {
-            String serverName = JOptionPane.showInputDialog( this,
-                                                         "Specify server name:",
-                                                         "Join game",
-                                                         JOptionPane.PLAIN_MESSAGE );
-
-            String port = JOptionPane.showInputDialog( this,
-                                                         "Specify port number:",
-                                                         "Join game",
-                                                         JOptionPane.PLAIN_MESSAGE );
-
-            String[] params = { serverName, port };
-            startNewGame( true, NetworkGame.CLIENT, params );
-        };
-        actionListeners[ 1 ][ 2 ] = event ->
-        {
-            String hostname;
-            try
-            {
-                hostname = InetAddress.getLocalHost().getHostName();
-            }
-            catch ( UnknownHostException e )
-            {
-                hostname = "Cannot retrieve host name. Unknown host.";
-            }
-
-            displayMessage( "Host name", hostname );
-        };
-    }
-
-    private JMenuBar initMenuBar()
-    {
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.add( initGameMenu() );
-        menuBar.add( initNetworkMenu() );
-        return menuBar;
-    }
-
-    private JMenu initGameMenu()
-    {
-        JMenu menu = new JMenu( "Game" );
-        JMenuItem menuItem;
-
-        menuItem = new JMenuItem( "New game (WHITE)" );
-        menuItem.addActionListener( actionListeners[ 0 ][ 0 ] );
-        menu.add( menuItem );
-
-        menuItem = new JMenuItem( "New game (BLACK)" );
-        menuItem.addActionListener( actionListeners[ 0 ][ 1 ] );
-        menu.add( menuItem );
-
-        menu.addSeparator();
-
-        menuItem = new JMenuItem( "Exit" );
-        menuItem.addActionListener( actionListeners[ 0 ][ 2 ] );
-        menu.add( menuItem );
-
-        return menu;
-    }
-
-    private JMenu initNetworkMenu()
-    {
-        JMenu menu = new JMenu( "Network" );
-        JMenuItem menuItem;
-
-        menuItem = new JMenuItem( "Host game (WHITE)" );
-        menuItem.addActionListener( actionListeners[ 1 ][ 0 ] );
-        menu.add( menuItem );
-
-        menuItem = new JMenuItem( "Join game (BLACK)" );
-        menuItem.addActionListener( actionListeners[ 1 ][ 1 ] );
-        menu.add( menuItem );
-
-        menu.addSeparator();
-
-        menuItem = new JMenuItem( "Info" );
-        menuItem.addActionListener( actionListeners[ 1 ][ 2 ] );
-        menu.add( menuItem );
-
-        return menu;
-    }
-
-    private void startNewGame( boolean reversed, NetworkGame networkGame, String[] params )
-    {
-        setEnabled( false );
-
-        Board newBoard = MainFactory.getBoard( this, reversed, networkGame, params );
-
-        if ( newBoard != null )
-        {
-            if ( board != null )
-                remove( board );
-            add( newBoard );
-            pack();
-
-            board = newBoard;
-            board.addEndOfGameListener( this );
-        }
-        else
-            displayError( "Invalid game parameters" );
-
-        setEnabled( true );
-    }
-
-    private int getEndGameDialogResult()
-    {
-        Object[] options = { "Yes (White)", "Yes (Black)", "No" };
-        String title = "Stalemate";
-        String message = "It's a draw.";
-
-        if ( board.isGameState( GameState.CHECKMATE_WIN_WHITE ) )
-        {
-            title = "Checkmate";
-            message = "White player wins!";
-        }
-        else if ( board.isGameState( GameState.CHECKMATE_WIN_BLACK ) )
-        {
-            title = "Checkmate";
-            message = "Black player wins!";
-        }
-
-        return JOptionPane.showOptionDialog(
-                this,
-                message + " Do you want to start a new game?",
-                title,
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[ 0 ] );
-    }
-
-    public static void main( String[] args )
-    {
-        EventQueue.invokeLater( Game::new );
     }
 }

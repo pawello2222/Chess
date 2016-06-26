@@ -1,6 +1,6 @@
 package com.pawello2222.chess.net;
 
-import com.pawello2222.chess.core.BoardHandlerBase;
+import com.pawello2222.chess.core.GameHandlerBase;
 import com.pawello2222.chess.core.MessageDisplayer;
 import com.pawello2222.chess.model.NetworkGame;
 
@@ -12,7 +12,7 @@ import com.pawello2222.chess.model.NetworkGame;
 public abstract class NetworkFactory
 {
     public static boolean initNetworkHandler( MessageDisplayer messageDisplayer,
-                                           BoardHandlerBase boardHandler,
+                                           GameHandlerBase boardHandler,
                                            NetworkGame networkGame,
                                            String[] params )
     {

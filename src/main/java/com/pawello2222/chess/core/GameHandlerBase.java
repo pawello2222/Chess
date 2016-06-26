@@ -2,7 +2,6 @@ package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.Spot;
-import com.pawello2222.chess.net.NetworkHandlerBase;
 import com.pawello2222.chess.net.NetworkReceiver;
 
 /**
@@ -10,7 +9,7 @@ import com.pawello2222.chess.net.NetworkReceiver;
  *
  * @author Pawel Wiszenko
  */
-public abstract class BoardHandlerBase implements GraphicsHandler, MoveHandler, NetworkReceiver
+public abstract class GameHandlerBase implements GraphicsHandler, MoveHandler, NetworkReceiver
 {
     @Override
     public abstract void updateGraphics();
@@ -22,10 +21,11 @@ public abstract class BoardHandlerBase implements GraphicsHandler, MoveHandler, 
     public abstract void updatePossibleMoves( Spot spot );
 
     @Override
-    public abstract void movePiece( Spot sourceSpot, Spot targetSpot, boolean shouldSendMove );
+    public abstract void movePiece( Spot sourceSpot, Spot targetSpot, boolean isOwnMove );
 
     @Override
-    public abstract void receiveMove( int[] sourceSpot, int[] targetSpot );
+    public abstract void receiveData( String data );
 
-    public abstract void setNetworkHandler( NetworkHandlerBase networkHandler );
+    @Override
+    public abstract void disconnect();
 }

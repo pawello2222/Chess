@@ -29,6 +29,12 @@ public class Spot
 
     }
 
+    @Override
+    public String toString()
+    {
+        return column + "" + row;
+    }
+
     public Piece getPiece()
     {
         return piece;

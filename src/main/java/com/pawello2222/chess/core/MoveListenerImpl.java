@@ -13,15 +13,21 @@ import java.awt.event.MouseEvent;
  */
 class MoveListenerImpl extends MoveListenerBase
 {
-    private BoardHandlerBase boardHandler;
-
+    /**
+     * Dependencies
+     */
+    private GameHandlerBase gameHandler;
     private Spot[][] spots;
+
+    /**
+     * Variables
+     */
     private Spot sourceSpot;
     private Piece dragPiece;
 
-    MoveListenerImpl( BoardHandlerBase boardHandler, Spot[][] spots )
+    MoveListenerImpl( GameHandlerBase gameHandler, Spot[][] spots )
     {
-        this.boardHandler = boardHandler;
+        this.gameHandler = gameHandler;
         this.spots = spots;
     }
 
@@ -40,7 +46,7 @@ class MoveListenerImpl extends MoveListenerBase
                 {
                     sourceSpot = spot;
                     dragPiece = spot.getPiece();
-                    boardHandler.setFocusOn( dragPiece );
+                    gameHandler.setFocusOn( dragPiece );
                 }
                 break;
 
@@ -56,7 +62,7 @@ class MoveListenerImpl extends MoveListenerBase
         {
             dragPiece.setX( e.getPoint().x - dragPiece.getWidth() / 2 );
             dragPiece.setY( e.getPoint().y - dragPiece.getHeight() / 2 );
-            boardHandler.updateGraphics();
+            gameHandler.updateGraphics();
         }
     }
 
@@ -69,7 +75,7 @@ class MoveListenerImpl extends MoveListenerBase
             if ( targetSpot == null || !targetSpot.isValidMoveFlag() || targetSpot == sourceSpot )
                 dragPiece.setCoordinatesToSpot( sourceSpot );
             else
-                boardHandler.movePiece( sourceSpot, targetSpot, true );
+                gameHandler.movePiece( sourceSpot, targetSpot, true );
 
             sourceSpot = null;
             dragPiece = null;
@@ -83,8 +89,8 @@ class MoveListenerImpl extends MoveListenerBase
     {
         if( dragPiece == null )
         {
-            boardHandler.updatePossibleMoves( getSpotFromXY( e.getPoint().x, e.getPoint().y ) );
-            boardHandler.updateGraphics();
+            gameHandler.updatePossibleMoves( getSpotFromXY( e.getPoint().x, e.getPoint().y ) );
+            gameHandler.updateGraphics();
         }
     }
 

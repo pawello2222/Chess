@@ -38,12 +38,11 @@ class NetworkHandlerImpl extends NetworkHandlerBase
     }
 
     @Override
-    public void sendMove( Spot sourceSpot, Spot targetSpot )
+    public void sendData( String data )
     {
         try
         {
-            outputStream.writeUTF( sourceSpot.getColumn() + "" + sourceSpot.getRow() + ""
-                                   + targetSpot.getColumn() + "" + targetSpot.getRow() + "X" );
+            outputStream.writeUTF( data );
             startListening();
         }
         catch ( IOException e )

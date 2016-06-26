@@ -1,9 +1,9 @@
 package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.*;
-import com.pawello2222.chess.net.NetworkFactory;
 import com.pawello2222.chess.utils.ResourceLoader;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,54 +15,37 @@ import java.util.List;
  */
 abstract class MainFactory
 {
-    static Board getBoard( MessageDisplayer messageDisplayer,
-                           boolean reversed,
-                           NetworkGame networkGame,
-                           String[] params )
+    static GameBase getGame( MainMenu menu, boolean reversed )
     {
-        Image image = ResourceLoader.loadImageExitOnEx( "BOARD.png" );
-        Spot[][] spots = initializeSpots( reversed );
-        List< Piece > pieces = initializePieces( spots );
-        Board board =  getBoard( image, spots, pieces );
-
-        MoveValidator moveValidator = getMoveValidator( spots );
-        BoardHandlerBase boardHandler = getBoardHandler( board, moveValidator, spots, pieces );
-        MoveListenerBase moveListener = getMoveListener( boardHandler, spots );
-        board.setMoveListener( moveListener );
-
-        boolean networkInitialized = NetworkFactory.initNetworkHandler( messageDisplayer,
-                                                                        boardHandler,
-                                                                        networkGame,
-                                                                        params );
-
-        if ( networkGame != NetworkGame.DISABLED && !networkInitialized )
-            return null;
-
-        return board;
+        return new Game( menu, reversed );
     }
 
-    private static Board getBoard( Image image, Spot[][] spots, List< Piece > pieces )
+    static GameBase getGame( MainMenu menu, boolean reversed, NetworkGame networkGame, String[] params )
+    {
+        return new Game( menu, reversed, networkGame, params );
+    }
+
+    static JPanel getBoard( Image image, Spot[][] spots, List< Piece > pieces )
     {
         return new Board( image, spots, pieces );
     }
 
-    private static BoardHandlerBase getBoardHandler( Board board, MoveValidator moveValidator,
-                                                     Spot[][] spots, List< Piece > pieces )
+    static GameHandlerBase getGameHandler( GameBase game, Spot[][] spots, List< Piece > pieces )
     {
-        return new BoardHandlerImpl( board, moveValidator, spots, pieces );
+        return new GameHandlerImpl( game, spots, pieces );
     }
 
-    private static MoveListenerBase getMoveListener( BoardHandlerBase boardHandler, Spot[][] spots )
+    public static MoveListenerBase getMoveListener( GameHandlerBase gameHandler, Spot[][] spots )
     {
-        return new MoveListenerImpl( boardHandler, spots );
+        return new MoveListenerImpl( gameHandler, spots );
     }
 
-    private static MoveValidator getMoveValidator( Spot[][] spots )
+    static MoveValidatorBase getMoveValidator( Spot[][] spots )
     {
         return new MoveValidatorImpl( spots );
     }
 
-    private static Spot[][] initializeSpots( boolean reversed )
+    static Spot[][] getSpots( boolean reversed )
     {
         Spot[][] spots = new Spot[ 8 ][ 8 ];
 
@@ -82,7 +65,7 @@ abstract class MainFactory
         return spots;
     }
 
-    private static List< Piece > initializePieces( Spot[][] spots )
+    static List< Piece > getPieces( Spot[][] spots )
     {
         List< Piece > pieces = new ArrayList<>();
 
@@ -92,23 +75,23 @@ abstract class MainFactory
             PieceColor color = j == 0 ? PieceColor.WHITE : PieceColor.BLACK;
 
             for ( int i = 0; i < 8; i++ )
-                pieces.add( createPiece( spots, row, i, color, PieceType.PAWN ) );
+                pieces.add( getPiece( spots, row, i, color, PieceType.PAWN ) );
 
             row = j == 0 ? 7 : 0;
-            pieces.add( createPiece( spots, row, 0, color, PieceType.ROOK ) );
-            pieces.add( createPiece( spots, row, 1, color, PieceType.KNIGHT ) );
-            pieces.add( createPiece( spots, row, 2, color, PieceType.BISHOP ) );
-            pieces.add( createPiece( spots, row, 3, color, PieceType.QUEEN ) );
-            pieces.add( createPiece( spots, row, 4, color, PieceType.KING ) );
-            pieces.add( createPiece( spots, row, 5, color, PieceType.BISHOP ) );
-            pieces.add( createPiece( spots, row, 6, color, PieceType.KNIGHT ) );
-            pieces.add( createPiece( spots, row, 7, color, PieceType.ROOK ) );
+            pieces.add( getPiece( spots, row, 0, color, PieceType.ROOK ) );
+            pieces.add( getPiece( spots, row, 1, color, PieceType.KNIGHT ) );
+            pieces.add( getPiece( spots, row, 2, color, PieceType.BISHOP ) );
+            pieces.add( getPiece( spots, row, 3, color, PieceType.QUEEN ) );
+            pieces.add( getPiece( spots, row, 4, color, PieceType.KING ) );
+            pieces.add( getPiece( spots, row, 5, color, PieceType.BISHOP ) );
+            pieces.add( getPiece( spots, row, 6, color, PieceType.KNIGHT ) );
+            pieces.add( getPiece( spots, row, 7, color, PieceType.ROOK ) );
         }
 
         return pieces;
     }
 
-    private static Piece createPiece( Spot[][] spots, int row, int column, PieceColor color, PieceType type )
+    private static Piece getPiece( Spot[][] spots, int row, int column, PieceColor color, PieceType type )
     {
         Image pieceImage = ResourceLoader.loadImageExitOnEx( color + "_" + type + ".png" );
         Piece piece = new Piece( pieceImage, color, type, color == PieceColor.WHITE );

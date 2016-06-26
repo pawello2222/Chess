@@ -17,18 +17,12 @@ class Board extends JPanel
     static final int BOARD_OFFSET_X = 10;
     static final int BOARD_OFFSET_Y = 10;
 
-    private List< EndOfGameListener > endOfGameListeners;
-    private GameState gameState;
-
     private Image bgImage;
     private Spot[][] spots;
     private List< Piece > pieces = new ArrayList<>();
 
     Board( Image bgImage, Spot[][] spots, List< Piece > pieces )
     {
-        endOfGameListeners = new ArrayList<>();
-        gameState = GameState.RUNNING_WHITE;
-
         this.bgImage = bgImage;
         this.spots = spots;
         this.pieces = pieces;
@@ -66,29 +60,9 @@ class Board extends JPanel
                                 Spot.SPOT_WIDTH - 2 * offset, Spot.SPOT_HEIGHT - 2 * offset, 10, 10 );
     }
 
-    void endOfGame()
-    {
-        endOfGameListeners.forEach( EndOfGameListener::endOfGame );
-    }
-
-    void addEndOfGameListener( EndOfGameListener listener )
-    {
-        endOfGameListeners.add( listener );
-    }
-
     void setMoveListener( MoveListenerBase moveListener )
     {
         addMouseListener( moveListener );
         addMouseMotionListener( moveListener );
-    }
-
-    boolean isGameState( GameState gameState )
-    {
-        return this.gameState == gameState;
-    }
-
-    void setGameState( GameState gameState )
-    {
-        this.gameState = gameState;
     }
 }

@@ -9,10 +9,16 @@ import static com.pawello2222.chess.utils.ValidatorUtils.*;
  *
  * @author Pawel Wiszenko
  */
-class MoveValidatorImpl implements MoveValidator
+class MoveValidatorImpl extends MoveValidatorBase
 {
+    /**
+     * Dependencies
+     */
     private Spot[][] spots;
 
+    /**
+     * Variables
+     */
     private Spot sourceSpot;
     private Piece sourcePiece;
     private PieceColor sourceColor;

@@ -20,7 +20,6 @@ import static com.pawello2222.chess.core.MainFactory.getGame;
  */
 public class MainMenu extends JFrame implements MessageDisplayer
 {
-    private GameBase currentGame;
     private ActionListener[][] actionListeners;
 
     private MainMenu()
@@ -30,19 +29,13 @@ public class MainMenu extends JFrame implements MessageDisplayer
 
         initActionListeners();
         setJMenuBar( initMenuBar() );
-
-        JButton button = new JButton( "Local - white" );
-        button.addActionListener( event -> startNewGame( false ) );
-        add( button );
-
-        setPreferredSize( new Dimension( 400, 200 ) );
+        add( localGamePanel() );
+        add( onlineGamePanel() );
         pack();
 
-        setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
         final MainMenu mainMenu = this;
         addWindowListener( new WindowAdapter()
         {
-
             @Override
             public void windowClosing( WindowEvent e )
             {
@@ -56,10 +49,11 @@ public class MainMenu extends JFrame implements MessageDisplayer
                         null,
                         null );
                 if ( confirm == 0 )
-                    quit();
+                    System.exit( 0 );
             }
         } );
 
+        setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
         setLocationRelativeTo( null );
         setResizable( false );
         setVisible( true );
@@ -170,6 +164,40 @@ public class MainMenu extends JFrame implements MessageDisplayer
         return menu;
     }
 
+    private JPanel localGamePanel()
+    {
+        JPanel panel = new JPanel();
+        panel.setBorder( BorderFactory.createTitledBorder( "New game (local)" ) );
+
+        JButton button = new JButton( "White" );
+        button.addActionListener( event -> startNewGame( false ) );
+        panel.add( button );
+
+        button = new JButton( "Black" );
+        button.addActionListener( event -> startNewGame( true ) );
+        panel.add( button );
+
+        return panel;
+    }
+
+    private JPanel onlineGamePanel()
+    {
+        JPanel panel = new JPanel();
+        panel.setBorder( BorderFactory.createTitledBorder( "New game (online)" ) );
+
+        JButton button = new JButton( "Host" );
+        String[] serverParams = { "2222", "6000" };
+        button.addActionListener( event -> startNewGame( false, NetworkGame.SERVER, serverParams ) );
+        panel.add( button );
+
+        button = new JButton( "Join" );
+        String[] clientParams = { "MBA-PW", "2222" };
+        button.addActionListener( event -> startNewGame( true, NetworkGame.CLIENT, clientParams ) );
+        panel.add( button );
+
+        return panel;
+    }
+
     private void startNewGame( boolean reversed )
     {
         setVisible( false );
@@ -179,7 +207,7 @@ public class MainMenu extends JFrame implements MessageDisplayer
     private void startNewGame( boolean reversed, NetworkGame networkGame, String[] params )
     {
         setVisible( false );
-        currentGame = getGame( this, reversed, networkGame, params );
+        getGame( this, reversed, networkGame, params );
     }
 
     @Override
@@ -198,12 +226,6 @@ public class MainMenu extends JFrame implements MessageDisplayer
     public void displayError( String error )
     {
 
-    }
-
-    private void quit()
-    {
-        currentGame = null;
-        System.exit( 0 );
     }
 
     public static void main( String[] args )

@@ -25,6 +25,7 @@ class Game extends GameBase
 {
     private MainMenu mainMenu;
     private GameHandlerBase gameHandler;
+    private MoveListenerBase moveListener;
     private NetworkHandlerBase networkHandler;
     private JPanel board;
 
@@ -81,7 +82,7 @@ class Game extends GameBase
 
         gameHandler = getGameHandler( this, spots, pieces );
 
-        MoveListenerBase moveListener = getMoveListener( gameHandler, spots );
+        moveListener = getMoveListener( gameHandler, spots );
         board.addMouseListener( moveListener );
         board.addMouseMotionListener( moveListener );
 
@@ -99,6 +100,7 @@ class Game extends GameBase
         networkHandler.setNetworkReceiver( gameHandler );
 
         networkHandler.start( networkGame, params );
+        setVisible( true );
     }
 
     @Override
@@ -118,10 +120,10 @@ class Game extends GameBase
             message = "Black player wins!";
         }
 
-        quit();
+        board.removeMouseListener( moveListener );
+        board.removeMouseMotionListener( moveListener );
         displayMessage( title, message );
-        mainMenu.setVisible( true );
-        dispose();
+        quit();
     }
 
     private void quit()
@@ -134,6 +136,9 @@ class Game extends GameBase
 
         gameHandler = null;
         remove( board );
+
+        mainMenu.setVisible( true );
+        dispose();
     }
 
     @Override

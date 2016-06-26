@@ -89,8 +89,12 @@ class MoveListenerImpl extends MoveListenerBase
     {
         if( dragPiece == null )
         {
-            gameHandler.updatePossibleMoves( getSpotFromXY( e.getPoint().x, e.getPoint().y ) );
-            gameHandler.updateGraphics();
+            Spot spot = getSpotFromXY( e.getPoint().x, e.getPoint().y );
+            if ( spot != null && spot.getPiece() != null && spot.getPiece().isActive() )
+            {
+                gameHandler.updatePossibleMoves( spot );
+                gameHandler.updateGraphics();
+            }
         }
     }
 
@@ -110,5 +114,10 @@ class MoveListenerImpl extends MoveListenerBase
                && spot.getX() + Spot.SPOT_WIDTH >= x
                && spot.getY() <= y
                && spot.getY() + Spot.SPOT_HEIGHT >= y;
+    }
+
+    public void setGameHandler( GameHandlerBase gameHandler )
+    {
+        this.gameHandler = gameHandler;
     }
 }

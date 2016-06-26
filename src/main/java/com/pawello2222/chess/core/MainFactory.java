@@ -5,6 +5,7 @@ import com.pawello2222.chess.util.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 

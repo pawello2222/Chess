@@ -48,7 +48,7 @@ class NetworkHandlerImpl extends NetworkHandlerBase
     public void stop()
     {
 //        messageDisplayer = null;
-//        networkReceiver.setNetworkSender( null );
+        networkReceiver.setNetworkSender( null );
 //        networkReceiver = null;
 
         if ( listenThread != null )
@@ -142,11 +142,7 @@ class NetworkHandlerImpl extends NetworkHandlerBase
 
     private void startServer()
     {
-        Thread.UncaughtExceptionHandler exceptionHandler = ( thread, e ) ->
-        {
-            messageDisplayer.displayError( e.getMessage() );
-            stop();
-        };
+        Thread.UncaughtExceptionHandler exceptionHandler = ( thread, e ) -> displayError( e.getMessage() );
 
         Runnable serverTask = () ->
         {
@@ -169,17 +165,9 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         thread.start();
     }
 
-    private void initClient( String serverName, int port )
+    private void initClient( String serverName, int port ) throws NetworkException
     {
-        try
-        {
-            startClient( serverName, port );
-        }
-        catch ( NetworkException e )
-        {
-            messageDisplayer.displayError( e.getMessage() );
-            stop();
-        }
+        startClient( serverName, port );
     }
 
     private void startClient( String serverName, int port )
@@ -209,12 +197,14 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         }
         catch ( IOException e )
         {
-            messageDisplayer.displayError( "Cannot send move. Connection lost." );
+            displayError( "Cannot send move. Connection lost." );
         }
     }
 
     private void startListening()
     {
+//        Thread.UncaughtExceptionHandler exceptionHandler = ( thread, e ) -> displayError( e.getMessage() );
+
         Runnable listenTask = () ->
         {
             try
@@ -223,11 +213,12 @@ class NetworkHandlerImpl extends NetworkHandlerBase
             }
             catch ( NetworkException e )
             {
-                messageDisplayer.displayError( e.getMessage() );
+                displayError( e.getMessage() );
             }
         };
 
         listenThread = new Thread( listenTask );
+//        listenThread.setUncaughtExceptionHandler( exceptionHandler );
         listenThread.start();
     }
 
@@ -237,14 +228,12 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         try
         {
             data = inputStream.readUTF();
-
+            networkReceiver.receiveData( data );
         }
         catch ( IOException e )
         {
             throw new NetworkException( "Cannot receive opponent move. Connection lost." );
         }
-
-        networkReceiver.receiveData( data );
     }
 
     private void displayError( String error )

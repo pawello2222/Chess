@@ -1,6 +1,6 @@
 package com.pawello2222.chess.net;
 
-import com.pawello2222.chess.core.MessageDisplayer;
+import com.pawello2222.chess.model.NetworkGame;
 
 /**
  * Network handler base class.
@@ -12,11 +12,10 @@ public abstract class NetworkHandlerBase implements NetworkSender
     @Override
     public abstract void sendData( String data );
 
-    public abstract void initServer( int port, int timeout );
+    @Override
+    public abstract void setNetworkReceiver( NetworkReceiver networkReceiver );
 
-    public abstract void initClient( String serverName, int port );
+    public abstract void start( NetworkGame networkGame, String[] params );
 
-    public abstract void addNetworkReceiver( NetworkReceiver networkReceiver );
-
-    public abstract void setMessageDisplayer( MessageDisplayer messageDisplayer );
+    public abstract void stop();
 }

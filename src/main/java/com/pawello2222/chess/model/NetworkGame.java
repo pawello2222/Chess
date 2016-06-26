@@ -7,7 +7,6 @@ package com.pawello2222.chess.model;
  */
 public enum NetworkGame
 {
-    DISABLED,
     SERVER,
     CLIENT
 }

@@ -1,4 +1,4 @@
-package com.pawello2222.chess.utils;
+package com.pawello2222.chess.util;
 
 import com.pawello2222.chess.model.Direction;
 import com.pawello2222.chess.model.PieceColor;
@@ -6,7 +6,7 @@ import com.pawello2222.chess.model.PieceType;
 import com.pawello2222.chess.model.Spot;
 
 /**
- * Validator utils.
+ * Validator util.
  *
  * @author Pawel Wiszenko
  */

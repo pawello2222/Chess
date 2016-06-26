@@ -2,7 +2,7 @@ package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.*;
 
-import static com.pawello2222.chess.utils.ValidatorUtils.*;
+import static com.pawello2222.chess.util.ValidatorUtils.*;
 
 /**
  *  Move validator implementation class.

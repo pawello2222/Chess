@@ -1,14 +1,14 @@
 package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.*;
-import com.pawello2222.chess.net.NetworkHandlerBase;
+import com.pawello2222.chess.net.NetworkSender;
 
 import java.util.List;
 
-import static com.pawello2222.chess.utils.BoardUtils.*;
+import static com.pawello2222.chess.util.BoardUtils.*;
 
 /**
- * Board handler implementation class.
+ * Game handler implementation class.
  *
  * @author Pawel Wiszenko
  */
@@ -21,7 +21,7 @@ class GameHandlerImpl extends GameHandlerBase
     private Spot[][] spots;
     private List< Piece > pieces;
 
-    private NetworkHandlerBase networkHandler;
+    private NetworkSender networkSender;
     private MoveValidatorBase moveValidator;
 
     /**
@@ -31,16 +31,10 @@ class GameHandlerImpl extends GameHandlerBase
 
     GameHandlerImpl( GameBase game, Spot[][] spots, List< Piece > pieces )
     {
-        this( game, spots, pieces, null );
-    }
-
-    GameHandlerImpl( GameBase game, Spot[][] spots, List< Piece > pieces, NetworkHandlerBase networkHandler )
-    {
         this.game = game;
         this.spots = spots;
         this.pieces = pieces;
 
-        this.networkHandler = networkHandler;
         this.moveValidator = MainFactory.getMoveValidator( spots );
 
         gameState = GameState.RUNNING_WHITE;
@@ -77,7 +71,7 @@ class GameHandlerImpl extends GameHandlerBase
         moveValidator.updateFlagsAfterMove( sourceSpot, targetSpot );
 
         nextTurn();
-        if ( networkHandler != null && isOwnMove )
+        if ( networkSender != null && isOwnMove )
             sendMove( sourceSpot, targetSpot );
 
         //TODO: disable pieces when idle
@@ -85,24 +79,18 @@ class GameHandlerImpl extends GameHandlerBase
 
     private void sendMove( Spot sourceSpot, Spot targetSpot )
     {
-        networkHandler.sendData( sourceSpot.toString() + targetSpot.toString() );
+        networkSender.sendData( sourceSpot.toString() + targetSpot.toString() );
     }
 
     @Override
     public void receiveData( String data )
     {
-        movePiece( spots[ Integer.parseInt( data.substring( 0, 1 ) ) ]
-                           [ Integer.parseInt( data.substring( 0, 1 ) ) ],
-                   spots[ Integer.parseInt( data.substring( 0, 1 ) ) ]
-                           [ Integer.parseInt( data.substring( 0, 1 ) ) ],
-                   false );
-    }
-
-    @Override
-    public void disconnect()
-    {
-        networkHandler.disconnect();
-        networkHandler = null;
+        if ( networkSender != null )
+            movePiece( spots[ Integer.parseInt( data.substring( 0, 1 ) ) ]
+                               [ Integer.parseInt( data.substring( 1, 2 ) ) ],
+                       spots[ Integer.parseInt( data.substring( 2, 3 ) ) ]
+                               [ Integer.parseInt( data.substring( 2, 4 ) ) ],
+                       false );
     }
 
     private void nextTurn()
@@ -137,5 +125,12 @@ class GameHandlerImpl extends GameHandlerBase
             piece.setActive( false );
 
         game.endOfGame( gameState );
+        game = null;
+    }
+
+    @Override
+    public void setNetworkSender( NetworkSender networkSender )
+    {
+        this.networkSender = networkSender;
     }
 }

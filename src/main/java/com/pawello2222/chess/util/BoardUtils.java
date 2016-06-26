@@ -1,4 +1,4 @@
-package com.pawello2222.chess.utils;
+package com.pawello2222.chess.util;
 
 import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.PieceColor;
@@ -10,7 +10,7 @@ import java.awt.*;
 import java.util.List;
 
 /**
- * Board utils.
+ * Board util.
  *
  * @author Pawel Wiszenko
  */

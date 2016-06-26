@@ -3,15 +3,12 @@ package com.pawello2222.chess.net;
 import com.pawello2222.chess.core.MessageDisplayer;
 import com.pawello2222.chess.exception.NetworkException;
 import com.pawello2222.chess.model.NetworkGame;
-import com.pawello2222.chess.model.Spot;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Network handler implementation class.
@@ -20,10 +17,8 @@ import java.util.List;
  */
 class NetworkHandlerImpl extends NetworkHandlerBase
 {
-    private List< NetworkReceiver > networkReceivers;
     private MessageDisplayer messageDisplayer;
-
-    private NetworkGame networkGame;
+    private NetworkReceiver networkReceiver;
 
     private volatile Thread listenThread;
     private volatile ServerSocket serverSocket;
@@ -31,27 +26,76 @@ class NetworkHandlerImpl extends NetworkHandlerBase
     private volatile DataInputStream inputStream;
     private volatile DataOutputStream outputStream;
 
-    NetworkHandlerImpl( NetworkGame networkGame )
+    NetworkHandlerImpl( MessageDisplayer messageDisplayer )
     {
-        networkReceivers = new ArrayList<>();
-        this.networkGame = networkGame;
+        this.messageDisplayer = messageDisplayer;
     }
 
     @Override
-    public void sendData( String data )
+    public void start( NetworkGame networkGame, String[] params )
     {
         try
         {
-            outputStream.writeUTF( data );
-            startListening();
+            initNetwork( networkGame, params );
         }
-        catch ( IOException e )
+        catch ( NetworkException e )
         {
-            messageDisplayer.displayError( "Cannot send move. Connection lost." );
+            displayError( e.getMessage() );
         }
     }
 
-    private void initServerSocket( int port, int timeout ) throws NetworkException
+    @Override
+    public void stop()
+    {
+//        messageDisplayer = null;
+//        networkReceiver.setNetworkSender( null );
+//        networkReceiver = null;
+
+        if ( listenThread != null )
+            listenThread.interrupt();
+
+        closeSocket();
+        closeServerSocket();
+    }
+
+    private void initNetwork( NetworkGame networkGame, String[] params )
+    {
+        if ( networkGame == NetworkGame.SERVER )
+        {
+            int port = getInt( params[ 0 ] );
+            int timeout = getInt( params[ 1 ] );
+            if ( port == -1 || timeout == -1 )
+                throw new NetworkException( "Invalid connection parameters" );
+            else
+                initServer( port, timeout );
+        }
+        else if ( networkGame == NetworkGame.CLIENT )
+        {
+            int port = getInt( params[ 1 ] );
+            if ( port == -1 )
+                throw new NetworkException( "Invalid connection parameters" );
+            else
+                initClient( params[ 0 ], port );
+        }
+    }
+
+    private static int getInt( String param )
+    {
+        int result;
+
+        try
+        {
+            result = Integer.parseInt( param );
+        }
+        catch ( NumberFormatException e )
+        {
+            result = -1;
+        }
+
+        return result;
+    }
+
+    private void initServerSocket( int port, int timeout )
     {
         try
         {
@@ -64,7 +108,7 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         }
     }
 
-    private void closeServerSocket() throws NetworkException
+    private void closeServerSocket()
     {
         try
         {
@@ -77,7 +121,7 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         }
     }
 
-    private void closeSocket() throws NetworkException
+    private void closeSocket()
     {
         try
         {
@@ -90,18 +134,9 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         }
     }
 
-    @Override
-    public void initServer( int port, int timeout )
+    private void initServer( int port, int timeout ) throws NetworkException
     {
-        try
-        {
-            initServerSocket( port, timeout );
-        }
-        catch ( NetworkException e )
-        {
-            messageDisplayer.displayError( e.getMessage() );
-        }
-
+        initServerSocket( port, timeout );
         startServer();
     }
 
@@ -110,7 +145,7 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         Thread.UncaughtExceptionHandler exceptionHandler = ( thread, e ) ->
         {
             messageDisplayer.displayError( e.getMessage() );
-            stopNetwork();
+            stop();
         };
 
         Runnable serverTask = () ->
@@ -134,8 +169,7 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         thread.start();
     }
 
-    @Override
-    public void initClient( String serverName, int port )
+    private void initClient( String serverName, int port )
     {
         try
         {
@@ -144,7 +178,7 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         catch ( NetworkException e )
         {
             messageDisplayer.displayError( e.getMessage() );
-            stopNetwork();
+            stop();
         }
     }
 
@@ -162,6 +196,20 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         catch ( IOException e )
         {
             throw new NetworkException( "Cannot connect with opponent." );
+        }
+    }
+
+    @Override
+    public void sendData( String data )
+    {
+        try
+        {
+            outputStream.writeUTF( data );
+            startListening();
+        }
+        catch ( IOException e )
+        {
+            messageDisplayer.displayError( "Cannot send move. Connection lost." );
         }
     }
 
@@ -183,26 +231,12 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         listenThread.start();
     }
 
-    private void stopListening()
-    {
-        if ( listenThread != null )
-            listenThread.interrupt();
-    }
-
-    private void stopNetwork()
-    {
-        dispatchReceivers();
-        stopListening();
-        closeSocket();
-        closeServerSocket();
-    }
-
     private void receiveMove()
     {
-        String input;
+        String data;
         try
         {
-            input = inputStream.readUTF();
+            data = inputStream.readUTF();
 
         }
         catch ( IOException e )
@@ -210,30 +244,18 @@ class NetworkHandlerImpl extends NetworkHandlerBase
             throw new NetworkException( "Cannot receive opponent move. Connection lost." );
         }
 
-        System.out.println( input );
-        int[] sourceSpot = { Integer.parseInt( input.substring( 0, 1 ) ),
-                             Integer.parseInt( input.substring( 1, 2 ) ) };
-        int[] targetSpot = { Integer.parseInt( input.substring( 2, 3 ) ),
-                             Integer.parseInt( input.substring( 3, 4 ) ) };
-
-        for ( NetworkReceiver networkReceiver : networkReceivers )
-            networkReceiver.receiveMove( sourceSpot, targetSpot );
+        networkReceiver.receiveData( data );
     }
 
-    private void dispatchReceivers()
+    private void displayError( String error )
     {
-        networkReceivers.forEach( NetworkReceiver::dispatchReceiver );
+        messageDisplayer.displayError( error );
+        stop();
     }
 
     @Override
-    public void addNetworkReceiver( NetworkReceiver networkReceiver )
+    public void setNetworkReceiver( NetworkReceiver networkReceiver )
     {
-        networkReceivers.add( networkReceiver );
-    }
-
-    @Override
-    public void setMessageDisplayer( MessageDisplayer messageDisplayer )
-    {
-        this.messageDisplayer = messageDisplayer;
+        this.networkReceiver = networkReceiver;
     }
 }

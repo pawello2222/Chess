@@ -9,9 +9,8 @@ import javax.swing.*;
  *
  * @author Pawel Wiszenko
  */
-abstract class GameBase extends JFrame implements EndOfGameListener, MessageDisplayer
+abstract class GameBase extends JFrame implements MessageDisplayer
 {
-    @Override
     public abstract void endOfGame( GameState gameState );
 
     @Override

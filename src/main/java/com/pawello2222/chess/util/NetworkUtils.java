@@ -1,9 +1,7 @@
-package com.pawello2222.chess.utils;
-
-import com.pawello2222.chess.model.NetworkGame;
+package com.pawello2222.chess.util;
 
 /**
- * Network utils.
+ * Network util.
  *
  * @author Pawel Wiszenko
  */

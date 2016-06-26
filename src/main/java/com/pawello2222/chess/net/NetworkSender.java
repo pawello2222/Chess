@@ -5,9 +5,9 @@ package com.pawello2222.chess.net;
  *
  * @author Pawel Wiszenko
  */
-interface NetworkSender
+public interface NetworkSender
 {
     void sendData( String data );
 
-    void disconnect();
+    void setNetworkReceiver( NetworkReceiver networkReceiver );
 }

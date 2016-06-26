@@ -1,4 +1,4 @@
-package com.pawello2222.chess.utils;
+package com.pawello2222.chess.util;
 
 import com.pawello2222.chess.exception.InvalidResourceException;
 

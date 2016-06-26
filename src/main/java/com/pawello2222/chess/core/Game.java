@@ -4,13 +4,17 @@ import com.pawello2222.chess.model.GameState;
 import com.pawello2222.chess.model.NetworkGame;
 import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.Spot;
-import com.pawello2222.chess.utils.ResourceLoader;
+import com.pawello2222.chess.net.NetworkHandlerBase;
+import com.pawello2222.chess.util.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 
 import static com.pawello2222.chess.core.MainFactory.*;
+import static com.pawello2222.chess.net.NetworkFactory.getNetworkHandler;
 
 /**
  * Main game frame.
@@ -21,19 +25,36 @@ class Game extends GameBase
 {
     private MainMenu mainMenu;
     private GameHandlerBase gameHandler;
+    private NetworkHandlerBase networkHandler;
     private JPanel board;
-    private Spot[][] spots;
-    private List< Piece > pieces;
 
     private Game()
     {
         setTitle( "Chess" );
         setIconImage( ResourceLoader.loadImageExitOnEx( "ICON.png" ) );
 
-        setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
-        setLocationRelativeTo( null );
         setResizable( false );
-        setVisible( true );
+        setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
+        final Game game = this;
+
+        addWindowListener( new WindowAdapter()
+        {
+            @Override
+            public void windowClosing( WindowEvent e )
+            {
+                int confirm = JOptionPane.showOptionDialog(
+                        game,
+                        "Are you sure you want to quit this game?",
+                        "Quit game",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        null,
+                        null );
+                if ( confirm == 0 )
+                    quit();
+            }
+        } );
     }
 
     Game( MainMenu mainMenu, boolean reversed )
@@ -54,25 +75,35 @@ class Game extends GameBase
     private void initGame( boolean reversed )
     {
         Image image = ResourceLoader.loadImageExitOnEx( "BOARD.png" );
-        spots = getSpots( reversed );
-        pieces = getPieces( spots );
+        Spot[][] spots = getSpots( reversed );
+        List< Piece > pieces = getPieces( spots );
         board = getBoard( image, spots, pieces );
+
         gameHandler = getGameHandler( this, spots, pieces );
 
         MoveListenerBase moveListener = getMoveListener( gameHandler, spots );
         board.addMouseListener( moveListener );
         board.addMouseMotionListener( moveListener );
+
+        add( board );
+        pack();
+        setLocationRelativeTo( null );
+        setVisible( true );
     }
 
     private void initNetwork( NetworkGame networkGame, String[] params )
     {
+        networkHandler = getNetworkHandler( this );
 
+        gameHandler.setNetworkSender( networkHandler );
+        networkHandler.setNetworkReceiver( gameHandler );
+
+        networkHandler.start( networkGame, params );
     }
 
     @Override
     public void endOfGame( GameState gameState )
     {
-        Object[] options = { "Yes (White)", "Yes (Black)", "No" };
         String title = "Stalemate";
         String message = "It's a draw.";
 
@@ -87,7 +118,22 @@ class Game extends GameBase
             message = "Black player wins!";
         }
 
+        quit();
         displayMessage( title, message );
+        mainMenu.setVisible( true );
+        dispose();
+    }
+
+    private void quit()
+    {
+        if ( networkHandler != null )
+        {
+            networkHandler.stop();
+            networkHandler = null;
+        }
+
+        gameHandler = null;
+        remove( board );
     }
 
     @Override
@@ -114,5 +160,7 @@ class Game extends GameBase
                                        "Error",
                                        JOptionPane.DEFAULT_OPTION,
                                        JOptionPane.ERROR_MESSAGE );
+
+        quit();
     }
 }

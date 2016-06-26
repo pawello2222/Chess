@@ -3,9 +3,10 @@ package com.pawello2222.chess.core;
 import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.Spot;
 import com.pawello2222.chess.net.NetworkReceiver;
+import com.pawello2222.chess.net.NetworkSender;
 
 /**
- * Board handler base class.
+ * Game handler base class.
  *
  * @author Pawel Wiszenko
  */
@@ -27,5 +28,5 @@ public abstract class GameHandlerBase implements GraphicsHandler, MoveHandler, N
     public abstract void receiveData( String data );
 
     @Override
-    public abstract void disconnect();
+    public abstract void setNetworkSender( NetworkSender networkSender );
 }

@@ -1,7 +1,7 @@
 package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.*;
-import com.pawello2222.chess.utils.ResourceLoader;
+import com.pawello2222.chess.util.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +35,7 @@ abstract class MainFactory
         return new GameHandlerImpl( game, spots, pieces );
     }
 
-    public static MoveListenerBase getMoveListener( GameHandlerBase gameHandler, Spot[][] spots )
+    static MoveListenerBase getMoveListener( GameHandlerBase gameHandler, Spot[][] spots )
     {
         return new MoveListenerImpl( gameHandler, spots );
     }

@@ -1,11 +1,13 @@
 package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.NetworkGame;
-import com.pawello2222.chess.utils.ResourceLoader;
+import com.pawello2222.chess.util.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -31,11 +33,33 @@ public class MainMenu extends JFrame implements MessageDisplayer
 
         JButton button = new JButton( "Local - white" );
         button.addActionListener( event -> startNewGame( false ) );
-
         add( button );
+
+        setPreferredSize( new Dimension( 400, 200 ) );
         pack();
 
-        setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
+        setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
+        final MainMenu mainMenu = this;
+        addWindowListener( new WindowAdapter()
+        {
+
+            @Override
+            public void windowClosing( WindowEvent e )
+            {
+                int confirm = JOptionPane.showOptionDialog(
+                        mainMenu,
+                        "Are you sure you want to exit?",
+                        "Exit",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        null,
+                        null );
+                if ( confirm == 0 )
+                    quit();
+            }
+        } );
+
         setLocationRelativeTo( null );
         setResizable( false );
         setVisible( true );
@@ -148,11 +172,13 @@ public class MainMenu extends JFrame implements MessageDisplayer
 
     private void startNewGame( boolean reversed )
     {
-        currentGame = getGame( this, reversed );
+        setVisible( false );
+        getGame( this, reversed );
     }
 
     private void startNewGame( boolean reversed, NetworkGame networkGame, String[] params )
     {
+        setVisible( false );
         currentGame = getGame( this, reversed, networkGame, params );
     }
 
@@ -172,6 +198,12 @@ public class MainMenu extends JFrame implements MessageDisplayer
     public void displayError( String error )
     {
 
+    }
+
+    private void quit()
+    {
+        currentGame = null;
+        System.exit( 0 );
     }
 
     public static void main( String[] args )

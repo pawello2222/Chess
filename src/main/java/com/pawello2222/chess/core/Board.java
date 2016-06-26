@@ -59,10 +59,4 @@ class Board extends JPanel
         graphics.drawRoundRect( spot.getX() + offset, spot.getY() + offset,
                                 Spot.SPOT_WIDTH - 2 * offset, Spot.SPOT_HEIGHT - 2 * offset, 10, 10 );
     }
-
-    void setMoveListener( MoveListenerBase moveListener )
-    {
-        addMouseListener( moveListener );
-        addMouseMotionListener( moveListener );
-    }
 }

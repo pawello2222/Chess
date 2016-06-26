@@ -9,5 +9,5 @@ public interface NetworkReceiver
 {
     void receiveData( String data );
 
-    void disconnect();
+    void setNetworkSender( NetworkSender networkSender );
 }

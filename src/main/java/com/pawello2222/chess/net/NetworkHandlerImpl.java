@@ -47,9 +47,7 @@ class NetworkHandlerImpl extends NetworkHandlerBase
     @Override
     public void stop()
     {
-//        messageDisplayer = null;
-        networkReceiver.setNetworkSender( null );
-//        networkReceiver = null;
+        sendData( "X" );
 
         if ( listenThread != null )
             listenThread.interrupt();
@@ -197,13 +195,13 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         }
         catch ( IOException e )
         {
-            displayError( "Cannot send move. Connection lost." );
+            displayError( "Cannot send data. Connection lost." );
         }
     }
 
     private void startListening()
     {
-//        Thread.UncaughtExceptionHandler exceptionHandler = ( thread, e ) -> displayError( e.getMessage() );
+        Thread.UncaughtExceptionHandler exceptionHandler = ( thread, e ) -> displayError( e.getMessage() );
 
         Runnable listenTask = () ->
         {
@@ -218,7 +216,7 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         };
 
         listenThread = new Thread( listenTask );
-//        listenThread.setUncaughtExceptionHandler( exceptionHandler );
+        listenThread.setUncaughtExceptionHandler( exceptionHandler );
         listenThread.start();
     }
 
@@ -232,7 +230,7 @@ class NetworkHandlerImpl extends NetworkHandlerBase
         }
         catch ( IOException e )
         {
-            throw new NetworkException( "Cannot receive opponent move. Connection lost." );
+            throw new NetworkException( "Cannot receive data. Connection lost." );
         }
     }
 

@@ -86,11 +86,20 @@ class GameHandlerImpl extends GameHandlerBase
     public void receiveData( String data )
     {
         if ( networkSender != null )
-            movePiece( spots[ Integer.parseInt( data.substring( 0, 1 ) ) ]
-                               [ Integer.parseInt( data.substring( 1, 2 ) ) ],
-                       spots[ Integer.parseInt( data.substring( 2, 3 ) ) ]
-                               [ Integer.parseInt( data.substring( 2, 4 ) ) ],
-                       false );
+        {
+            if ( data.charAt( 0 ) == 'X' )
+            {
+                networkSender = null;
+                gameState = GameState.NETWORK_ERROR;
+                endOfGame();
+            }
+            else
+                movePiece( spots[ Integer.parseInt( data.substring( 0, 1 ) ) ]
+                                   [ Integer.parseInt( data.substring( 1, 2 ) ) ],
+                           spots[ Integer.parseInt( data.substring( 2, 3 ) ) ]
+                                   [ Integer.parseInt( data.substring( 3, 4 ) ) ],
+                           false );
+        }
     }
 
     private void nextTurn()

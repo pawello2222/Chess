@@ -15,7 +15,6 @@ import java.net.ServerSocket;
 class NetworkServer extends NetworkHandler
 {
     private volatile ServerSocket serverSocket;
-    private volatile Thread serverThread;
 
     private boolean connect;
 
@@ -67,7 +66,7 @@ class NetworkServer extends NetworkHandler
             }
         };
 
-        serverThread = new Thread( serverTask );
+        Thread serverThread = new Thread( serverTask );
         serverThread.start();
     }
 

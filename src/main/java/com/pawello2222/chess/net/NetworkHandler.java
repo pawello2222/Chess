@@ -2,6 +2,7 @@ package com.pawello2222.chess.net;
 
 import com.pawello2222.chess.core.ExceptionHandler;
 
+import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.net.Socket;
  */
 public abstract class NetworkHandler implements NetworkSender
 {
-    protected ExceptionHandler exceptionHandler;
+    private ExceptionHandler exceptionHandler;
     private NetworkReceiver networkReceiver;
 
     volatile Socket socket;
@@ -60,7 +61,7 @@ public abstract class NetworkHandler implements NetworkSender
         networkReceiver.receive( data );
     }
 
-    protected void listen()
+    void listen()
     {
         listen = true;
 
@@ -84,22 +85,24 @@ public abstract class NetworkHandler implements NetworkSender
         listenThread.start();
     }
 
-    public void stop()
+    public void stop() throws IOException
     {
         listen = false;
 
-        try
-        {
-            if ( socket != null )
-            {
-                send( "Q" );
-                socket.close();
-            }
-        }
-        catch ( IOException e )
-        {
-            exception( "Cannot close socket" );
-        }
+        if ( outputStream != null )
+            send( "Q" );
+
+        close( outputStream );
+        close( inputStream );
+        close( socket );
+
+//        exceptionHandler = null;
+    }
+
+    private void close( Closeable closeable ) throws IOException
+    {
+        if ( closeable != null )
+            closeable.close();
     }
 
     void exception( String exception )

@@ -15,7 +15,6 @@ import java.net.ServerSocket;
 class NetworkServer extends NetworkHandler
 {
     private volatile ServerSocket serverSocket;
-    private volatile Thread serverThread;
 
     NetworkServer( ExceptionHandler exceptionHandler )
     {
@@ -26,7 +25,8 @@ class NetworkServer extends NetworkHandler
     public void start( int port, int timeout )
     {
         initServer( port, timeout );
-        connect();
+        if ( serverSocket != null )
+            connect();
     }
 
     private void initServer( int port, int timeout )
@@ -61,12 +61,12 @@ class NetworkServer extends NetworkHandler
             }
         };
 
-        serverThread = new Thread( serverTask );
+        Thread serverThread = new Thread( serverTask );
         serverThread.start();
     }
 
     @Override
-    public void stop()
+    public void stop() throws IOException
     {
         try
         {

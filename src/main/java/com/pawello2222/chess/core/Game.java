@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.List;
 
 import static com.pawello2222.chess.core.MainFactory.*;
@@ -69,27 +70,31 @@ class Game extends GameBase
             case LOCAL_WHITE:
             case LOCAL_BLACK:
                 setTitle( "Chess - local game" );
-                setVisible( true );
-                this.mainMenu.setVisible( false );
+                setVisible();
                 break;
 
             case ONLINE_WHITE:
                 setTitle( "Chess - waiting for connection..." );
+                setVisible();
                 networkHandler = getNetworkServer( this );
-                networkHandler.start( getPort(), getTimeout() );
                 initNetwork();
+                networkHandler.start( getPort(), getTimeout() );
                 break;
 
             case ONLINE_BLACK:
                 setTitle( "Chess - online game (BLACK)" );
                 networkHandler = getNetworkClient( this );
-                networkHandler.start( getInput( "Specify server name:" ), getPort() );
                 initNetwork();
+                networkHandler.start( getInput( "Specify server name:" ), getPort() );
                 break;
         }
+    }
 
+    @Override
+    public void setVisible()
+    {
         setVisible( true );
-        this.mainMenu.setVisible( false );
+        mainMenu.setVisible( false );
     }
 
     private String getInput( String message )
@@ -156,7 +161,14 @@ class Game extends GameBase
         {
             gameHandler.setNetworkSender( null );
             networkHandler.setNetworkReceiver( null );
-            networkHandler.stop();
+            try
+            {
+                networkHandler.stop();
+            }
+            catch ( IOException e )
+            {
+                displayMessage( "Exception occurred", "Some error" );
+            }
         }
     }
 

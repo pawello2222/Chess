@@ -102,6 +102,8 @@ class GameHandlerImpl extends GameHandlerBase
                     game.setTitle( "Chess - online game (WHITE)" );
                     activatePieces( PieceColor.WHITE, true );
                 }
+                else
+                    game.setVisible();
                 game.displayMessage( "Success", "Connected with opponent" );
             }
             else if ( data.charAt( 0 ) == 'M' )

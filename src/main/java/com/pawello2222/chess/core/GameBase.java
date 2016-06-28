@@ -11,6 +11,8 @@ import javax.swing.*;
  */
 public abstract class GameBase extends JFrame implements ExceptionHandler
 {
+    public abstract void setVisible();
+
     public abstract void endOfGame( GameState gameState );
 
     public abstract void quit();

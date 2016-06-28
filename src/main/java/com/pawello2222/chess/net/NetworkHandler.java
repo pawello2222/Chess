@@ -76,7 +76,8 @@ public abstract class NetworkHandler implements NetworkSender
                 }
                 catch ( IOException e )
                 {
-                    exception( "Cannot receive data. Connection lost." );
+                    if ( listen )
+                        exception( "Cannot receive data. Connection lost." );
                 }
             }
         };
@@ -85,7 +86,7 @@ public abstract class NetworkHandler implements NetworkSender
         listenThread.start();
     }
 
-    public void stop() throws IOException
+    public void stop()
     {
         listen = false;
 
@@ -99,10 +100,17 @@ public abstract class NetworkHandler implements NetworkSender
         exceptionHandler = null;
     }
 
-    private void close( Closeable closeable ) throws IOException
+    private void close( Closeable closeable )
     {
-        if ( closeable != null )
-            closeable.close();
+        try
+        {
+            if ( closeable != null )
+                closeable.close();
+        }
+        catch ( IOException e )
+        {
+            exception( "Cannot close network" );
+        }
     }
 
     void exception( String exception )

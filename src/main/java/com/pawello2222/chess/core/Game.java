@@ -11,7 +11,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.util.List;
 
 import static com.pawello2222.chess.core.MainFactory.*;
@@ -53,7 +52,10 @@ class Game extends GameBase
                         null,
                         null );
                 if ( confirm == 0 )
+                {
+                    closeNetwork();
                     quit();
+                }
             }
         } );
     }
@@ -154,20 +156,15 @@ class Game extends GameBase
         {
             gameHandler.setNetworkSender( null );
             networkHandler.setNetworkReceiver( null );
-            try
-            {
-                networkHandler.stop();
-            }
-            catch ( IOException e )
-            {
-                displayMessage( "Exception occurred", "Some error" );
-            }
+            networkHandler.stop();
         }
     }
 
     @Override
     public void endOfGame( GameState gameState )
     {
+        closeNetwork();
+
         String title = "Error";
         String message = "Opponent disconnected.";
 
@@ -194,7 +191,6 @@ class Game extends GameBase
     @Override
     public void quit()
     {
-        closeNetwork();
         closeGame();
         dispose();
     }
@@ -203,6 +199,7 @@ class Game extends GameBase
     public void exception( String message )
     {
         displayMessage( "Exception occurred", message );
+        closeNetwork();
         quit();
     }
 

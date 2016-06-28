@@ -71,7 +71,7 @@ class NetworkServer extends NetworkHandler
     }
 
     @Override
-    public void stop() throws IOException
+    public void stop()
     {
         connect = false;
 

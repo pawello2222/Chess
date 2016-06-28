@@ -30,7 +30,6 @@ class GameHandlerImpl extends GameHandlerBase
     private GameType gameType;
     private GameState gameState;
     private boolean isOnline;
-    private boolean isPlayerWhite;
 
     GameHandlerImpl( GameBase game, Spot[][] spots, List< Piece > pieces, GameType gameType )
     {
@@ -43,7 +42,6 @@ class GameHandlerImpl extends GameHandlerBase
         this.gameType = gameType;
         gameState = GameState.RUNNING_WHITE;
         isOnline = gameType == GameType.ONLINE_WHITE || gameType == GameType.ONLINE_BLACK;
-        isPlayerWhite = gameType == GameType.LOCAL_WHITE || gameType == GameType.ONLINE_WHITE;
 
         if ( !isOnline )
             activatePieces( PieceColor.WHITE, true );
@@ -142,12 +140,12 @@ class GameHandlerImpl extends GameHandlerBase
         {
             gameState = GameState.RUNNING_BLACK;
             activatePieces( PieceColor.WHITE, false );
-            activatePieces( PieceColor.BLACK, !isPlayerWhite );
+            activatePieces( PieceColor.BLACK, gameType != GameType.ONLINE_WHITE );
         }
         else
         {
             gameState = GameState.RUNNING_WHITE;
-            activatePieces( PieceColor.WHITE, isPlayerWhite );
+            activatePieces( PieceColor.WHITE, gameType != GameType.ONLINE_BLACK );
             activatePieces( PieceColor.BLACK, false );
         }
     }

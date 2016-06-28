@@ -30,6 +30,7 @@ class GameHandlerImpl extends GameHandlerBase
     private GameType gameType;
     private GameState gameState;
     private boolean isOnline;
+    private boolean isPlayerWhite;
 
     GameHandlerImpl( GameBase game, Spot[][] spots, List< Piece > pieces, GameType gameType )
     {
@@ -42,6 +43,7 @@ class GameHandlerImpl extends GameHandlerBase
         this.gameType = gameType;
         gameState = GameState.RUNNING_WHITE;
         isOnline = gameType == GameType.ONLINE_WHITE || gameType == GameType.ONLINE_BLACK;
+        isPlayerWhite = gameType == GameType.LOCAL_WHITE || gameType == GameType.ONLINE_WHITE;
 
         if ( !isOnline )
             activatePieces( PieceColor.WHITE, true );
@@ -103,7 +105,7 @@ class GameHandlerImpl extends GameHandlerBase
                     activatePieces( PieceColor.WHITE, true );
                 }
                 else
-                    game.setVisible();
+                    game.setTitle( "Chess - online game (BLACK)" );
                 game.displayMessage( "Success", "Connected with opponent" );
             }
             else if ( data.charAt( 0 ) == 'M' )
@@ -140,14 +142,12 @@ class GameHandlerImpl extends GameHandlerBase
         {
             gameState = GameState.RUNNING_BLACK;
             activatePieces( PieceColor.WHITE, false );
-            if ( gameType == GameType.LOCAL_BLACK || gameType == GameType.ONLINE_BLACK )
-                activatePieces( PieceColor.BLACK, true );
+            activatePieces( PieceColor.BLACK, !isPlayerWhite );
         }
         else
         {
             gameState = GameState.RUNNING_WHITE;
-            if ( gameType == GameType.LOCAL_WHITE || gameType == GameType.ONLINE_WHITE )
-                activatePieces( PieceColor.WHITE, true );
+            activatePieces( PieceColor.WHITE, isPlayerWhite );
             activatePieces( PieceColor.BLACK, false );
         }
     }

@@ -15,6 +15,9 @@ import java.net.ServerSocket;
 class NetworkServer extends NetworkHandler
 {
     private volatile ServerSocket serverSocket;
+    private volatile Thread serverThread;
+
+    private boolean connect;
 
     NetworkServer( ExceptionHandler exceptionHandler )
     {
@@ -44,6 +47,8 @@ class NetworkServer extends NetworkHandler
 
     private void connect()
     {
+        connect = true;
+
         Runnable serverTask = () ->
         {
             try
@@ -57,17 +62,20 @@ class NetworkServer extends NetworkHandler
             }
             catch ( IOException e )
             {
-                exception( "Cannot connect with opponent." );
+                if ( connect )
+                    exception( "Cannot connect with opponent." );
             }
         };
 
-        Thread serverThread = new Thread( serverTask );
+        serverThread = new Thread( serverTask );
         serverThread.start();
     }
 
     @Override
     public void stop() throws IOException
     {
+        connect = false;
+
         try
         {
             if ( serverSocket != null )

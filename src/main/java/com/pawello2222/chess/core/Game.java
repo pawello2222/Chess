@@ -64,37 +64,30 @@ class Game extends GameBase
         this.mainMenu = mainMenu;
 
         initGame( gameType );
+        setVisible( true );
+        mainMenu.setVisible( false );
 
         switch ( gameType )
         {
             case LOCAL_WHITE:
             case LOCAL_BLACK:
                 setTitle( "Chess - local game" );
-                setVisible();
                 break;
 
             case ONLINE_WHITE:
                 setTitle( "Chess - waiting for connection..." );
-                setVisible();
                 networkHandler = getNetworkServer( this );
                 initNetwork();
                 networkHandler.start( getPort(), getTimeout() );
                 break;
 
             case ONLINE_BLACK:
-                setTitle( "Chess - online game (BLACK)" );
+                setTitle( "Chess - waiting for connection..." );
                 networkHandler = getNetworkClient( this );
                 initNetwork();
                 networkHandler.start( getInput( "Specify server name:" ), getPort() );
                 break;
         }
-    }
-
-    @Override
-    public void setVisible()
-    {
-        setVisible( true );
-        mainMenu.setVisible( false );
     }
 
     private String getInput( String message )

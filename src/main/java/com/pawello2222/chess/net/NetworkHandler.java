@@ -96,7 +96,7 @@ public abstract class NetworkHandler implements NetworkSender
         close( inputStream );
         close( socket );
 
-//        exceptionHandler = null;
+        exceptionHandler = null;
     }
 
     private void close( Closeable closeable ) throws IOException

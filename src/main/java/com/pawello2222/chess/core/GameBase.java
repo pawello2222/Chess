@@ -9,16 +9,12 @@ import javax.swing.*;
  *
  * @author Pawel Wiszenko
  */
-abstract class GameBase extends JFrame implements MessageDisplayer
+public abstract class GameBase extends JFrame implements ExceptionHandler
 {
     public abstract void endOfGame( GameState gameState );
 
-    @Override
-    public abstract void displayMessage( String message );
+    public abstract void quit();
 
     @Override
-    public abstract void displayMessage( String title, String message );
-
-    @Override
-    public abstract void displayError( String message );
+    public abstract void exception( String message );
 }

@@ -1,10 +1,9 @@
 package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.GameState;
-import com.pawello2222.chess.model.NetworkGame;
 import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.Spot;
-import com.pawello2222.chess.net.NetworkHandlerBase;
+import com.pawello2222.chess.net.NetworkHandler;
 import com.pawello2222.chess.util.ResourceLoader;
 
 import javax.swing.*;
@@ -14,7 +13,7 @@ import java.awt.event.WindowEvent;
 import java.util.List;
 
 import static com.pawello2222.chess.core.MainFactory.*;
-import static com.pawello2222.chess.net.NetworkFactory.getNetworkHandler;
+import static com.pawello2222.chess.net.NetworkFactory.*;
 
 /**
  * Main game frame.
@@ -26,7 +25,7 @@ class Game extends GameBase
     private MainMenu mainMenu;
     private GameHandlerBase gameHandler;
     private MoveListenerBase moveListener;
-    private NetworkHandlerBase networkHandler;
+    private NetworkHandler networkHandler;
     private JPanel board;
 
     private Game()
@@ -53,7 +52,10 @@ class Game extends GameBase
                         null,
                         null );
                 if ( confirm == 0 )
+                {
+                    closeNetwork();
                     quit();
+                }
             }
         } );
     }
@@ -61,16 +63,25 @@ class Game extends GameBase
     Game( MainMenu mainMenu, boolean reversed )
     {
         this();
-
         this.mainMenu = mainMenu;
+
         initGame( reversed );
     }
 
-    Game( MainMenu mainMenu, boolean reversed, NetworkGame networkGame, String[] params )
+    Game( MainMenu mainMenu, boolean reversed, int port, int timeout )
     {
         this( mainMenu, reversed );
 
-        initNetwork( networkGame, params );
+        networkHandler = getNetworkServer( this, port, timeout );
+        initNetwork();
+    }
+
+    Game( MainMenu mainMenu, boolean reversed, String serverName, int port )
+    {
+        this( mainMenu, reversed );
+
+        networkHandler = getNetworkClient( this, serverName, port );
+        initNetwork();
     }
 
     private void initGame( boolean reversed )
@@ -88,26 +99,44 @@ class Game extends GameBase
 
         add( board );
         pack();
-        setLocationRelativeTo( null );
+        setLocationRelativeTo( mainMenu );
         setVisible( true );
     }
 
-    private void initNetwork( NetworkGame networkGame, String[] params )
+    private void initNetwork()
     {
-        networkHandler = getNetworkHandler( this );
-
         gameHandler.setNetworkSender( networkHandler );
         networkHandler.setNetworkReceiver( gameHandler );
+    }
 
-        networkHandler.start( networkGame, params );
-        setVisible( true );
+    private void closeGame()
+    {
+        moveListener.setGameHandler( null );
+
+        board.removeMouseListener( moveListener );
+        board.removeMouseMotionListener( moveListener );
+        remove( board );
+
+        gameHandler.setGame( null );
+
+        mainMenu.setVisible( true );
+    }
+
+    private void closeNetwork()
+    {
+        if ( networkHandler != null )
+        {
+            gameHandler.setNetworkSender( null );
+            networkHandler.setNetworkReceiver( null );
+            networkHandler.stop();
+        }
     }
 
     @Override
     public void endOfGame( GameState gameState )
     {
-        String title = "Stalemate";
-        String message = "It's a draw.";
+        String title = "Error";
+        String message = "Opponent disconnected.";
 
         if ( gameState == GameState.CHECKMATE_WIN_WHITE )
         {
@@ -119,53 +148,38 @@ class Game extends GameBase
             title = "Checkmate";
             message = "Black player wins!";
         }
+        else if ( gameState == GameState.STALEMATE )
+        {
+            title = "Stalemate";
+            message = "It's a draw.";
+        }
 
-        board.removeMouseListener( moveListener );
-        board.removeMouseMotionListener( moveListener );
         displayMessage( title, message );
+        closeNetwork();
         quit();
     }
 
-    private void quit()
+    @Override
+    public void quit()
     {
-        if ( networkHandler != null )
-        {
-            networkHandler.stop();
-            networkHandler = null;
-        }
-
-        gameHandler = null;
-        remove( board );
-
-        mainMenu.setVisible( true );
+        closeGame();
         dispose();
     }
 
     @Override
-    public void displayMessage( String message )
+    public void exception( String message )
     {
-        displayMessage( "Message", message );
+        displayMessage( "Exception occurred", message );
+        closeNetwork();
+        quit();
     }
 
-    @Override
-    public void displayMessage( String title, String message )
+    private void displayMessage( String title, String message )
     {
         JOptionPane.showConfirmDialog( this,
                                        message,
                                        title,
                                        JOptionPane.DEFAULT_OPTION,
                                        JOptionPane.PLAIN_MESSAGE );
-    }
-
-    @Override
-    public void displayError( String message )
-    {
-        JOptionPane.showConfirmDialog( this,
-                                       message,
-                                       "Error",
-                                       JOptionPane.DEFAULT_OPTION,
-                                       JOptionPane.ERROR_MESSAGE );
-
-        quit();
     }
 }

@@ -7,7 +7,7 @@ package com.pawello2222.chess.net;
  */
 public interface NetworkSender
 {
-    void sendData( String data );
+    void send( String data );
 
     void setNetworkReceiver( NetworkReceiver networkReceiver );
 }

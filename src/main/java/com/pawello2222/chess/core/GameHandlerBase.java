@@ -10,7 +10,7 @@ import com.pawello2222.chess.net.NetworkSender;
  *
  * @author Pawel Wiszenko
  */
-public abstract class GameHandlerBase implements GraphicsHandler, MoveHandler, NetworkReceiver
+abstract class GameHandlerBase implements GraphicsHandler, MoveHandler, NetworkReceiver
 {
     @Override
     public abstract void updateGraphics();
@@ -25,7 +25,9 @@ public abstract class GameHandlerBase implements GraphicsHandler, MoveHandler, N
     public abstract void movePiece( Spot sourceSpot, Spot targetSpot, boolean isOwnMove );
 
     @Override
-    public abstract void receiveData( String data );
+    public abstract void receive( String data );
+
+    public abstract void setGame( GameBase game );
 
     @Override
     public abstract void setNetworkSender( NetworkSender networkSender );

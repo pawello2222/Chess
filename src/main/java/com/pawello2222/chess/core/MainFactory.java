@@ -5,7 +5,6 @@ import com.pawello2222.chess.util.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,9 +20,14 @@ abstract class MainFactory
         return new Game( menu, reversed );
     }
 
-    static GameBase getGame( MainMenu menu, boolean reversed, NetworkGame networkGame, String[] params )
+    static GameBase getGame( MainMenu menu, boolean reversed, int port, int timeout )
     {
-        return new Game( menu, reversed, networkGame, params );
+        return new Game( menu, reversed, port, timeout );
+    }
+
+    static GameBase getGame( MainMenu menu, boolean reversed, String serverName, int port )
+    {
+        return new Game( menu, reversed, serverName, port );
     }
 
     static JPanel getBoard( Image image, Spot[][] spots, List< Piece > pieces )

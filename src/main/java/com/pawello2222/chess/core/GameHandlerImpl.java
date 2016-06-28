@@ -79,25 +79,21 @@ class GameHandlerImpl extends GameHandlerBase
 
     private void sendMove( Spot sourceSpot, Spot targetSpot )
     {
-        networkSender.sendData( sourceSpot.toString() + targetSpot.toString() );
+        networkSender.send( "M" + sourceSpot.toString() + targetSpot.toString() );
     }
 
     @Override
-    public void receiveData( String data )
+    public void receive( String data )
     {
         if ( networkSender != null )
         {
-            if ( data.charAt( 0 ) == 'X' )
-            {
-                networkSender = null;
-                gameState = GameState.NETWORK_ERROR;
-                endOfGame();
-            }
-            else
-                movePiece( spots[ Integer.parseInt( data.substring( 0, 1 ) ) ]
-                                   [ Integer.parseInt( data.substring( 1, 2 ) ) ],
-                           spots[ Integer.parseInt( data.substring( 2, 3 ) ) ]
-                                   [ Integer.parseInt( data.substring( 3, 4 ) ) ],
+            if ( data.charAt( 0 ) == 'P' )
+                game.setVisible( true );
+            else if ( data.charAt( 0 ) == 'M' )
+                movePiece( spots[ Integer.parseInt( data.substring( 1, 2 ) ) ]
+                                   [ Integer.parseInt( data.substring( 2, 3 ) ) ],
+                           spots[ Integer.parseInt( data.substring( 3, 4 ) ) ]
+                                   [ Integer.parseInt( data.substring( 4, 5 ) ) ],
                            false );
         }
     }
@@ -134,7 +130,12 @@ class GameHandlerImpl extends GameHandlerBase
             piece.setActive( false );
 
         game.endOfGame( gameState );
-        game = null;
+    }
+
+    @Override
+    public void setGame( GameBase game )
+    {
+        this.game = game;
     }
 
     @Override

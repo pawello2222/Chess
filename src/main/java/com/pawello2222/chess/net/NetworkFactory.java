@@ -1,6 +1,6 @@
 package com.pawello2222.chess.net;
 
-import com.pawello2222.chess.core.MessageDisplayer;
+import com.pawello2222.chess.core.GameBase;
 
 /**
  * Network factory.
@@ -9,8 +9,13 @@ import com.pawello2222.chess.core.MessageDisplayer;
  */
 public abstract class NetworkFactory
 {
-    public static NetworkHandlerBase getNetworkHandler( MessageDisplayer messageDisplayer )
+    public static NetworkHandler getNetworkServer( GameBase game, int port, int timeout )
     {
-        return new NetworkHandlerImpl( messageDisplayer );
+        return new NetworkServer( game, port, timeout );
+    }
+
+    public static NetworkHandler getNetworkClient( GameBase game, String serverName, int port )
+    {
+        return new NetworkClient( game, serverName, port );
     }
 }

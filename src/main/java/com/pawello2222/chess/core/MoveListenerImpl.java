@@ -116,6 +116,7 @@ class MoveListenerImpl extends MoveListenerBase
                && spot.getY() + Spot.SPOT_HEIGHT >= y;
     }
 
+    @Override
     public void setGameHandler( GameHandlerBase gameHandler )
     {
         this.gameHandler = gameHandler;

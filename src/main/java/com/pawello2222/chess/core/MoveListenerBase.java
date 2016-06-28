@@ -40,4 +40,6 @@ abstract class MoveListenerBase implements MouseListener, MouseMotionListener
     {
 
     }
+
+    public abstract void setGameHandler( GameHandlerBase gameHandler );
 }

@@ -1,6 +1,5 @@
 package com.pawello2222.chess.core;
 
-import com.pawello2222.chess.model.NetworkGame;
 import com.pawello2222.chess.util.ResourceLoader;
 
 import javax.swing.*;
@@ -18,7 +17,7 @@ import static com.pawello2222.chess.core.MainFactory.getGame;
  *
  * @author Pawel Wiszenko
  */
-public class MainMenu extends JFrame implements MessageDisplayer
+public class MainMenu extends JFrame
 {
     private ActionListener[][] actionListeners;
 
@@ -78,8 +77,7 @@ public class MainMenu extends JFrame implements MessageDisplayer
                                                           "Host game",
                                                           JOptionPane.PLAIN_MESSAGE );
 
-            String[] params = { port, timeout };
-            startNewGame( false, NetworkGame.SERVER, params );
+            startNewGame( false, Integer.parseInt( port ), Integer.parseInt( timeout ) );
         };
         actionListeners[ 1 ][ 1 ] = event ->
         {
@@ -93,8 +91,7 @@ public class MainMenu extends JFrame implements MessageDisplayer
                                                        "Join game",
                                                        JOptionPane.PLAIN_MESSAGE );
 
-            String[] params = { serverName, port };
-            startNewGame( true, NetworkGame.CLIENT, params );
+            startNewGame( true, serverName, Integer.parseInt( port ) );
         };
         actionListeners[ 1 ][ 2 ] = event ->
         {
@@ -186,13 +183,11 @@ public class MainMenu extends JFrame implements MessageDisplayer
         panel.setBorder( BorderFactory.createTitledBorder( "New game (online)" ) );
 
         JButton button = new JButton( "Host" );
-        String[] serverParams = { "2222", "6000" };
-        button.addActionListener( event -> startNewGame( false, NetworkGame.SERVER, serverParams ) );
+        button.addActionListener( event -> startNewGame( false, 2222, 6000 ) );
         panel.add( button );
 
         button = new JButton( "Join" );
-        String[] clientParams = { "MBA-PW", "2222" };
-        button.addActionListener( event -> startNewGame( true, NetworkGame.CLIENT, clientParams ) );
+        button.addActionListener( event -> startNewGame( true, "MBA-PW", 2222 ) );
         panel.add( button );
 
         return panel;
@@ -204,28 +199,25 @@ public class MainMenu extends JFrame implements MessageDisplayer
         getGame( this, reversed );
     }
 
-    private void startNewGame( boolean reversed, NetworkGame networkGame, String[] params )
+    private void startNewGame( boolean reversed, int port, int timeout )
     {
         setVisible( false );
-        getGame( this, reversed, networkGame, params );
+        getGame( this, reversed, port, timeout );
     }
 
-    @Override
-    public void displayMessage( String message )
+    private void startNewGame( boolean reversed, String serverName, int port )
     {
-
+        setVisible( false );
+        getGame( this, reversed, serverName, port );
     }
 
-    @Override
-    public void displayMessage( String title, String message )
+    private void displayMessage( String title, String message )
     {
-
-    }
-
-    @Override
-    public void displayError( String error )
-    {
-
+        JOptionPane.showConfirmDialog( this,
+                                       message,
+                                       title,
+                                       JOptionPane.DEFAULT_OPTION,
+                                       JOptionPane.PLAIN_MESSAGE );
     }
 
     public static void main( String[] args )

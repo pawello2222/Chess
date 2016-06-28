@@ -195,19 +195,16 @@ public class MainMenu extends JFrame
 
     private void startNewGame( boolean reversed )
     {
-        setVisible( false );
         getGame( this, reversed );
     }
 
     private void startNewGame( boolean reversed, int port, int timeout )
     {
-        setVisible( false );
         getGame( this, reversed, port, timeout );
     }
 
     private void startNewGame( boolean reversed, String serverName, int port )
     {
-        setVisible( false );
         getGame( this, reversed, serverName, port );
     }
 

@@ -27,9 +27,10 @@ class GameHandlerImpl extends GameHandlerBase
     /**
      * Variables
      */
+    private GameType gameType;
     private GameState gameState;
 
-    GameHandlerImpl( GameBase game, Spot[][] spots, List< Piece > pieces )
+    GameHandlerImpl( GameBase game, Spot[][] spots, List< Piece > pieces, GameType gameType )
     {
         this.game = game;
         this.spots = spots;
@@ -37,6 +38,7 @@ class GameHandlerImpl extends GameHandlerBase
 
         this.moveValidator = MainFactory.getMoveValidator( spots );
 
+        this.gameType = gameType;
         gameState = GameState.RUNNING_WHITE;
     }
 
@@ -70,11 +72,10 @@ class GameHandlerImpl extends GameHandlerBase
 
         moveValidator.updateFlagsAfterMove( sourceSpot, targetSpot );
 
-        nextTurn();
-        if ( networkSender != null && isOwnMove )
+        if ( gameType != GameType.LOCAL_GAME && isOwnMove )
             sendMove( sourceSpot, targetSpot );
 
-        //TODO: disable pieces when idle
+        nextTurn();
     }
 
     private void sendMove( Spot sourceSpot, Spot targetSpot )
@@ -85,10 +86,12 @@ class GameHandlerImpl extends GameHandlerBase
     @Override
     public void receive( String data )
     {
-        if ( networkSender != null )
+        if ( gameType != GameType.LOCAL_GAME )
         {
-            if ( data.charAt( 0 ) == 'P' )
-                game.setVisible( true );
+            if ( data.charAt( 0 ) == 'Q' )
+                game.endOfGame( GameState.NETWORK_ERROR );
+            else if ( data.charAt( 0 ) == 'P' )
+                game.displayMessage( "Success", "Connected with opponent" );
             else if ( data.charAt( 0 ) == 'M' )
                 movePiece( spots[ Integer.parseInt( data.substring( 1, 2 ) ) ]
                                    [ Integer.parseInt( data.substring( 2, 3 ) ) ],
@@ -100,8 +103,21 @@ class GameHandlerImpl extends GameHandlerBase
 
     private void nextTurn()
     {
-        for ( Piece piece : pieces )
-            piece.setActive( !piece.isActive() );
+        if ( gameType == GameType.LOCAL_GAME )
+            for ( Piece piece : pieces )
+                piece.setActive( !piece.isActive() );
+        else
+        {
+            for ( Piece piece : pieces )
+                if ( ( gameType == GameType.ONLINE_WHITE
+                       && gameState == GameState.RUNNING_WHITE
+                       && piece.getColor() == PieceColor.WHITE ) || ( gameType == GameType.ONLINE_WHITE
+                                                                      && gameState == GameState.RUNNING_WHITE
+                                                                      && piece.getColor() == PieceColor.WHITE ) )
+                    piece.setActive( true );
+                else
+                    piece.setActive( false );
+        }
 
         if ( moveValidator.getPossibleMovesCount() > 0 )
             switchGameState();

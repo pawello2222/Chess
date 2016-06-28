@@ -15,6 +15,8 @@ public abstract class GameBase extends JFrame implements ExceptionHandler
 
     public abstract void quit();
 
+    public abstract void displayMessage( String title, String message );
+
     @Override
     public abstract void exception( String message );
 }

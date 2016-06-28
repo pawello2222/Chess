@@ -15,6 +15,8 @@ import java.util.List;
  */
 abstract class MainFactory
 {
+    static GameBase getGame( MainMenu menu, boolean)
+
     static GameBase getGame( MainMenu menu, boolean reversed )
     {
         return new Game( menu, reversed );
@@ -35,9 +37,9 @@ abstract class MainFactory
         return new Board( image, spots, pieces );
     }
 
-    static GameHandlerBase getGameHandler( GameBase game, Spot[][] spots, List< Piece > pieces )
+    static GameHandlerBase getGameHandler( GameBase game, Spot[][] spots, List< Piece > pieces, GameType gameType )
     {
-        return new GameHandlerImpl( game, spots, pieces );
+        return new GameHandlerImpl( game, spots, pieces, gameType );
     }
 
     static MoveListenerBase getMoveListener( GameHandlerBase gameHandler, Spot[][] spots )

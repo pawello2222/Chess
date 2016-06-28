@@ -1,6 +1,7 @@
 package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.GameState;
+import com.pawello2222.chess.model.GameType;
 import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.Spot;
 import com.pawello2222.chess.net.NetworkHandler;
@@ -64,8 +65,9 @@ class Game extends GameBase
     {
         this();
         this.mainMenu = mainMenu;
+        this.mainMenu.setVisible( false );
 
-        initGame( reversed );
+        initGame( reversed, GameType.LOCAL_GAME );
     }
 
     Game( MainMenu mainMenu, boolean reversed, int port, int timeout )
@@ -174,7 +176,8 @@ class Game extends GameBase
         quit();
     }
 
-    private void displayMessage( String title, String message )
+    @Override
+    public void displayMessage( String title, String message )
     {
         JOptionPane.showConfirmDialog( this,
                                        message,

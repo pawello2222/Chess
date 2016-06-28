@@ -32,6 +32,16 @@ public abstract class NetworkHandler implements NetworkSender
         outputStream = null;
     }
 
+    public void start( int port, int timeout )
+    {
+
+    }
+
+    public void start( String serverName, int port )
+    {
+
+    }
+
     @Override
     public void send( String data )
     {

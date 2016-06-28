@@ -31,7 +31,6 @@ class Game extends GameBase
 
     private Game()
     {
-        setTitle( "Chess" );
         setIconImage( ResourceLoader.loadImageExitOnEx( "ICON.png" ) );
 
         setResizable( false );
@@ -53,47 +52,75 @@ class Game extends GameBase
                         null,
                         null );
                 if ( confirm == 0 )
-                {
-                    closeNetwork();
                     quit();
-                }
             }
         } );
     }
 
-    Game( MainMenu mainMenu, boolean reversed )
+    Game( MainMenu mainMenu, GameType gameType )
     {
         this();
         this.mainMenu = mainMenu;
+
+        initGame( gameType );
+
+        switch ( gameType )
+        {
+            case LOCAL_WHITE:
+            case LOCAL_BLACK:
+                setTitle( "Chess - local game" );
+                setVisible( true );
+                this.mainMenu.setVisible( false );
+                break;
+
+            case ONLINE_WHITE:
+                setTitle( "Chess - waiting for connection..." );
+                networkHandler = getNetworkServer( this );
+                networkHandler.start( getPort(), getTimeout() );
+                initNetwork();
+                break;
+
+            case ONLINE_BLACK:
+                setTitle( "Chess - online game (BLACK)" );
+                networkHandler = getNetworkClient( this );
+                networkHandler.start( getInput( "Specify server name:" ), getPort() );
+                initNetwork();
+                break;
+        }
+
+        setVisible( true );
         this.mainMenu.setVisible( false );
-
-        initGame( reversed, GameType.LOCAL_GAME );
     }
 
-    Game( MainMenu mainMenu, boolean reversed, int port, int timeout )
+    private String getInput( String message )
     {
-        this( mainMenu, reversed );
-
-        networkHandler = getNetworkServer( this, port, timeout );
-        initNetwork();
+        return "MBA-PW";
+//        return JOptionPane.showInputDialog( this, message, "New game", JOptionPane.PLAIN_MESSAGE );
     }
 
-    Game( MainMenu mainMenu, boolean reversed, String serverName, int port )
+    private int getPort()
     {
-        this( mainMenu, reversed );
+        String result = getInput( "Specify port number:" );
 
-        networkHandler = getNetworkClient( this, serverName, port );
-        initNetwork();
+        return 2222;
     }
 
-    private void initGame( boolean reversed )
+    private int getTimeout()
+    {
+        String result = getInput( "Specify timeout:" );
+
+        return 6000;
+    }
+
+    private void initGame( GameType gameType )
     {
         Image image = ResourceLoader.loadImageExitOnEx( "BOARD.png" );
+        boolean reversed = gameType == GameType.LOCAL_BLACK || gameType == GameType.ONLINE_BLACK;
         Spot[][] spots = getSpots( reversed );
         List< Piece > pieces = getPieces( spots );
         board = getBoard( image, spots, pieces );
 
-        gameHandler = getGameHandler( this, spots, pieces );
+        gameHandler = getGameHandler( this, spots, pieces, gameType );
 
         moveListener = getMoveListener( gameHandler, spots );
         board.addMouseListener( moveListener );
@@ -102,7 +129,6 @@ class Game extends GameBase
         add( board );
         pack();
         setLocationRelativeTo( mainMenu );
-        setVisible( true );
     }
 
     private void initNetwork()
@@ -157,13 +183,13 @@ class Game extends GameBase
         }
 
         displayMessage( title, message );
-        closeNetwork();
         quit();
     }
 
     @Override
     public void quit()
     {
+        closeNetwork();
         closeGame();
         dispose();
     }
@@ -172,7 +198,6 @@ class Game extends GameBase
     public void exception( String message )
     {
         displayMessage( "Exception occurred", message );
-        closeNetwork();
         quit();
     }
 

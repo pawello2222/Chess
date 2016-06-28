@@ -1,6 +1,6 @@
 package com.pawello2222.chess.net;
 
-import com.pawello2222.chess.core.GameBase;
+import com.pawello2222.chess.core.ExceptionHandler;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -14,10 +14,15 @@ import java.net.Socket;
  */
 class NetworkClient extends NetworkHandler
 {
-    NetworkClient( GameBase game, String serverName, int port )
-    {
-        super( game );
 
+    NetworkClient( ExceptionHandler exceptionHandler )
+    {
+        super( exceptionHandler );
+    }
+
+    @Override
+    public void start( String serverName, int port )
+    {
         connect( serverName, port );
     }
 

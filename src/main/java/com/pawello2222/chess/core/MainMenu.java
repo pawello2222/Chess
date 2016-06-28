@@ -1,12 +1,11 @@
 package com.pawello2222.chess.core;
 
+import com.pawello2222.chess.model.GameType;
 import com.pawello2222.chess.util.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -32,27 +31,7 @@ public class MainMenu extends JFrame
         add( onlineGamePanel() );
         pack();
 
-        final MainMenu mainMenu = this;
-        addWindowListener( new WindowAdapter()
-        {
-            @Override
-            public void windowClosing( WindowEvent e )
-            {
-                int confirm = JOptionPane.showOptionDialog(
-                        mainMenu,
-                        "Are you sure you want to exit?",
-                        "Exit",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE,
-                        null,
-                        null,
-                        null );
-                if ( confirm == 0 )
-                    System.exit( 0 );
-            }
-        } );
-
-        setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
+        setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
         setLocationRelativeTo( null );
         setResizable( false );
         setVisible( true );
@@ -61,38 +40,11 @@ public class MainMenu extends JFrame
     private void initActionListeners()
     {
         actionListeners = new ActionListener[ 2 ][ 3 ];
-        actionListeners[ 0 ][ 0 ] = event -> startNewGame( false );
-        actionListeners[ 0 ][ 1 ] = event -> startNewGame( true );
+        actionListeners[ 0 ][ 0 ] = event -> startNewGame( GameType.LOCAL_WHITE );
+        actionListeners[ 0 ][ 1 ] = event -> startNewGame( GameType.LOCAL_BLACK );
         actionListeners[ 0 ][ 2 ] = event -> dispose();
-
-        actionListeners[ 1 ][ 0 ] = event ->
-        {
-            String port = JOptionPane.showInputDialog( this,
-                                                       "Specify port number:",
-                                                       "Host game",
-                                                       JOptionPane.PLAIN_MESSAGE );
-
-            String timeout = JOptionPane.showInputDialog( this,
-                                                          "Specify timeout:",
-                                                          "Host game",
-                                                          JOptionPane.PLAIN_MESSAGE );
-
-            startNewGame( false, Integer.parseInt( port ), Integer.parseInt( timeout ) );
-        };
-        actionListeners[ 1 ][ 1 ] = event ->
-        {
-            String serverName = JOptionPane.showInputDialog( this,
-                                                             "Specify server name:",
-                                                             "Join game",
-                                                             JOptionPane.PLAIN_MESSAGE );
-
-            String port = JOptionPane.showInputDialog( this,
-                                                       "Specify port number:",
-                                                       "Join game",
-                                                       JOptionPane.PLAIN_MESSAGE );
-
-            startNewGame( true, serverName, Integer.parseInt( port ) );
-        };
+        actionListeners[ 1 ][ 0 ] = event -> startNewGame( GameType.ONLINE_WHITE );
+        actionListeners[ 1 ][ 1 ] = event -> startNewGame( GameType.ONLINE_BLACK );
         actionListeners[ 1 ][ 2 ] = event ->
         {
             String hostname;
@@ -167,11 +119,11 @@ public class MainMenu extends JFrame
         panel.setBorder( BorderFactory.createTitledBorder( "New game (local)" ) );
 
         JButton button = new JButton( "White" );
-        button.addActionListener( event -> startNewGame( false ) );
+        button.addActionListener( actionListeners[ 0 ][ 0 ] );
         panel.add( button );
 
         button = new JButton( "Black" );
-        button.addActionListener( event -> startNewGame( true ) );
+        button.addActionListener( actionListeners[ 0 ][ 1 ] );
         panel.add( button );
 
         return panel;
@@ -183,29 +135,19 @@ public class MainMenu extends JFrame
         panel.setBorder( BorderFactory.createTitledBorder( "New game (online)" ) );
 
         JButton button = new JButton( "Host" );
-        button.addActionListener( event -> startNewGame( false, 2222, 6000 ) );
+        button.addActionListener( actionListeners[ 1 ][ 0 ] );
         panel.add( button );
 
         button = new JButton( "Join" );
-        button.addActionListener( event -> startNewGame( true, "MBA-PW", 2222 ) );
+        button.addActionListener( actionListeners[ 1 ][ 1 ] );
         panel.add( button );
 
         return panel;
     }
 
-    private void startNewGame( boolean reversed )
+    private void startNewGame( GameType gameType )
     {
-        getGame( this, reversed );
-    }
-
-    private void startNewGame( boolean reversed, int port, int timeout )
-    {
-        getGame( this, reversed, port, timeout );
-    }
-
-    private void startNewGame( boolean reversed, String serverName, int port )
-    {
-        getGame( this, reversed, serverName, port );
+        getGame( this, gameType );
     }
 
     private void displayMessage( String title, String message )

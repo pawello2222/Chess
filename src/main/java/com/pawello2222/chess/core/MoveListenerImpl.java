@@ -87,14 +87,10 @@ class MoveListenerImpl extends MoveListenerBase
     @Override
     public void mouseMoved( MouseEvent e )
     {
-        if( dragPiece == null )
+        if( dragPiece == null && gameHandler != null )
         {
-            Spot spot = getSpotFromXY( e.getPoint().x, e.getPoint().y );
-            if ( spot != null && spot.getPiece() != null && spot.getPiece().isActive() )
-            {
-                gameHandler.updatePossibleMoves( spot );
-                gameHandler.updateGraphics();
-            }
+            gameHandler.updatePossibleMoves( getSpotFromXY( e.getPoint().x, e.getPoint().y ) );
+            gameHandler.updateGraphics();
         }
     }
 

@@ -15,21 +15,9 @@ import java.util.List;
  */
 abstract class MainFactory
 {
-    static GameBase getGame( MainMenu menu, boolean)
-
-    static GameBase getGame( MainMenu menu, boolean reversed )
+    static GameBase getGame( MainMenu mainMenu, GameType gameType )
     {
-        return new Game( menu, reversed );
-    }
-
-    static GameBase getGame( MainMenu menu, boolean reversed, int port, int timeout )
-    {
-        return new Game( menu, reversed, port, timeout );
-    }
-
-    static GameBase getGame( MainMenu menu, boolean reversed, String serverName, int port )
-    {
-        return new Game( menu, reversed, serverName, port );
+        return new Game( mainMenu, gameType );
     }
 
     static JPanel getBoard( Image image, Spot[][] spots, List< Piece > pieces )
@@ -101,7 +89,7 @@ abstract class MainFactory
     private static Piece getPiece( Spot[][] spots, int row, int column, PieceColor color, PieceType type )
     {
         Image pieceImage = ResourceLoader.loadImageExitOnEx( color + "_" + type + ".png" );
-        Piece piece = new Piece( pieceImage, color, type, color == PieceColor.WHITE );
+        Piece piece = new Piece( pieceImage, color, type, false );
         spots[ column ][ row ].setPiece( piece );
         piece.setCoordinatesToSpot( spots[ column ][ row ] );
 

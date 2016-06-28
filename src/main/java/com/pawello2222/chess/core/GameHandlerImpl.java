@@ -29,6 +29,7 @@ class GameHandlerImpl extends GameHandlerBase
      */
     private GameType gameType;
     private GameState gameState;
+    private boolean isOnline;
 
     GameHandlerImpl( GameBase game, Spot[][] spots, List< Piece > pieces, GameType gameType )
     {
@@ -40,6 +41,10 @@ class GameHandlerImpl extends GameHandlerBase
 
         this.gameType = gameType;
         gameState = GameState.RUNNING_WHITE;
+        isOnline = gameType == GameType.ONLINE_WHITE || gameType == GameType.ONLINE_BLACK;
+
+        if ( !isOnline )
+            activatePieces( PieceColor.WHITE, true );
     }
 
     @Override
@@ -72,7 +77,7 @@ class GameHandlerImpl extends GameHandlerBase
 
         moveValidator.updateFlagsAfterMove( sourceSpot, targetSpot );
 
-        if ( gameType != GameType.LOCAL_GAME && isOwnMove )
+        if ( isOnline && isOwnMove )
             sendMove( sourceSpot, targetSpot );
 
         nextTurn();
@@ -86,12 +91,19 @@ class GameHandlerImpl extends GameHandlerBase
     @Override
     public void receive( String data )
     {
-        if ( gameType != GameType.LOCAL_GAME )
+        if ( isOnline )
         {
             if ( data.charAt( 0 ) == 'Q' )
                 game.endOfGame( GameState.NETWORK_ERROR );
             else if ( data.charAt( 0 ) == 'P' )
+            {
+                if ( gameType == GameType.ONLINE_WHITE )
+                {
+                    game.setTitle( "Chess - online game (WHITE)" );
+                    activatePieces( PieceColor.WHITE, true );
+                }
                 game.displayMessage( "Success", "Connected with opponent" );
+            }
             else if ( data.charAt( 0 ) == 'M' )
                 movePiece( spots[ Integer.parseInt( data.substring( 1, 2 ) ) ]
                                    [ Integer.parseInt( data.substring( 2, 3 ) ) ],
@@ -103,20 +115,15 @@ class GameHandlerImpl extends GameHandlerBase
 
     private void nextTurn()
     {
-        if ( gameType == GameType.LOCAL_GAME )
-            for ( Piece piece : pieces )
-                piece.setActive( !piece.isActive() );
+        if ( gameState == GameState.RUNNING_WHITE )
+        {
+            activatePieces( PieceColor.WHITE, false );
+            activatePieces( PieceColor.BLACK, true );
+        }
         else
         {
-            for ( Piece piece : pieces )
-                if ( ( gameType == GameType.ONLINE_WHITE
-                       && gameState == GameState.RUNNING_WHITE
-                       && piece.getColor() == PieceColor.WHITE ) || ( gameType == GameType.ONLINE_WHITE
-                                                                      && gameState == GameState.RUNNING_WHITE
-                                                                      && piece.getColor() == PieceColor.WHITE ) )
-                    piece.setActive( true );
-                else
-                    piece.setActive( false );
+            activatePieces( PieceColor.WHITE, true );
+            activatePieces( PieceColor.BLACK, false );
         }
 
         if ( moveValidator.getPossibleMovesCount() > 0 )
@@ -128,9 +135,19 @@ class GameHandlerImpl extends GameHandlerBase
     private void switchGameState()
     {
         if ( gameState == GameState.RUNNING_WHITE )
+        {
             gameState = GameState.RUNNING_BLACK;
-        else if ( gameState == GameState.RUNNING_BLACK )
+            activatePieces( PieceColor.WHITE, false );
+            if ( gameType == GameType.LOCAL_BLACK || gameType == GameType.ONLINE_BLACK )
+                activatePieces( PieceColor.BLACK, true );
+        }
+        else
+        {
             gameState = GameState.RUNNING_WHITE;
+            if ( gameType == GameType.LOCAL_WHITE || gameType == GameType.ONLINE_WHITE )
+                activatePieces( PieceColor.WHITE, true );
+            activatePieces( PieceColor.BLACK, false );
+        }
     }
 
     private void endOfGame()
@@ -146,6 +163,11 @@ class GameHandlerImpl extends GameHandlerBase
             piece.setActive( false );
 
         game.endOfGame( gameState );
+    }
+
+    private void activatePieces( PieceColor pieceColor, boolean active )
+    {
+        pieces.stream().filter( piece -> piece.getColor() == pieceColor ).forEach( piece -> piece.setActive( active ) );
     }
 
     @Override

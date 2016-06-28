@@ -7,7 +7,8 @@ package com.pawello2222.chess.model;
  */
 public enum GameType
 {
-    LOCAL_GAME,
+    LOCAL_WHITE,
+    LOCAL_BLACK,
     ONLINE_WHITE,
     ONLINE_BLACK
 }

@@ -1,5 +1,7 @@
-package com.pawello2222.chess.core;
+package com.pawello2222.chess.core.impl;
 
+import com.pawello2222.chess.core.GameHandlerBase;
+import com.pawello2222.chess.core.MoveListenerBase;
 import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.Spot;
 
@@ -11,7 +13,7 @@ import java.awt.event.MouseEvent;
  *
  * @author Pawel Wiszenko
  */
-class MoveListenerImpl extends MoveListenerBase
+public class MoveListenerImpl extends MoveListenerBase
 {
     /**
      * Dependencies
@@ -25,7 +27,7 @@ class MoveListenerImpl extends MoveListenerBase
     private Spot sourceSpot;
     private Piece dragPiece;
 
-    MoveListenerImpl( GameHandlerBase gameHandler, Spot[][] spots )
+    public MoveListenerImpl( GameHandlerBase gameHandler, Spot[][] spots )
     {
         this.gameHandler = gameHandler;
         this.spots = spots;

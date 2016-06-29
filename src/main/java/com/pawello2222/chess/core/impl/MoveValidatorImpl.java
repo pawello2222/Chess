@@ -1,5 +1,6 @@
-package com.pawello2222.chess.core;
+package com.pawello2222.chess.core.impl;
 
+import com.pawello2222.chess.core.MoveValidatorBase;
 import com.pawello2222.chess.model.*;
 
 import static com.pawello2222.chess.util.ValidatorUtils.*;
@@ -9,7 +10,7 @@ import static com.pawello2222.chess.util.ValidatorUtils.*;
  *
  * @author Pawel Wiszenko
  */
-class MoveValidatorImpl extends MoveValidatorBase
+public class MoveValidatorImpl extends MoveValidatorBase
 {
     /**
      * Dependencies
@@ -23,7 +24,7 @@ class MoveValidatorImpl extends MoveValidatorBase
     private Piece sourcePiece;
     private PieceColor sourceColor;
 
-    MoveValidatorImpl( Spot[][] spots )
+    public MoveValidatorImpl( Spot[][] spots )
     {
         this.spots = spots;
     }

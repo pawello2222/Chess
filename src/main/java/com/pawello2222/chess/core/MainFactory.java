@@ -1,5 +1,6 @@
 package com.pawello2222.chess.core;
 
+import com.pawello2222.chess.core.impl.*;
 import com.pawello2222.chess.model.*;
 import com.pawello2222.chess.util.ResourceLoader;
 
@@ -13,49 +14,50 @@ import java.util.List;
  *
  * @author Pawel Wiszenko
  */
-abstract class MainFactory
+public abstract class MainFactory
 {
-    static Application getAppGUI()
+    static Application getApplicationGUI()
     {
         return new MainMenu();
     }
 
-    static GameBase getLocalGame( Application application )
+    public static GameBase getLocalGame( Application application )
     {
         return new GameLocal( application );
     }
 
-    static GameBase getServerGame( Application application )
+    public static GameBase getServerGame( Application application )
     {
         return new GameServer( application );
     }
 
-    static GameBase getClientGame( Application application )
+    public static GameBase getClientGame( Application application )
     {
         return new GameClient( application );
     }
 
-    static GameHandlerBase getGameHandler( GameBase game, Spot[][] spots, List< Piece > pieces, GameType gameType )
+    public static GameHandlerBase getGameHandler( GameBase game, MoveValidatorBase moveValidator,
+                                                  Spot[][] spots, List< Piece > pieces, GameType gameType )
     {
-        return new GameHandlerImpl( game, spots, pieces, gameType );
+        return new GameHandlerImpl( game, moveValidator, spots, pieces, gameType );
     }
 
-    static MoveListenerBase getMoveListener( GameHandlerBase gameHandler, Spot[][] spots )
+    public static MoveListenerBase getMoveListener( GameHandlerBase gameHandler, Spot[][] spots )
     {
         return new MoveListenerImpl( gameHandler, spots );
     }
 
-    static MoveValidatorBase getMoveValidator( Spot[][] spots )
+    public static MoveValidatorBase getMoveValidator( Spot[][] spots )
     {
         return new MoveValidatorImpl( spots );
     }
 
-    static JPanel getBoard( Image image, Spot[][] spots, List< Piece > pieces )
+    public static JPanel getBoard( Image image, Spot[][] spots, List< Piece > pieces )
     {
         return new Board( image, spots, pieces );
     }
 
-    static Spot[][] getSpots( boolean reversed )
+    public static Spot[][] getSpots( boolean reversed )
     {
         Spot[][] spots = new Spot[ 8 ][ 8 ];
 
@@ -75,7 +77,7 @@ abstract class MainFactory
         return spots;
     }
 
-    static List< Piece > getPieces( Spot[][] spots )
+    public static List< Piece > getPieces( Spot[][] spots )
     {
         List< Piece > pieces = new ArrayList<>();
 

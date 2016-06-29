@@ -1,5 +1,6 @@
-package com.pawello2222.chess.core;
+package com.pawello2222.chess.core.impl;
 
+import com.pawello2222.chess.core.*;
 import com.pawello2222.chess.model.GameState;
 import com.pawello2222.chess.model.GameType;
 import com.pawello2222.chess.model.Piece;
@@ -15,11 +16,11 @@ import java.util.List;
 import static com.pawello2222.chess.core.MainFactory.*;
 
 /**
- * Game frame.
+ * Local game implementation class.
  *
  * @author Pawel Wiszenko
  */
-class GameLocal extends GameBase
+public class GameLocal extends GameBase
 {
     /**
      * Dependencies
@@ -30,7 +31,7 @@ class GameLocal extends GameBase
     private MoveListenerBase moveListener;
     private JPanel board;
 
-    GameLocal( Application application )
+    public GameLocal( Application application )
     {
         this.application = application;
 
@@ -67,13 +68,15 @@ class GameLocal extends GameBase
 
     private void initGame( GameType gameType )
     {
-        Image image = ResourceLoader.loadImageExitOnEx( "BOARD.png" );
         boolean reversed = gameType == GameType.LOCAL_BLACK || gameType == GameType.ONLINE_BLACK;
+
+        Image image = ResourceLoader.loadImageExitOnEx( "BOARD.png" );
         Spot[][] spots = getSpots( reversed );
         List< Piece > pieces = getPieces( spots );
         board = getBoard( image, spots, pieces );
 
-        gameHandler = getGameHandler( this, spots, pieces, gameType );
+        MoveValidatorBase moveValidator = getMoveValidator( spots );
+        gameHandler = getGameHandler( this, moveValidator,spots, pieces, gameType );
 
         moveListener = getMoveListener( gameHandler, spots );
         board.addMouseListener( moveListener );
@@ -110,7 +113,7 @@ class GameLocal extends GameBase
     }
 
     @Override
-    void close()
+    public void close()
     {
         closeGame();
     }

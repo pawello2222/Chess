@@ -1,5 +1,8 @@
-package com.pawello2222.chess.core;
+package com.pawello2222.chess.core.impl;
 
+import com.pawello2222.chess.core.GameBase;
+import com.pawello2222.chess.core.GameHandlerBase;
+import com.pawello2222.chess.core.MoveValidatorBase;
 import com.pawello2222.chess.model.*;
 import com.pawello2222.chess.net.NetworkSender;
 
@@ -12,17 +15,17 @@ import static com.pawello2222.chess.util.BoardUtils.*;
  *
  * @author Pawel Wiszenko
  */
-class GameHandlerImpl extends GameHandlerBase
+public class GameHandlerImpl extends GameHandlerBase
 {
     /**
      * Dependencies
      */
     private GameBase game;
+    private MoveValidatorBase moveValidator;
     private Spot[][] spots;
     private List< Piece > pieces;
 
     private NetworkSender networkSender;
-    private MoveValidatorBase moveValidator;
 
     /**
      * Variables
@@ -32,13 +35,13 @@ class GameHandlerImpl extends GameHandlerBase
 
     private boolean isOnline;
 
-    GameHandlerImpl( GameBase game, Spot[][] spots, List< Piece > pieces, GameType gameType )
+    public GameHandlerImpl( GameBase game, MoveValidatorBase moveValidator,
+                            Spot[][] spots, List< Piece > pieces, GameType gameType )
     {
         this.game = game;
+        this.moveValidator = moveValidator;
         this.spots = spots;
         this.pieces = pieces;
-
-        this.moveValidator = MainFactory.getMoveValidator( spots );
 
         this.gameType = gameType;
         gameState = GameState.RUNNING_WHITE;

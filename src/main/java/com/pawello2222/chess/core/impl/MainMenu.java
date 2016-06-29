@@ -1,5 +1,7 @@
-package com.pawello2222.chess.core;
+package com.pawello2222.chess.core.impl;
 
+import com.pawello2222.chess.core.Application;
+import com.pawello2222.chess.core.GameBase;
 import com.pawello2222.chess.model.GameType;
 import com.pawello2222.chess.util.ResourceLoader;
 
@@ -13,15 +15,15 @@ import static com.pawello2222.chess.core.MainFactory.getLocalGame;
 import static com.pawello2222.chess.core.MainFactory.getServerGame;
 
 /**
- * Main menu frame.
+ * Application GUI implementation class.
  *
  * @author Pawel Wiszenko
  */
-class MainMenu extends Application
+public class MainMenu extends Application
 {
     private ActionListener[][] actionListeners;
 
-    MainMenu()
+    public MainMenu()
     {
         setTitle( "Main menu" );
         setIconImage( ResourceLoader.loadImageExitOnEx( "ICON.png" ) );
@@ -58,7 +60,9 @@ class MainMenu extends Application
                 hostname = "Cannot retrieve host name. Unknown host.";
             }
 
-            displayMessage( "Host name", hostname );
+            JOptionPane.showConfirmDialog( this, hostname, "Host name",
+                                           JOptionPane.DEFAULT_OPTION,
+                                           JOptionPane.PLAIN_MESSAGE );
         };
     }
 
@@ -167,14 +171,5 @@ class MainMenu extends Application
                 game.start( gameType );
                 break;
         }
-    }
-
-    private void displayMessage( String title, String message )
-    {
-        JOptionPane.showConfirmDialog( this,
-                                       message,
-                                       title,
-                                       JOptionPane.DEFAULT_OPTION,
-                                       JOptionPane.PLAIN_MESSAGE );
     }
 }

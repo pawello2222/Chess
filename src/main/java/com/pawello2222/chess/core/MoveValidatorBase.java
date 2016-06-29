@@ -7,11 +7,11 @@ import com.pawello2222.chess.model.Spot;
  *
  * @author Pawel Wiszenko
  */
-abstract class MoveValidatorBase
+public abstract class MoveValidatorBase
 {
     public abstract void updateFlagsAfterMove( Spot source, Spot target );
 
     public abstract void updateValidMoveFlags( Spot spot );
 
-    abstract int getPossibleMovesCount();
+    public abstract int getPossibleMovesCount();
 }

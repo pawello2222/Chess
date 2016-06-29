@@ -1,4 +1,4 @@
-package com.pawello2222.chess.core;
+package com.pawello2222.chess.core.impl;
 
 import com.pawello2222.chess.model.*;
 
@@ -12,13 +12,13 @@ import java.util.List;
  *
  * @author Pawel Wiszenko
  */
-class Board extends JPanel
+public class Board extends JPanel
 {
     /**
      * Constants
      */
-    static final int BOARD_OFFSET_X = 10;
-    static final int BOARD_OFFSET_Y = 10;
+    public static final int BOARD_OFFSET_X = 10;
+    public static final int BOARD_OFFSET_Y = 10;
 
     /**
      * Dependencies
@@ -27,7 +27,7 @@ class Board extends JPanel
     private Spot[][] spots;
     private List< Piece > pieces = new ArrayList<>();
 
-    Board( Image bgImage, Spot[][] spots, List< Piece > pieces )
+    public Board( Image bgImage, Spot[][] spots, List< Piece > pieces )
     {
         this.bgImage = bgImage;
         this.spots = spots;

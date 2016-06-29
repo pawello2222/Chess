@@ -12,9 +12,9 @@ public abstract class Application extends JFrame
 {
     public static void main( String[] args )
     {
-        //TODO getAppGUI -> rename
-        EventQueue.invokeLater( MainFactory::getAppGUI );
+        EventQueue.invokeLater( MainFactory::getApplicationGUI );
     }
 }
 
+// todo: add board base class
 // todo: add verification of null dependencies (everywhere)

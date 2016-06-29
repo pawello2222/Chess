@@ -10,13 +10,13 @@ import javax.swing.*;
  *
  * @author Pawel Wiszenko
  */
-abstract class GameBase extends JFrame implements EventHandler
+public abstract class GameBase extends JFrame implements EventHandler
 {
     public abstract void start( GameType gameType );
 
     public abstract void end( GameState gameState );
 
-    abstract void close();
+    public abstract void close();
 
     @Override
     public abstract void message( String title, String message );

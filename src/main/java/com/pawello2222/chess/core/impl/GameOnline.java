@@ -1,5 +1,6 @@
-package com.pawello2222.chess.core;
+package com.pawello2222.chess.core.impl;
 
+import com.pawello2222.chess.core.Application;
 import com.pawello2222.chess.model.GameState;
 import com.pawello2222.chess.model.GameType;
 import com.pawello2222.chess.net.NetworkHandler;
@@ -7,7 +8,7 @@ import com.pawello2222.chess.net.NetworkHandler;
 import javax.swing.*;
 
 /**
- * Online game.
+ * Online game base class.
  *
  * @author Pawel Wiszenko
  */
@@ -46,7 +47,7 @@ abstract class GameOnline extends GameLocal
     }
 
     @Override
-    void close()
+    public void close()
     {
         closeNetwork();
         closeGame();

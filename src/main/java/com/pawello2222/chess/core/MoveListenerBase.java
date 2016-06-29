@@ -9,7 +9,7 @@ import java.awt.event.MouseMotionListener;
  *
  * @author Pawel Wiszenko
  */
-abstract class MoveListenerBase implements MouseListener, MouseMotionListener
+public abstract class MoveListenerBase implements MouseListener, MouseMotionListener
 {
     @Override
     public abstract void mousePressed( MouseEvent e );

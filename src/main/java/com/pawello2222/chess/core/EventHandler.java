@@ -1,7 +1,7 @@
 package com.pawello2222.chess.core;
 
 /**
- * Exception handler interface.
+ * Event handler interface.
  *
  * @author Pawel Wiszenko
  */

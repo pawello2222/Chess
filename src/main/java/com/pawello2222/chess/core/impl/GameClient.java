@@ -1,17 +1,18 @@
-package com.pawello2222.chess.core;
+package com.pawello2222.chess.core.impl;
 
+import com.pawello2222.chess.core.Application;
 import com.pawello2222.chess.model.GameType;
 
 import static com.pawello2222.chess.net.NetworkFactory.getNetworkClient;
 
 /**
- * Client game.
+ * Client game implementation class.
  *
  * @author Pawel Wiszenko
  */
-class GameClient extends GameOnline
+public class GameClient extends GameOnline
 {
-    GameClient( Application application )
+    public GameClient( Application application )
     {
         super( application );
     }

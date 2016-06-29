@@ -118,6 +118,12 @@ public class GameLocal extends GameBase
         closeGame();
     }
 
+    void close ( String message )
+    {
+        message( "Error", message );
+        closeGame();
+    }
+
     void closeGame()
     {
         board.removeMouseListener( moveListener );

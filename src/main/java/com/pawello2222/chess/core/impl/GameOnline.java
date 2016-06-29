@@ -7,6 +7,8 @@ import com.pawello2222.chess.net.NetworkHandler;
 
 import javax.swing.*;
 
+import static com.pawello2222.chess.util.NetworkUtils.validateInt;
+
 /**
  * Online game base class.
  *
@@ -68,29 +70,28 @@ abstract class GameOnline extends GameLocal
         closeGame();
     }
 
-
-
-
-
-    //todo: refactor
-
     String getInput( String message )
     {
-//        return "MBA-PW";
         return JOptionPane.showInputDialog( this, message, "New game", JOptionPane.PLAIN_MESSAGE );
     }
 
     int getPort()
     {
-        String result = getInput( "Specify port number:" );
+        int min = 1024;
+        int max = 65535;
 
-        return 2222;
+        return validateInt( getInput( "Specify port number (range: " + min + "-" + max + "):" ), min, max );
     }
 
     int getTimeout()
     {
-        String result = getInput( "Specify timeout:" );
+        int min = 1;
+        int max = 30;
 
-        return 6000;
+        int result = validateInt( getInput( "Specify timeout in seconds (range: " + min + "-" + max + "):" ), min, max );
+        if ( result != -1 )
+            result *= 1000;
+
+        return result;
     }
 }

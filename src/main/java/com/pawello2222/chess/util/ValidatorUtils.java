@@ -6,7 +6,7 @@ import com.pawello2222.chess.model.PieceType;
 import com.pawello2222.chess.model.Spot;
 
 /**
- * Validator util.
+ * Validator utilities.
  *
  * @author Pawel Wiszenko
  */

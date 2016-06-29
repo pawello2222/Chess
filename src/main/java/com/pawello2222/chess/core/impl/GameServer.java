@@ -24,6 +24,16 @@ public class GameServer extends GameOnline
 
         super.start( gameType );
 
-        networkHandler.start( getPort(), getTimeout() );
+        int port = getPort();
+        if ( port == -1 )
+            close( "Invalid port number." );
+        else
+        {
+            int timeout = getTimeout();
+            if ( timeout == -1 )
+                close( "Invalid timeout." );
+            else
+                networkHandler.start( port, timeout );
+        }
     }
 }

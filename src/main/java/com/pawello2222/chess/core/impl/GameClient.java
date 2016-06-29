@@ -24,6 +24,16 @@ public class GameClient extends GameOnline
 
         super.start( gameType );
 
-        networkHandler.start( getInput( "Specify server name:" ), getPort() );
+        String serverName = getInput( "Specify server name:" );
+        if ( serverName == null )
+            close( "Invalid server name." );
+        else
+        {
+            int port = getPort();
+            if ( port == -1 )
+                close( "Invalid timeout." );
+            else
+                networkHandler.start( serverName, port );
+        }
     }
 }

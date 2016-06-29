@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Pawel Wiszenko
  */
-public class Board extends JPanel
+public class BoardPanel extends JPanel
 {
     /**
      * Constants
@@ -27,7 +27,7 @@ public class Board extends JPanel
     private Spot[][] spots;
     private List< Piece > pieces = new ArrayList<>();
 
-    public Board( Image bgImage, Spot[][] spots, List< Piece > pieces )
+    public BoardPanel( Image bgImage, Spot[][] spots, List< Piece > pieces )
     {
         this.bgImage = bgImage;
         this.spots = spots;

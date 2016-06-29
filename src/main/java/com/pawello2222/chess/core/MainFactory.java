@@ -3,6 +3,9 @@ package com.pawello2222.chess.core;
 import com.pawello2222.chess.core.impl.*;
 import com.pawello2222.chess.model.*;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
@@ -15,6 +18,11 @@ public abstract class MainFactory
     static Application getApplicationGUI()
     {
         return new MainMenu();
+    }
+
+    public static JPanel getMenuPanel( Image image, ActionListener[][] actionListeners )
+    {
+        return new MenuPanel( image, actionListeners );
     }
 
     public static GameBase getLocalGame( Application application )

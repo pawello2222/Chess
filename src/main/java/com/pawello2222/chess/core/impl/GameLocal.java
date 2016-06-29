@@ -30,7 +30,7 @@ public class GameLocal extends GameBase
 
     private Application application;
     private MoveListenerBase moveListener;
-    private JPanel board;
+    private JPanel boardPanel;
 
     public GameLocal( Application application )
     {
@@ -74,16 +74,16 @@ public class GameLocal extends GameBase
         Image image = ResourceLoader.loadImageExitOnEx( "BOARD.png" );
         Spot[][] spots = getSpots( reversed );
         List< Piece > pieces = getPieces( spots );
-        board = getBoard( image, spots, pieces );
+        boardPanel = getBoardPanel( image, spots, pieces );
 
         MoveValidatorBase moveValidator = getMoveValidator( spots );
         gameHandler = getGameHandler( this, moveValidator,spots, pieces, gameType );
 
         moveListener = getMoveListener( gameHandler, spots );
-        board.addMouseListener( moveListener );
-        board.addMouseMotionListener( moveListener );
+        boardPanel.addMouseListener( moveListener );
+        boardPanel.addMouseMotionListener( moveListener );
 
-        add( board );
+        add( boardPanel );
         pack();
     }
 
@@ -127,9 +127,9 @@ public class GameLocal extends GameBase
 
     void closeGame()
     {
-        board.removeMouseListener( moveListener );
-        board.removeMouseMotionListener( moveListener );
-        remove( board );
+        boardPanel.removeMouseListener( moveListener );
+        boardPanel.removeMouseMotionListener( moveListener );
+        remove( boardPanel );
 
         moveListener.setGameHandler( null );
         gameHandler.setGame( null );

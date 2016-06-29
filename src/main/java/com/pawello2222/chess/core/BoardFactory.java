@@ -1,6 +1,6 @@
 package com.pawello2222.chess.core;
 
-import com.pawello2222.chess.core.impl.Board;
+import com.pawello2222.chess.core.impl.BoardPanel;
 import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.PieceColor;
 import com.pawello2222.chess.model.PieceType;
@@ -13,15 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Board factory.
+ * BoardPanel factory.
  *
  * @author Pawel Wiszenko
  */
 public abstract class BoardFactory
 {
-    public static JPanel getBoard( Image image, Spot[][] spots, List< Piece > pieces )
+    public static JPanel getBoardPanel( Image image, Spot[][] spots, List< Piece > pieces )
     {
-        return new Board( image, spots, pieces );
+        return new BoardPanel( image, spots, pieces );
     }
 
     public static Spot[][] getSpots( boolean reversed )
@@ -35,8 +35,8 @@ public abstract class BoardFactory
                 int y = reversed ? 7 - row : row;
 
                 spots[ column ][ row ] = new Spot();
-                spots[ column ][ row ].setX( Board.BOARD_OFFSET_X + Spot.SPOT_WIDTH * x );
-                spots[ column ][ row ].setY( Board.BOARD_OFFSET_Y + Spot.SPOT_HEIGHT * y );
+                spots[ column ][ row ].setX( BoardPanel.BOARD_OFFSET_X + Spot.SPOT_WIDTH * x );
+                spots[ column ][ row ].setY( BoardPanel.BOARD_OFFSET_Y + Spot.SPOT_HEIGHT * y );
                 spots[ column ][ row ].setRow( row );
                 spots[ column ][ row ].setColumn( column );
             }

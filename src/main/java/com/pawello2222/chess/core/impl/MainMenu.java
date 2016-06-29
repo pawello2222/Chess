@@ -10,9 +10,7 @@ import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import static com.pawello2222.chess.core.MainFactory.getClientGame;
-import static com.pawello2222.chess.core.MainFactory.getLocalGame;
-import static com.pawello2222.chess.core.MainFactory.getServerGame;
+import static com.pawello2222.chess.core.MainFactory.*;
 
 /**
  * Application GUI implementation class.
@@ -30,8 +28,7 @@ public class MainMenu extends Application
 
         initActionListeners();
         setJMenuBar( initMenuBar() );
-        add( localGamePanel() );
-        add( onlineGamePanel() );
+        add( getMenuPanel( ResourceLoader.loadImageExitOnEx( "BACKGROUND.png" ), actionListeners ) );
         pack();
 
         setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
@@ -118,58 +115,25 @@ public class MainMenu extends Application
         return menu;
     }
 
-    private JPanel localGamePanel()
-    {
-        JPanel panel = new JPanel();
-        panel.setBorder( BorderFactory.createTitledBorder( "New game (local)" ) );
-
-        JButton button = new JButton( "White" );
-        button.addActionListener( actionListeners[ 0 ][ 0 ] );
-        panel.add( button );
-
-        button = new JButton( "Black" );
-        button.addActionListener( actionListeners[ 0 ][ 1 ] );
-        panel.add( button );
-
-        return panel;
-    }
-
-    private JPanel onlineGamePanel()
-    {
-        JPanel panel = new JPanel();
-        panel.setBorder( BorderFactory.createTitledBorder( "New game (online)" ) );
-
-        JButton button = new JButton( "Host" );
-        button.addActionListener( actionListeners[ 1 ][ 0 ] );
-        panel.add( button );
-
-        button = new JButton( "Join" );
-        button.addActionListener( actionListeners[ 1 ][ 1 ] );
-        panel.add( button );
-
-        return panel;
-    }
-
     private void startNewGame( GameType gameType )
     {
-        GameBase game;
+        GameBase game = null;
 
         switch ( gameType )
         {
             case LOCAL_WHITE:
             case LOCAL_BLACK:
                 game = getLocalGame( this );
-                game.start( gameType );
                 break;
 
             case ONLINE_WHITE:
                 game = getServerGame( this );
-                game.start( gameType );
                 break;
             case ONLINE_BLACK:
                 game = getClientGame( this );
-                game.start( gameType );
                 break;
         }
+
+        game.start( gameType );
     }
 }

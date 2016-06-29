@@ -10,7 +10,7 @@ import java.awt.*;
 import java.util.List;
 
 /**
- * Board utilities.
+ * BoardPanel utilities.
  *
  * @author Pawel Wiszenko
  */

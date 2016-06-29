@@ -77,7 +77,7 @@ class GameHandlerImpl extends GameHandlerBase
 
         moveValidator.updateFlagsAfterMove( sourceSpot, targetSpot );
 
-        if ( isOnline && isOwnMove )
+        if ( isOnline && isOwnMove && networkSender != null )
             sendMove( sourceSpot, targetSpot );
 
         nextTurn();
@@ -91,7 +91,7 @@ class GameHandlerImpl extends GameHandlerBase
     @Override
     public void receive( String data )
     {
-        if ( isOnline )
+        if ( isOnline && networkSender != null )
         {
             if ( data.charAt( 0 ) == 'Q' )
                 game.endOfGame( GameState.NETWORK_ERROR );
@@ -162,6 +162,7 @@ class GameHandlerImpl extends GameHandlerBase
         for ( Piece piece : pieces )
             piece.setActive( false );
 
+        isOnline = false;
         game.endOfGame( gameState );
     }
 

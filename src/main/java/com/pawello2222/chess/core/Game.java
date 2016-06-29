@@ -198,8 +198,8 @@ class Game extends GameBase
     @Override
     public void exception( String message )
     {
-        displayMessage( "Exception occurred", message );
         closeNetwork();
+        displayMessage( "Exception occurred", message );
         quit();
     }
 

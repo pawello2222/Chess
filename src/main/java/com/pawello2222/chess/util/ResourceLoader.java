@@ -1,7 +1,5 @@
 package com.pawello2222.chess.util;
 
-import com.pawello2222.chess.exception.InvalidResourceException;
-
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;

@@ -1,15 +1,15 @@
-package com.pawello2222.chess.exception;
+package com.pawello2222.chess.util;
 
 /**
  * Invalid resource exception class.
  *
  * @author Pawel Wiszenko
  */
-public class InvalidResourceException extends RuntimeException
+class InvalidResourceException extends RuntimeException
 {
     private String resource;
 
-    public InvalidResourceException( String resource )
+    InvalidResourceException( String resource )
     {
         this.resource = resource;
     }

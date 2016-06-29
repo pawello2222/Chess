@@ -75,15 +75,7 @@ class NetworkServer extends NetworkHandler
     {
         connect = false;
 
-        try
-        {
-            if ( serverSocket != null )
-                serverSocket.close();
-        }
-        catch ( IOException e )
-        {
-            exception( "Cannot close server" );
-        }
+        close( serverSocket );
 
         super.stop();
     }

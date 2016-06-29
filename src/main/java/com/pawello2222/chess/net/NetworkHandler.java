@@ -100,7 +100,7 @@ public abstract class NetworkHandler implements NetworkSender
         exceptionHandler = null;
     }
 
-    private void close( Closeable closeable )
+    void close( Closeable closeable )
     {
         try
         {

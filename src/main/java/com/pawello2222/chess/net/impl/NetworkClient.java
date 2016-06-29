@@ -1,4 +1,4 @@
-package com.pawello2222.chess.net;
+package com.pawello2222.chess.net.impl;
 
 import com.pawello2222.chess.core.EventHandler;
 
@@ -12,9 +12,9 @@ import java.net.Socket;
  *
  * @author Pawel Wiszenko
  */
-class NetworkClient extends NetworkHandler
+public class NetworkClient extends NetworkHandlerImpl
 {
-    NetworkClient( EventHandler eventHandler )
+    public NetworkClient( EventHandler eventHandler )
     {
         super( eventHandler );
     }

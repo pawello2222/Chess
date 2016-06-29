@@ -1,6 +1,8 @@
 package com.pawello2222.chess.net;
 
 import com.pawello2222.chess.core.EventHandler;
+import com.pawello2222.chess.net.impl.NetworkClient;
+import com.pawello2222.chess.net.impl.NetworkServer;
 
 /**
  * Network factory.

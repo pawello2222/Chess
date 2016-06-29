@@ -1,4 +1,4 @@
-package com.pawello2222.chess.net;
+package com.pawello2222.chess.net.impl;
 
 import com.pawello2222.chess.core.EventHandler;
 
@@ -12,7 +12,7 @@ import java.net.ServerSocket;
  *
  * @author Pawel Wiszenko
  */
-class NetworkServer extends NetworkHandler
+public class NetworkServer extends NetworkHandlerImpl
 {
     /**
      * Variables
@@ -20,7 +20,7 @@ class NetworkServer extends NetworkHandler
     private volatile ServerSocket serverSocket;
     private boolean connect;
 
-    NetworkServer( EventHandler eventHandler )
+    public NetworkServer( EventHandler eventHandler )
     {
         super( eventHandler );
     }

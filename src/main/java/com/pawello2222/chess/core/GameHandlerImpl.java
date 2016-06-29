@@ -93,9 +93,9 @@ class GameHandlerImpl extends GameHandlerBase
     {
         if ( isOnline && networkSender != null )
         {
-            if ( data.charAt( 0 ) == 'Q' )
-                game.endOfGame( GameState.NETWORK_ERROR );
-            else if ( data.charAt( 0 ) == 'P' )
+            if ( data.charAt( 0 ) == '0' )
+                game.endOfGame( GameState.NETWORK_CLOSE );
+            else if ( data.charAt( 0 ) == '1' )
             {
                 if ( gameType == GameType.ONLINE_WHITE )
                 {
@@ -104,7 +104,7 @@ class GameHandlerImpl extends GameHandlerBase
                 }
                 else
                     game.setTitle( "Chess - online game (BLACK)" );
-                game.displayMessage( "Success", "Connected with opponent" );
+                game.displayMessage( "Success", "Connected to opponent" );
             }
             else if ( data.charAt( 0 ) == 'M' )
                 movePiece( spots[ Integer.parseInt( data.substring( 1, 2 ) ) ]

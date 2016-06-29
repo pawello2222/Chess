@@ -13,6 +13,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
+import static com.pawello2222.chess.core.BoardFactory.*;
 import static com.pawello2222.chess.core.MainFactory.*;
 
 /**

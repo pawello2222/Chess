@@ -19,12 +19,7 @@ abstract class GameBase extends JFrame implements EventHandler
     abstract void close();
 
     @Override
-    public void message( String title, String message )
-    {
-        JOptionPane.showConfirmDialog( this, message, title,
-                                       JOptionPane.DEFAULT_OPTION,
-                                       JOptionPane.PLAIN_MESSAGE );
-    }
+    public abstract void message( String title, String message );
 
     @Override
     public abstract void exception( String message );

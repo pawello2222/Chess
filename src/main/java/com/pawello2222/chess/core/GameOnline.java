@@ -13,6 +13,9 @@ import javax.swing.*;
  */
 abstract class GameOnline extends GameLocal
 {
+    /**
+     * Dependencies
+     */
     NetworkHandler networkHandler;
 
     GameOnline( Application application )
@@ -51,13 +54,9 @@ abstract class GameOnline extends GameLocal
 
     private void closeNetwork()
     {
-        //todo: verify
-//        if ( networkHandler != null )
-        {
-            gameHandler.setNetworkSender( null );
-            networkHandler.setNetworkReceiver( null );
-            networkHandler.stop();
-        }
+        gameHandler.setNetworkSender( null );
+        networkHandler.setNetworkReceiver( null );
+        networkHandler.stop();
     }
 
     @Override

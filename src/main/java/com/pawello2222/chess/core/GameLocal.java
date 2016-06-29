@@ -21,8 +21,12 @@ import static com.pawello2222.chess.core.MainFactory.*;
  */
 class GameLocal extends GameBase
 {
-    private Application application;
+    /**
+     * Dependencies
+     */
     GameHandlerBase gameHandler;
+
+    private Application application;
     private MoveListenerBase moveListener;
     private JPanel board;
 
@@ -123,6 +127,14 @@ class GameLocal extends GameBase
         application.setVisible( true );
 
         dispose();
+    }
+
+    @Override
+    public void message( String title, String message )
+    {
+        JOptionPane.showConfirmDialog( this, message, title,
+                                       JOptionPane.DEFAULT_OPTION,
+                                       JOptionPane.PLAIN_MESSAGE );
     }
 
     @Override

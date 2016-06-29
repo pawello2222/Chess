@@ -16,3 +16,5 @@ public abstract class Application extends JFrame
         EventQueue.invokeLater( MainFactory::getAppGUI );
     }
 }
+
+// todo: add verification of null dependencies (everywhere)

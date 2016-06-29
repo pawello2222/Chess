@@ -14,9 +14,15 @@ import java.util.List;
  */
 class Board extends JPanel
 {
+    /**
+     * Constants
+     */
     static final int BOARD_OFFSET_X = 10;
     static final int BOARD_OFFSET_Y = 10;
 
+    /**
+     * Dependencies
+     */
     private Image bgImage;
     private Spot[][] spots;
     private List< Piece > pieces = new ArrayList<>();

@@ -1,6 +1,6 @@
 package com.pawello2222.chess.net;
 
-import com.pawello2222.chess.core.ExceptionHandler;
+import com.pawello2222.chess.core.EventHandler;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -14,9 +14,9 @@ import java.net.Socket;
  */
 class NetworkClient extends NetworkHandler
 {
-    NetworkClient( ExceptionHandler exceptionHandler )
+    NetworkClient( EventHandler eventHandler )
     {
-        super( exceptionHandler );
+        super( eventHandler );
     }
 
     @Override

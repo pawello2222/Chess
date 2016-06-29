@@ -4,23 +4,24 @@ import com.pawello2222.chess.model.GameType;
 import com.pawello2222.chess.util.ResourceLoader;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import static com.pawello2222.chess.core.MainFactory.getGame;
+import static com.pawello2222.chess.core.MainFactory.getClientGame;
+import static com.pawello2222.chess.core.MainFactory.getLocalGame;
+import static com.pawello2222.chess.core.MainFactory.getServerGame;
 
 /**
  * Main menu frame.
  *
  * @author Pawel Wiszenko
  */
-public class MainMenu extends JFrame
+public class MainMenu extends Application
 {
     private ActionListener[][] actionListeners;
 
-    private MainMenu()
+    MainMenu()
     {
         setTitle( "Main menu" );
         setIconImage( ResourceLoader.loadImageExitOnEx( "ICON.png" ) );
@@ -147,7 +148,25 @@ public class MainMenu extends JFrame
 
     private void startNewGame( GameType gameType )
     {
-        getGame( this, gameType );
+        GameBase game;
+
+        switch ( gameType )
+        {
+            case LOCAL_WHITE:
+            case LOCAL_BLACK:
+                game = getLocalGame( this );
+                game.start( gameType );
+                break;
+
+            case ONLINE_WHITE:
+                game = getServerGame( this );
+                game.start( gameType );
+                break;
+            case ONLINE_BLACK:
+                game = getClientGame( this );
+                game.start( gameType );
+                break;
+        }
     }
 
     private void displayMessage( String title, String message )
@@ -158,9 +177,9 @@ public class MainMenu extends JFrame
                                        JOptionPane.DEFAULT_OPTION,
                                        JOptionPane.PLAIN_MESSAGE );
     }
-
-    public static void main( String[] args )
-    {
-        EventQueue.invokeLater( MainMenu::new );
-    }
+//
+//    public static void main( String[] args )
+//    {
+//        EventQueue.invokeLater( MainMenu::new );
+//    }
 }

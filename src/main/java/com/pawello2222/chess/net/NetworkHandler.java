@@ -1,6 +1,6 @@
 package com.pawello2222.chess.net;
 
-import com.pawello2222.chess.core.ExceptionHandler;
+import com.pawello2222.chess.core.EventHandler;
 
 import java.io.Closeable;
 import java.io.DataInputStream;
@@ -18,7 +18,7 @@ public abstract class NetworkHandler implements NetworkSender
     /**
      * Dependencies
      */
-    private ExceptionHandler exceptionHandler;
+    private EventHandler eventHandler;
     private NetworkReceiver networkReceiver;
 
     /**
@@ -30,9 +30,9 @@ public abstract class NetworkHandler implements NetworkSender
 
     private boolean listen;
 
-    NetworkHandler( ExceptionHandler exceptionHandler )
+    NetworkHandler( EventHandler eventHandler )
     {
-        this.exceptionHandler = exceptionHandler;
+        this.eventHandler = eventHandler;
     }
 
     @Override
@@ -94,7 +94,7 @@ public abstract class NetworkHandler implements NetworkSender
         close( inputStream );
         close( socket );
 
-        exceptionHandler = null;
+        eventHandler = null;
     }
 
     void close( Closeable closeable )
@@ -112,7 +112,7 @@ public abstract class NetworkHandler implements NetworkSender
 
     void exception( String exception )
     {
-        exceptionHandler.exception( exception );
+        eventHandler.exception( exception );
     }
 
     @Override

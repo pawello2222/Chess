@@ -5,7 +5,9 @@ package com.pawello2222.chess.core;
  *
  * @author Pawel Wiszenko
  */
-public interface ExceptionHandler
+public interface EventHandler
 {
+    void message( String title, String message );
+
     void exception( String message );
 }

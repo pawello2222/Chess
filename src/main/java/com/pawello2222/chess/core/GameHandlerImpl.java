@@ -95,7 +95,7 @@ class GameHandlerImpl extends GameHandlerBase
         if ( isOnline && networkSender != null )
         {
             if ( data.charAt( 0 ) == '0' )
-                game.endOfGame( GameState.NETWORK_CLOSE );
+                game.end( GameState.NETWORK_CLOSE );
             else if ( data.charAt( 0 ) == '1' )
             {
                 if ( gameType == GameType.ONLINE_WHITE )
@@ -105,7 +105,7 @@ class GameHandlerImpl extends GameHandlerBase
                 }
                 else
                     game.setTitle( "Chess - online game (BLACK)" );
-                game.displayMessage( "Success", "Connected to opponent" );
+                game.message( "Success", "Connected to opponent" );
             }
             else if ( data.charAt( 0 ) == 'M' )
                 movePiece( spots[ Integer.parseInt( data.substring( 1, 2 ) ) ]
@@ -164,7 +164,7 @@ class GameHandlerImpl extends GameHandlerBase
             piece.setActive( false );
 
         isOnline = false;
-        game.endOfGame( gameState );
+        game.end( gameState );
     }
 
     private void activatePieces( PieceColor color, boolean active )

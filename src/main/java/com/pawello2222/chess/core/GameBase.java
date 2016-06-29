@@ -1,6 +1,7 @@
 package com.pawello2222.chess.core;
 
 import com.pawello2222.chess.model.GameState;
+import com.pawello2222.chess.model.GameType;
 
 import javax.swing.*;
 
@@ -9,13 +10,21 @@ import javax.swing.*;
  *
  * @author Pawel Wiszenko
  */
-public abstract class GameBase extends JFrame implements ExceptionHandler
+abstract class GameBase extends JFrame implements EventHandler
 {
-    public abstract void endOfGame( GameState gameState );
+    public abstract void start( GameType gameType );
 
-    public abstract void quit();
+    public abstract void end( GameState gameState );
 
-    public abstract void displayMessage( String title, String message );
+    abstract void close();
+
+    @Override
+    public void message( String title, String message )
+    {
+        JOptionPane.showConfirmDialog( this, message, title,
+                                       JOptionPane.DEFAULT_OPTION,
+                                       JOptionPane.PLAIN_MESSAGE );
+    }
 
     @Override
     public abstract void exception( String message );

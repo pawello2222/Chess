@@ -15,9 +15,24 @@ import java.util.List;
  */
 abstract class MainFactory
 {
-    static GameBase getGame( MainMenu mainMenu, GameType gameType )
+    static Application getAppGUI()
     {
-        return new Game( mainMenu, gameType );
+        return new MainMenu();
+    }
+
+    static GameBase getLocalGame( Application application )
+    {
+        return new LocalGame( application );
+    }
+
+    static GameBase getServerGame( Application application )
+    {
+        return new ServerGame( application );
+    }
+
+    static GameBase getClientGame( Application application )
+    {
+        return new ClientGame( application );
     }
 
     static GameHandlerBase getGameHandler( GameBase game, Spot[][] spots, List< Piece > pieces, GameType gameType )

@@ -17,7 +17,7 @@ import static com.pawello2222.chess.core.MainFactory.getServerGame;
  *
  * @author Pawel Wiszenko
  */
-public class MainMenu extends Application
+class MainMenu extends Application
 {
     private ActionListener[][] actionListeners;
 
@@ -177,9 +177,4 @@ public class MainMenu extends Application
                                        JOptionPane.DEFAULT_OPTION,
                                        JOptionPane.PLAIN_MESSAGE );
     }
-//
-//    public static void main( String[] args )
-//    {
-//        EventQueue.invokeLater( MainMenu::new );
-//    }
 }

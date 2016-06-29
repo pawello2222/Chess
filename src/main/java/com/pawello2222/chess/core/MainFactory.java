@@ -22,17 +22,17 @@ abstract class MainFactory
 
     static GameBase getLocalGame( Application application )
     {
-        return new LocalGame( application );
+        return new GameLocal( application );
     }
 
     static GameBase getServerGame( Application application )
     {
-        return new ServerGame( application );
+        return new GameServer( application );
     }
 
     static GameBase getClientGame( Application application )
     {
-        return new ClientGame( application );
+        return new GameClient( application );
     }
 
     static GameHandlerBase getGameHandler( GameBase game, Spot[][] spots, List< Piece > pieces, GameType gameType )

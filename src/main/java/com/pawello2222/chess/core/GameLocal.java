@@ -19,14 +19,14 @@ import static com.pawello2222.chess.core.MainFactory.*;
  *
  * @author Pawel Wiszenko
  */
-class LocalGame extends GameBase
+class GameLocal extends GameBase
 {
     private Application application;
     GameHandlerBase gameHandler;
     private MoveListenerBase moveListener;
     private JPanel board;
 
-    LocalGame( Application application )
+    GameLocal( Application application )
     {
         this.application = application;
 
@@ -41,7 +41,7 @@ class LocalGame extends GameBase
             @Override
             public void windowClosing( WindowEvent e )
             {
-                int confirm = JOptionPane.showOptionDialog( LocalGame.this,
+                int confirm = JOptionPane.showOptionDialog( GameLocal.this,
                         "Are you sure you want to quit this game?", "Quit game",
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
                         null, null, null );
@@ -102,7 +102,7 @@ class LocalGame extends GameBase
         }
 
         message( title, message );
-        close();
+        closeGame();
     }
 
     @Override

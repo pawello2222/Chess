@@ -11,11 +11,11 @@ import javax.swing.*;
  *
  * @author Pawel Wiszenko
  */
-abstract class OnlineGame extends LocalGame
+abstract class GameOnline extends GameLocal
 {
     NetworkHandler networkHandler;
 
-    OnlineGame( Application application )
+    GameOnline( Application application )
     {
         super( application );
 

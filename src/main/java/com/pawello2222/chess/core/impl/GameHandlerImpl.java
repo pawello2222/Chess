@@ -71,25 +71,25 @@ public class GameHandlerImpl extends GameHandlerBase
     }
 
     @Override
-    public void movePiece( Spot sourceSpot, Spot targetSpot, boolean isOwnMove )
+    public void movePiece( Spot sourceSpot, Spot targetSpot, char promotion, boolean isOwnMove )
     {
         executeMove( spots, pieces, sourceSpot, targetSpot );
         updateGraphics();
 
-        checkPawnPromotion( game, targetSpot );
+        promotion = checkPawnPromotion( game, targetSpot, promotion );
         updateGraphics();
 
         moveValidator.updateFlagsAfterMove( sourceSpot, targetSpot );
 
         if ( isOnline && isOwnMove && networkSender != null )
-            sendMove( sourceSpot, targetSpot );
+            sendMove( sourceSpot, targetSpot, promotion );
 
         nextTurn();
     }
 
-    private void sendMove( Spot sourceSpot, Spot targetSpot )
+    private void sendMove( Spot sourceSpot, Spot targetSpot, char promotion )
     {
-        networkSender.send( "M" + sourceSpot.toString() + targetSpot.toString() );
+        networkSender.send( "M" + sourceSpot.toString() + targetSpot.toString() + promotion );
     }
 
     @Override
@@ -115,7 +115,7 @@ public class GameHandlerImpl extends GameHandlerBase
                                    [ Integer.parseInt( data.substring( 2, 3 ) ) ],
                            spots[ Integer.parseInt( data.substring( 3, 4 ) ) ]
                                    [ Integer.parseInt( data.substring( 4, 5 ) ) ],
-                           false );
+                           data.charAt( 5 ), false );
         }
     }
 

@@ -44,28 +44,28 @@ abstract class GameOnline extends GameLocal
     @Override
     public void end( GameState gameState )
     {
-        closeNetwork();
+        closeNetwork( gameState == GameState.NETWORK_CLOSE );
         super.end( gameState );
     }
 
     @Override
     public void close()
     {
-        closeNetwork();
+        closeNetwork( true );
         closeGame();
     }
 
-    private void closeNetwork()
+    private void closeNetwork( boolean notify )
     {
         gameHandler.setNetworkSender( null );
         networkHandler.setNetworkReceiver( null );
-        networkHandler.stop();
+        networkHandler.stop( notify );
     }
 
     @Override
     public void exception( String message )
     {
-        closeNetwork();
+        closeNetwork( true );
         message( "Error", message );
         closeGame();
     }

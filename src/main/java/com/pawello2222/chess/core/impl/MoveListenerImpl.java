@@ -77,7 +77,7 @@ public class MoveListenerImpl extends MoveListenerBase
             if ( targetSpot == null || !targetSpot.isValidMoveFlag() || targetSpot == sourceSpot )
                 dragPiece.setCoordinatesToSpot( sourceSpot );
             else
-                gameHandler.movePiece( sourceSpot, targetSpot, true );
+                gameHandler.movePiece( sourceSpot, targetSpot, 'X', true );
 
             sourceSpot = null;
             dragPiece = null;

@@ -18,3 +18,4 @@ public abstract class Application extends JFrame
 
 // todo: add board base class
 // todo: add verification of null dependencies (everywhere)
+// todo: promotion

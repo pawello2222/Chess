@@ -14,7 +14,7 @@ public abstract class NetworkHandler implements NetworkSender
 
     public abstract void start( String serverName, int port );
 
-    public abstract void stop();
+    public abstract void stop( boolean notify );
 
     @Override
     public abstract void setNetworkReceiver( NetworkReceiver networkReceiver );

@@ -89,11 +89,12 @@ class NetworkHandlerImpl extends NetworkHandler
     }
 
     @Override
-    public void stop()
+    public void stop( boolean notify )
     {
         listen = false;
 
-        send( "0" );
+        if ( notify )
+            send( "0" );
 
         close( outputStream );
         close( inputStream );

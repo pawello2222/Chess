@@ -45,23 +45,38 @@ public abstract class BoardUtils
         sourceSpot.setPiece( null );
     }
 
-    public static void checkPawnPromotion( Container container, Spot spot )
+    public static char checkPawnPromotion( Container container, Spot spot, char promotion )
     {
         int promotionRow = spot.hasPieceColor( PieceColor.WHITE ) ? 0 : 7;
         if ( spot.hasPieceType( PieceType.PAWN ) && spot.getRow() == promotionRow )
-            promotePawn( container, spot.getPiece() );
+            return promotePawn( container, spot.getPiece(), promotion );
+
+        return promotion;
     }
 
-    private static void promotePawn( Container container, Piece piece )
+    private static char promotePawn( Container container, Piece piece, char promotion )
     {
-        String chosenType;
-        do
-            chosenType = getPromotionDialogResult( container );
-        while ( chosenType == null );
+        PieceType promotionType;
 
-        piece.setImage( ResourceLoader.loadImageExitOnEx(
-                piece.getColor() + "_" + chosenType.toUpperCase() + ".png" ) );
-        piece.setType( PieceType.valueOf( chosenType.toUpperCase() ) );
+        if ( promotion == 'X' )
+        {
+            String chosenType;
+            do
+                chosenType = getPromotionDialogResult( container );
+            while ( chosenType == null );
+            promotionType = PieceType.valueOf( chosenType.toUpperCase() );
+        }
+        else
+        {
+            int index = Character.getNumericValue( promotion );
+            promotionType = PieceType.values()[ index ];
+        }
+
+        String path = piece.getColor() + "_" + promotionType.toString() + ".png";
+        piece.setImage( ResourceLoader.loadImageExitOnEx( path ) );
+        piece.setType( promotionType );
+
+        return Character.forDigit( promotionType.ordinal(), 10 );
     }
 
     private static String getPromotionDialogResult( Container container )
@@ -69,13 +84,9 @@ public abstract class BoardUtils
         Object[] possibilities = { "Knight", "Bishop", "Rook", "Queen" };
 
         return ( String ) JOptionPane.showInputDialog(
-                container,
-                "Choose promotion",
-                "Promotion",
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                possibilities,
-                possibilities[ 3 ] );
+                container, "Choose promotion", "Promotion",
+                JOptionPane.PLAIN_MESSAGE, null,
+                possibilities, possibilities[ 3 ] );
     }
 
     public static boolean isCheckFlagSet( Spot[][] spots )

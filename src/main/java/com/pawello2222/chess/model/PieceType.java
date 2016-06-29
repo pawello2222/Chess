@@ -7,10 +7,23 @@ package com.pawello2222.chess.model;
  */
 public enum PieceType
 {
-    PAWN,
-    ROOK,
-    KNIGHT,
-    BISHOP,
-    QUEEN,
-    KING
+    PAWN( "PAWN" ),
+    ROOK( "ROOK" ),
+    KNIGHT( "KNIGHT" ),
+    BISHOP( "BISHOP" ),
+    QUEEN( "QUEEN" ),
+    KING( "KING" );
+
+    private final String text;
+
+    PieceType( final String text )
+    {
+        this.text = text;
+    }
+
+    @Override
+    public String toString()
+    {
+        return text;
+    }
 }

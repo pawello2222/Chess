@@ -22,7 +22,7 @@ public abstract class GameHandlerBase implements GraphicsHandler, MoveHandler, N
     public abstract void updatePossibleMoves( Spot spot );
 
     @Override
-    public abstract void movePiece( Spot sourceSpot, Spot targetSpot, boolean isOwnMove );
+    public abstract void movePiece( Spot sourceSpot, Spot targetSpot, char promotion, boolean isOwnMove );
 
     @Override
     public abstract void receive( String data );

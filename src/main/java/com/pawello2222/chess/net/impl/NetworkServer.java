@@ -37,13 +37,13 @@ public class NetworkServer extends NetworkHandlerImpl
     }
 
     @Override
-    public void stop()
+    public void stop( boolean notify )
     {
         connect = false;
 
         close( serverSocket );
 
-        super.stop();
+        super.stop( notify );
     }
 
     private void initServer( int port, int timeout )

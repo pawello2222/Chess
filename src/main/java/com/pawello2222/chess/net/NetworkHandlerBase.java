@@ -5,7 +5,7 @@ package com.pawello2222.chess.net;
  *
  * @author Pawel Wiszenko
  */
-public abstract class NetworkHandler implements NetworkSender
+public abstract class NetworkHandlerBase implements NetworkSender
 {
     @Override
     public abstract void send( String data );

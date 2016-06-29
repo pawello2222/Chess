@@ -3,7 +3,7 @@ package com.pawello2222.chess.core.impl;
 import com.pawello2222.chess.core.Application;
 import com.pawello2222.chess.model.GameState;
 import com.pawello2222.chess.model.GameType;
-import com.pawello2222.chess.net.NetworkHandler;
+import com.pawello2222.chess.net.NetworkHandlerBase;
 
 import javax.swing.*;
 
@@ -19,7 +19,7 @@ abstract class GameOnlineBase extends GameLocal
     /**
      * Dependencies
      */
-    NetworkHandler networkHandler;
+    NetworkHandlerBase networkHandler;
 
     GameOnlineBase( Application application )
     {

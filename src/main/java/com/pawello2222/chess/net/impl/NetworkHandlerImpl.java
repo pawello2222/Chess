@@ -1,7 +1,7 @@
 package com.pawello2222.chess.net.impl;
 
 import com.pawello2222.chess.core.EventHandler;
-import com.pawello2222.chess.net.NetworkHandler;
+import com.pawello2222.chess.net.NetworkHandlerBase;
 import com.pawello2222.chess.net.NetworkReceiver;
 
 import java.io.Closeable;
@@ -15,7 +15,7 @@ import java.net.Socket;
  *
  * @author Pawel Wiszenko
  */
-abstract class NetworkHandlerImpl extends NetworkHandler
+abstract class NetworkHandlerImpl extends NetworkHandlerBase
 {
     /**
      * Dependencies

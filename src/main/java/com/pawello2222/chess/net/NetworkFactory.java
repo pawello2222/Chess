@@ -11,12 +11,12 @@ import com.pawello2222.chess.net.impl.NetworkServer;
  */
 public abstract class NetworkFactory
 {
-    public static NetworkHandler getNetworkServer( EventHandler eventHandler )
+    public static NetworkHandlerBase getNetworkServer( EventHandler eventHandler )
     {
         return new NetworkServer( eventHandler );
     }
 
-    public static NetworkHandler getNetworkClient( EventHandler eventHandler )
+    public static NetworkHandlerBase getNetworkClient( EventHandler eventHandler )
     {
         return new NetworkClient( eventHandler );
     }

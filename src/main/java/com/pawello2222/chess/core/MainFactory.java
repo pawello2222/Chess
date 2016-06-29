@@ -24,12 +24,12 @@ public abstract class MainFactory
 
     public static GameBase getServerGame( Application application )
     {
-        return new GameServer( application );
+        return new GameOnlineServer( application );
     }
 
     public static GameBase getClientGame( Application application )
     {
-        return new GameClient( application );
+        return new GameOnlineClient( application );
     }
 
     public static GameHandlerBase getGameHandler( GameBase game, MoveValidatorBase moveValidator,

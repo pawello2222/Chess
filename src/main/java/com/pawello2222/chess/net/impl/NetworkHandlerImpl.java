@@ -15,7 +15,7 @@ import java.net.Socket;
  *
  * @author Pawel Wiszenko
  */
-class NetworkHandlerImpl extends NetworkHandler
+abstract class NetworkHandlerImpl extends NetworkHandler
 {
     /**
      * Dependencies

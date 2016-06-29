@@ -14,14 +14,14 @@ import static com.pawello2222.chess.util.NetworkUtils.validateInt;
  *
  * @author Pawel Wiszenko
  */
-abstract class GameOnline extends GameLocal
+abstract class GameOnlineBase extends GameLocal
 {
     /**
      * Dependencies
      */
     NetworkHandler networkHandler;
 
-    GameOnline( Application application )
+    GameOnlineBase( Application application )
     {
         super( application );
 

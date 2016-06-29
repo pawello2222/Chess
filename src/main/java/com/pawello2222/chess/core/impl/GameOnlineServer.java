@@ -10,9 +10,9 @@ import static com.pawello2222.chess.net.NetworkFactory.getNetworkServer;
  *
  * @author Pawel Wiszenko
  */
-public class GameServer extends GameOnline
+public class GameOnlineServer extends GameOnlineBase
 {
-    public GameServer( Application application )
+    public GameOnlineServer( Application application )
     {
         super( application );
     }

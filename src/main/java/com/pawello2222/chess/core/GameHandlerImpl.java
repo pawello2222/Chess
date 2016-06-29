@@ -29,6 +29,7 @@ class GameHandlerImpl extends GameHandlerBase
      */
     private GameType gameType;
     private GameState gameState;
+
     private boolean isOnline;
 
     GameHandlerImpl( GameBase game, Spot[][] spots, List< Piece > pieces, GameType gameType )

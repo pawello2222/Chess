@@ -8,14 +8,16 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 /**
- * << Class Name >>.
+ * Network server class.
  *
  * @author Pawel Wiszenko
  */
 class NetworkServer extends NetworkHandler
 {
+    /**
+     * Variables
+     */
     private volatile ServerSocket serverSocket;
-
     private boolean connect;
 
     NetworkServer( ExceptionHandler exceptionHandler )
@@ -26,9 +28,22 @@ class NetworkServer extends NetworkHandler
     @Override
     public void start( int port, int timeout )
     {
+        if ( !isReceiver() )
+            exception( "Unable to start server. Connection failed." );
+
         initServer( port, timeout );
         if ( serverSocket != null )
             connect();
+    }
+
+    @Override
+    public void stop()
+    {
+        connect = false;
+
+        close( serverSocket );
+
+        super.stop();
     }
 
     private void initServer( int port, int timeout )
@@ -40,7 +55,7 @@ class NetworkServer extends NetworkHandler
         }
         catch ( IOException e )
         {
-            exception( "Cannot create a socket on port " + port + " with timeout: " + timeout + "ms." );
+            exception( "Unable to create a server socket for port " + port + "." );
         }
     }
 
@@ -56,27 +71,17 @@ class NetworkServer extends NetworkHandler
                 inputStream = new DataInputStream( socket.getInputStream() );
                 outputStream = new DataOutputStream( socket.getOutputStream() );
 
-                send( "P" );
+                send( "1" );
                 listen();
             }
             catch ( IOException e )
             {
                 if ( connect )
-                    exception( "Cannot connect with opponent." );
+                    exception( "Unable to connect to opponent." );
             }
         };
 
         Thread serverThread = new Thread( serverTask );
         serverThread.start();
-    }
-
-    @Override
-    public void stop()
-    {
-        connect = false;
-
-        close( serverSocket );
-
-        super.stop();
     }
 }

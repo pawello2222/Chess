@@ -34,7 +34,7 @@ class MoveListenerImpl extends MoveListenerBase
     @Override
     public void mousePressed( MouseEvent e )
     {
-        if ( dragPiece != null )
+        if ( dragPiece != null && gameHandler == null )
             return;
 
         switch ( e.getModifiers() )
@@ -58,7 +58,7 @@ class MoveListenerImpl extends MoveListenerBase
     @Override
     public void mouseDragged( MouseEvent e )
     {
-        if( dragPiece != null )
+        if( dragPiece != null && gameHandler != null )
         {
             dragPiece.setX( e.getPoint().x - dragPiece.getWidth() / 2 );
             dragPiece.setY( e.getPoint().y - dragPiece.getHeight() / 2 );
@@ -69,7 +69,7 @@ class MoveListenerImpl extends MoveListenerBase
     @Override
     public void mouseReleased( MouseEvent e )
     {
-        if( dragPiece != null )
+        if( dragPiece != null && gameHandler != null )
         {
             Spot targetSpot = getSpotFromXY( e.getPoint().x, e.getPoint().y );
             if ( targetSpot == null || !targetSpot.isValidMoveFlag() || targetSpot == sourceSpot )

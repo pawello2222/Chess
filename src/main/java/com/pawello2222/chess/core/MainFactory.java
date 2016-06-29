@@ -20,11 +20,6 @@ abstract class MainFactory
         return new Game( mainMenu, gameType );
     }
 
-    static JPanel getBoard( Image image, Spot[][] spots, List< Piece > pieces )
-    {
-        return new Board( image, spots, pieces );
-    }
-
     static GameHandlerBase getGameHandler( GameBase game, Spot[][] spots, List< Piece > pieces, GameType gameType )
     {
         return new GameHandlerImpl( game, spots, pieces, gameType );
@@ -38,6 +33,11 @@ abstract class MainFactory
     static MoveValidatorBase getMoveValidator( Spot[][] spots )
     {
         return new MoveValidatorImpl( spots );
+    }
+
+    static JPanel getBoard( Image image, Spot[][] spots, List< Piece > pieces )
+    {
+        return new Board( image, spots, pieces );
     }
 
     static Spot[][] getSpots( boolean reversed )

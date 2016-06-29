@@ -166,20 +166,20 @@ class GameHandlerImpl extends GameHandlerBase
         game.endOfGame( gameState );
     }
 
-    private void activatePieces( PieceColor pieceColor, boolean active )
+    private void activatePieces( PieceColor color, boolean active )
     {
-        pieces.stream().filter( piece -> piece.getColor() == pieceColor ).forEach( piece -> piece.setActive( active ) );
-    }
-
-    @Override
-    public void setGame( GameBase game )
-    {
-        this.game = game;
+        pieces.stream().filter( p -> p.getColor() == color ).forEach( p -> p.setActive( active ) );
     }
 
     @Override
     public void setNetworkSender( NetworkSender networkSender )
     {
         this.networkSender = networkSender;
+    }
+
+    @Override
+    public void setGame( GameBase game )
+    {
+        this.game = game;
     }
 }

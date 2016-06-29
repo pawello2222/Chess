@@ -24,11 +24,6 @@ public class Spot
     private boolean enPassantFlag;
     private boolean specialMoveFlag;
 
-    public Spot()
-    {
-
-    }
-
     @Override
     public String toString()
     {

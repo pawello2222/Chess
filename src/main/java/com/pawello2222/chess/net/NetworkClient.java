@@ -8,13 +8,12 @@ import java.io.IOException;
 import java.net.Socket;
 
 /**
- * << Class Name >>.
+ * Network client class.
  *
  * @author Pawel Wiszenko
  */
 class NetworkClient extends NetworkHandler
 {
-
     NetworkClient( ExceptionHandler exceptionHandler )
     {
         super( exceptionHandler );
@@ -23,6 +22,9 @@ class NetworkClient extends NetworkHandler
     @Override
     public void start( String serverName, int port )
     {
+        if ( !isReceiver() )
+            exception( "Unable to start client. Connection failed." );
+
         connect( serverName, port );
     }
 
@@ -34,12 +36,12 @@ class NetworkClient extends NetworkHandler
             inputStream = new DataInputStream( socket.getInputStream() );
             outputStream = new DataOutputStream( socket.getOutputStream() );
 
-            send( "P" );
+            send( "1" );
             listen();
         }
         catch ( IOException e )
         {
-            exception( "Cannot connect with opponent." );
+            exception( "Unable to connect to opponent." );
         }
     }
 }

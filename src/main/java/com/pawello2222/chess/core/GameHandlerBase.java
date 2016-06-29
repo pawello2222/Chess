@@ -27,8 +27,8 @@ abstract class GameHandlerBase implements GraphicsHandler, MoveHandler, NetworkR
     @Override
     public abstract void receive( String data );
 
-    public abstract void setGame( GameBase game );
-
     @Override
     public abstract void setNetworkSender( NetworkSender networkSender );
+
+    public abstract void setGame( GameBase game );
 }

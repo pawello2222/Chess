@@ -9,15 +9,21 @@ import java.io.IOException;
 import java.net.Socket;
 
 /**
- * << Class Name >>.
+ * Network handler base class.
  *
  * @author Pawel Wiszenko
  */
 public abstract class NetworkHandler implements NetworkSender
 {
+    /**
+     * Dependencies
+     */
     private ExceptionHandler exceptionHandler;
     private NetworkReceiver networkReceiver;
 
+    /**
+     * Variables
+     */
     volatile Socket socket;
     volatile DataInputStream inputStream;
     volatile DataOutputStream outputStream;
@@ -27,20 +33,6 @@ public abstract class NetworkHandler implements NetworkSender
     NetworkHandler( ExceptionHandler exceptionHandler )
     {
         this.exceptionHandler = exceptionHandler;
-
-        socket = null;
-        inputStream = null;
-        outputStream = null;
-    }
-
-    public void start( int port, int timeout )
-    {
-
-    }
-
-    public void start( String serverName, int port )
-    {
-
     }
 
     @Override
@@ -48,13 +40,18 @@ public abstract class NetworkHandler implements NetworkSender
     {
         try
         {
-            outputStream.writeUTF( data );
+            if ( outputStream != null )
+                outputStream.writeUTF( data );
         }
         catch ( IOException e )
         {
-            exception( "Cannot send data. Connection lost." );
+            exception( "Connection failed." );
         }
     }
+
+    public void start( int port, int timeout ) { }
+
+    public void start( String serverName, int port ) { }
 
     private void receive( String data )
     {
@@ -72,12 +69,13 @@ public abstract class NetworkHandler implements NetworkSender
                 try
                 {
                     String data = inputStream.readUTF();
-                    receive( data );
+                    if ( listen )
+                        receive( data );
                 }
                 catch ( IOException e )
                 {
                     if ( listen )
-                        exception( "Cannot receive data. Connection lost." );
+                        exception( "Connection failed." );
                 }
             }
         };
@@ -90,8 +88,7 @@ public abstract class NetworkHandler implements NetworkSender
     {
         listen = false;
 
-        if ( outputStream != null )
-            send( "Q" );
+        send( "0" );
 
         close( outputStream );
         close( inputStream );
@@ -109,7 +106,7 @@ public abstract class NetworkHandler implements NetworkSender
         }
         catch ( IOException e )
         {
-            exception( "Cannot close network" );
+            exception( "Cannot close network module: " + closeable.toString() + "." );
         }
     }
 
@@ -122,5 +119,10 @@ public abstract class NetworkHandler implements NetworkSender
     public void setNetworkReceiver( NetworkReceiver networkReceiver )
     {
         this.networkReceiver = networkReceiver;
+    }
+
+    boolean isReceiver()
+    {
+        return networkReceiver != null;
     }
 }

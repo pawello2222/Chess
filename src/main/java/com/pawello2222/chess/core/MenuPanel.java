@@ -1,5 +1,7 @@
 package com.pawello2222.chess.core;
 
+import com.pawello2222.chess.util.TranslucentButton;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -19,6 +21,15 @@ class MenuPanel extends JPanel
 
         setPreferredSize( new Dimension( bgImage.getWidth( this ),
                                          bgImage.getHeight( this ) ) );
+
+        JButton button = new TranslucentButton( "Chess" );
+        button.setBounds( bgImage.getWidth( this ) / 4, bgImage.getHeight( this ) / 2, 200, 40 );
+//        button.setPreferredSize( new Dimension( 200, 40 ) );
+        add( button );
+
+        setLayout( null );
+
+//        setLayout( new FlowLayout() );
     }
 
     @Override

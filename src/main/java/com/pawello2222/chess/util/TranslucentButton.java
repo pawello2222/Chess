@@ -2,6 +2,7 @@ package com.pawello2222.chess.util;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
 
 /**
@@ -11,15 +12,22 @@ import java.awt.geom.RoundRectangle2D;
  */
 public class TranslucentButton extends JButton
 {
-    private static final Color interiorHover = new Color( 1f, 1f, 1f, .9f );
-    private static final Color borderHover = new Color( 0f, 0f, 0f, .6f );
-    private static final Color interiorPressed = new Color( 0f, 0f, 0f, .1f );
-    private static final Color borderPressed = new Color( 1f, 1f, 1f, .4f );
+    private static final Color normal1 = new Color( 1f, 1f, 1f, .9f );
+    private static final Color normal2 = new Color( 0f, 0f, 0f, .6f );
+    private static final Color pressed1 = new Color( 0f, 0f, 0f, .7f );
+    private static final Color pressed2 = new Color( 1f, 1f, 1f, .5f );
+    private static final Color border = new Color( 0f, 0f, 0f, .6f );
 
-    public TranslucentButton( String text )
+    private static final int width = 200;
+    private static final int height = 40;
+
+    public TranslucentButton( String text, ActionListener actionListener )
     {
         super( text );
 
+        addActionListener( actionListener );
+
+//        setPreferredSize( new Dimension( width, height ) );
         setBorder( BorderFactory.createEmptyBorder() );
 
         setContentAreaFilled( false );
@@ -36,23 +44,18 @@ public class TranslucentButton extends JButton
         int radius = 8;
         Shape area = new RoundRectangle2D.Float( 0, 0, getWidth() - 1, getHeight() - 1, radius, radius );
 
-        Color tileColor = interiorHover;
-        Color borderColor = borderHover;
+        Color gradient1 = normal1;
+        Color gradient2 = normal2;
 
         if( getModel().isPressed() )
         {
-            tileColor = interiorPressed;
-            borderColor = borderPressed;
+            gradient1 = pressed1;
+            gradient2 = pressed2;
         }
 
-        g2.setPaint( new GradientPaint( 0, 0, tileColor, 0, getHeight(), borderColor, true ) );
+        g2.setPaint( new GradientPaint( 0, 0, gradient1, 0, getHeight(), gradient2, true ) );
         g2.fill( area );
-
-        if( getModel().isPressed() )
-            g2.setPaint( borderHover );
-        else
-            g2.setPaint( borderColor );
-
+        g2.setPaint( border );
         g2.draw( area );
         g2.dispose();
 

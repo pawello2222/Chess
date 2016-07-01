@@ -27,14 +27,13 @@ public class GameLocal extends GameBase
      * Dependencies
      */
     GameHandlerBase gameHandler;
-
-    private JFrame application;
     private MoveListenerBase moveListener;
+    private JFrame parentFrame;
     private JPanel boardPanel;
 
-    public GameLocal( JFrame application )
+    public GameLocal( JFrame parentFrame )
     {
-        this.application = application;
+        this.parentFrame = parentFrame;
 
         setTitle( "Chess - local game" );
         setIconImage( ResourceLoader.loadImageExitOnEx( "ICON.png" ) );
@@ -62,9 +61,9 @@ public class GameLocal extends GameBase
     {
         initGame( gameType );
 
-        setLocationRelativeTo( application );
+        setLocationRelativeTo( parentFrame );
         setVisible( true );
-        application.setVisible( false );
+        parentFrame.setVisible( false );
     }
 
     private void initGame( GameType gameType )
@@ -134,7 +133,7 @@ public class GameLocal extends GameBase
         moveListener.setGameHandler( null );
         gameHandler.setGame( null );
 
-        application.setVisible( true );
+        parentFrame.setVisible( true );
 
         dispose();
     }

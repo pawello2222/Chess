@@ -9,19 +9,19 @@ import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import static com.pawello2222.chess.core.GUIFactory.getMenuPanel;
+import static com.pawello2222.chess.core.AppFactory.getMenuPanel;
 import static com.pawello2222.chess.core.MainFactory.*;
 
 /**
- * Application GUI implementation class.
+ * Main menu frame.
  *
  * @author Pawel Wiszenko
  */
-public class MenuFrame extends JFrame
+public class AppFrame extends JFrame
 {
     private ActionListener[][] actionListeners;
 
-    public MenuFrame()
+    public AppFrame()
     {
         setTitle( "Main menu" );
         setIconImage( ResourceLoader.loadImageExitOnEx( "ICON.png" ) );

@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
  *
  * @author Pawel Wiszenko
  */
-public class MenuPanel extends JPanel
+public class AppPanel extends JPanel
 {
     private static final int buttonWidth = 200;
     private static final int buttonHeight = 40;
@@ -20,7 +20,7 @@ public class MenuPanel extends JPanel
 
     private ActionListener[][] actionListeners;
 
-    public MenuPanel( Image bgImage, ActionListener[][] actionListeners )
+    public AppPanel( Image bgImage, ActionListener[][] actionListeners )
     {
         this.bgImage = bgImage;
         this.actionListeners = actionListeners;

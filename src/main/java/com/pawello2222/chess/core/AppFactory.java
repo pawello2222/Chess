@@ -7,19 +7,19 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 /**
- * Graphical user interface factory.
+ * Main GUI factory.
  *
  * @author Pawel Wiszenko
  */
-public abstract class GUIFactory
+public abstract class AppFactory
 {
     static JFrame getApplicationFrame()
     {
-        return new MenuFrame();
+        return new AppFrame();
     }
 
     public static JPanel getMenuPanel( Image image, ActionListener[][] actionListeners )
     {
-        return new MenuPanel( image, actionListeners );
+        return new AppPanel( image, actionListeners );
     }
 }

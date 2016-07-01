@@ -20,9 +20,9 @@ abstract class GameOnlineBase extends GameLocal
      */
     NetworkHandlerBase networkHandler;
 
-    GameOnlineBase( JFrame application )
+    GameOnlineBase( JFrame parentFrame )
     {
-        super( application );
+        super( parentFrame );
 
         setTitle( "Chess - waiting for connection..." );
     }

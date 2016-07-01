@@ -13,9 +13,9 @@ import static com.pawello2222.chess.net.NetworkFactory.getNetworkClient;
  */
 public class GameOnlineClient extends GameOnlineBase
 {
-    public GameOnlineClient( JFrame application )
+    public GameOnlineClient( JFrame parentFrame )
     {
-        super( application );
+        super( parentFrame );
     }
 
     @Override

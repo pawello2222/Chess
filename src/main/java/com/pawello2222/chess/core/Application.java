@@ -1,6 +1,5 @@
 package com.pawello2222.chess.core;
 
-import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -8,11 +7,11 @@ import java.awt.*;
  *
  * @author Pawel Wiszenko
  */
-public abstract class Application extends JFrame
+public abstract class Application
 {
     public static void main( String[] args )
     {
-        EventQueue.invokeLater( MainFactory::getApplicationGUI );
+        EventQueue.invokeLater( GUIFactory::getApplicationFrame );
     }
 }
 

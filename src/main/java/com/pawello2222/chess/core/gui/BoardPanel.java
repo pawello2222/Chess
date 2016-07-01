@@ -1,4 +1,4 @@
-package com.pawello2222.chess.core.impl;
+package com.pawello2222.chess.core.gui;
 
 import com.pawello2222.chess.model.*;
 

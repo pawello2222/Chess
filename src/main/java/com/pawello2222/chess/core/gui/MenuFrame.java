@@ -1,6 +1,5 @@
-package com.pawello2222.chess.core.impl;
+package com.pawello2222.chess.core.gui;
 
-import com.pawello2222.chess.core.Application;
 import com.pawello2222.chess.core.GameBase;
 import com.pawello2222.chess.model.GameType;
 import com.pawello2222.chess.util.ResourceLoader;
@@ -10,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import static com.pawello2222.chess.core.GUIFactory.getMenuPanel;
 import static com.pawello2222.chess.core.MainFactory.*;
 
 /**
@@ -17,11 +17,11 @@ import static com.pawello2222.chess.core.MainFactory.*;
  *
  * @author Pawel Wiszenko
  */
-public class MainMenu extends Application
+public class MenuFrame extends JFrame
 {
     private ActionListener[][] actionListeners;
 
-    public MainMenu()
+    public MenuFrame()
     {
         setTitle( "Main menu" );
         setIconImage( ResourceLoader.loadImageExitOnEx( "ICON.png" ) );

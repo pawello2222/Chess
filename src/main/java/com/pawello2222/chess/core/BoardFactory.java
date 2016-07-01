@@ -1,6 +1,6 @@
 package com.pawello2222.chess.core;
 
-import com.pawello2222.chess.core.impl.BoardPanel;
+import com.pawello2222.chess.core.gui.BoardPanel;
 import com.pawello2222.chess.model.Piece;
 import com.pawello2222.chess.model.PieceColor;
 import com.pawello2222.chess.model.PieceType;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * BoardPanel factory.
+ * Board factory.
  *
  * @author Pawel Wiszenko
  */

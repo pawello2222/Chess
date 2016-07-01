@@ -1,4 +1,4 @@
-package com.pawello2222.chess.core.impl;
+package com.pawello2222.chess.core.gui;
 
 import com.pawello2222.chess.util.TranslucentButton;
 
@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
  *
  * @author Pawel Wiszenko
  */
-public class MainPanel extends JPanel
+public class MenuPanel extends JPanel
 {
     private static final int buttonWidth = 200;
     private static final int buttonHeight = 40;
@@ -20,7 +20,7 @@ public class MainPanel extends JPanel
 
     private ActionListener[][] actionListeners;
 
-    public MainPanel( Image bgImage, ActionListener[][] actionListeners )
+    public MenuPanel( Image bgImage, ActionListener[][] actionListeners )
     {
         this.bgImage = bgImage;
         this.actionListeners = actionListeners;

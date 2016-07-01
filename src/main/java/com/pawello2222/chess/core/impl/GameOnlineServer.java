@@ -1,7 +1,8 @@
 package com.pawello2222.chess.core.impl;
 
-import com.pawello2222.chess.core.Application;
 import com.pawello2222.chess.model.GameType;
+
+import javax.swing.*;
 
 import static com.pawello2222.chess.net.NetworkFactory.getNetworkServer;
 
@@ -12,7 +13,7 @@ import static com.pawello2222.chess.net.NetworkFactory.getNetworkServer;
  */
 public class GameOnlineServer extends GameOnlineBase
 {
-    public GameOnlineServer( Application application )
+    public GameOnlineServer( JFrame application )
     {
         super( application );
     }

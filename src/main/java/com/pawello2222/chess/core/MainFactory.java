@@ -4,8 +4,6 @@ import com.pawello2222.chess.core.impl.*;
 import com.pawello2222.chess.model.*;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
@@ -15,27 +13,17 @@ import java.util.List;
  */
 public abstract class MainFactory
 {
-    static Application getApplicationGUI()
-    {
-        return new MainMenu();
-    }
-
-    public static JPanel getMenuPanel( Image image, ActionListener[][] actionListeners )
-    {
-        return new MainPanel( image, actionListeners );
-    }
-
-    public static GameBase getLocalGame( Application application )
+    public static GameBase getLocalGame( JFrame application )
     {
         return new GameLocal( application );
     }
 
-    public static GameBase getServerGame( Application application )
+    public static GameBase getServerGame( JFrame application )
     {
         return new GameOnlineServer( application );
     }
 
-    public static GameBase getClientGame( Application application )
+    public static GameBase getClientGame( JFrame application )
     {
         return new GameOnlineClient( application );
     }

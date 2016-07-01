@@ -28,11 +28,11 @@ public class GameLocal extends GameBase
      */
     GameHandlerBase gameHandler;
 
-    private Application application;
+    private JFrame application;
     private MoveListenerBase moveListener;
     private JPanel boardPanel;
 
-    public GameLocal( Application application )
+    public GameLocal( JFrame application )
     {
         this.application = application;
 

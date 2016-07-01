@@ -32,7 +32,7 @@ public class GameOnlineClient extends GameOnlineBase
         {
             int port = getPort();
             if ( port == -1 )
-                close( "Invalid timeout." );
+                close( "Invalid port number." );
             else
                 networkHandler.start( serverName, port );
         }

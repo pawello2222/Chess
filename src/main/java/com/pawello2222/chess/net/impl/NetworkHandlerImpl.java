@@ -30,8 +30,6 @@ abstract class NetworkHandlerImpl extends NetworkHandlerBase
     volatile DataInputStream inputStream;
     volatile DataOutputStream outputStream;
 
-    private boolean listen;
-
     NetworkHandlerImpl( EventHandler eventHandler )
     {
         this.eventHandler = eventHandler;
@@ -64,22 +62,20 @@ abstract class NetworkHandlerImpl extends NetworkHandlerBase
 
     void listen()
     {
-        listen = true;
-
         Runnable listenTask = () ->
         {
-            while ( listen )
+            while ( isReceiver() )
             {
                 try
                 {
                     String data = inputStream.readUTF();
-                    if ( listen )
+                    if ( isReceiver() )
                         receive( data );
                 }
                 catch ( IOException e )
                 {
-                    if ( listen )
-                        exception( "Connection failed." );
+                    if ( isReceiver() )
+                        exception( "Connection failed - receive." );
                 }
             }
         };
@@ -91,8 +87,6 @@ abstract class NetworkHandlerImpl extends NetworkHandlerBase
     @Override
     public void stop( boolean notify )
     {
-        listen = false;
-
         if ( notify )
             send( "0" );
 

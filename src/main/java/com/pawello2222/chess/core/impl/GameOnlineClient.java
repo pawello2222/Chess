@@ -25,7 +25,7 @@ public class GameOnlineClient extends GameOnlineBase
         super.start( gameType );
 
         String serverName = getInput( "Specify server name:" );
-        if ( serverName == null )
+        if ( serverName == null || serverName.equals( "" ) )
             close( "Invalid server name." );
         else
         {

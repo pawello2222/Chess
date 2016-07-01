@@ -22,7 +22,7 @@ public abstract class MainFactory
 
     public static JPanel getMenuPanel( Image image, ActionListener[][] actionListeners )
     {
-        return new MenuPanel( image, actionListeners );
+        return new MainPanel( image, actionListeners );
     }
 
     public static GameBase getLocalGame( Application application )

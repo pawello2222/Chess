@@ -12,14 +12,11 @@ import java.awt.geom.RoundRectangle2D;
  */
 public class TranslucentButton extends JButton
 {
-    private static final Color normal1 = new Color( 1f, 1f, 1f, .9f );
-    private static final Color normal2 = new Color( 0f, 0f, 0f, .6f );
+    private static final Color normal1 = new Color( 1f, 1f, 1f, .7f );
+    private static final Color normal2 = new Color( 0f, 0f, 0f, .5f );
     private static final Color pressed1 = new Color( 0f, 0f, 0f, .7f );
     private static final Color pressed2 = new Color( 1f, 1f, 1f, .5f );
     private static final Color border = new Color( 0f, 0f, 0f, .6f );
-
-    private static final int width = 200;
-    private static final int height = 40;
 
     public TranslucentButton( String text, ActionListener actionListener )
     {
@@ -27,9 +24,7 @@ public class TranslucentButton extends JButton
 
         addActionListener( actionListener );
 
-//        setPreferredSize( new Dimension( width, height ) );
         setBorder( BorderFactory.createEmptyBorder() );
-
         setContentAreaFilled( false );
         setFocusPainted( false );
         setOpaque( false );

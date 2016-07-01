@@ -28,7 +28,7 @@ public class MainMenu extends Application
 
         initActionListeners();
         setJMenuBar( initMenuBar() );
-        add( getMenuPanel( ResourceLoader.loadImageExitOnEx( "BACKGROUND.png" ), actionListeners ) );
+        add( getMenuPanel( ResourceLoader.loadImageExitOnEx( "BACKGROUND_ALL.png" ), actionListeners ) );
         pack();
 
         setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );

@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import static com.pawello2222.chess.core.AppFactory.getMenuPanel;
+import static com.pawello2222.chess.core.AppFactory.getAppPanel;
 import static com.pawello2222.chess.core.MainFactory.*;
 
 /**
@@ -28,7 +28,7 @@ public class AppFrame extends JFrame
 
         initActionListeners();
         setJMenuBar( initMenuBar() );
-        add( getMenuPanel( ResourceLoader.loadImageExitOnEx( "BACKGROUND_ALL.png" ), actionListeners ) );
+        add( getAppPanel( ResourceLoader.loadImageExitOnEx( "BACKGROUND_ALL.png" ), actionListeners ) );
         pack();
 
         setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );

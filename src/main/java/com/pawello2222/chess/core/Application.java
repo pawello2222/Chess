@@ -11,7 +11,7 @@ public abstract class Application
 {
     public static void main( String[] args )
     {
-        EventQueue.invokeLater( AppFactory::getApplicationFrame );
+        EventQueue.invokeLater( AppFactory::getAppFrame );
     }
 }
 

@@ -15,7 +15,7 @@ import static com.pawello2222.chess.util.BoardUtils.*;
  *
  * @author Pawel Wiszenko
  */
-public class GameHandlerImpl extends GameHandlerBase
+public class GameHandler extends GameHandlerBase
 {
     /**
      * Dependencies
@@ -35,8 +35,8 @@ public class GameHandlerImpl extends GameHandlerBase
 
     private boolean isOnline;
 
-    public GameHandlerImpl( GameBase game, MoveValidatorBase moveValidator,
-                            Spot[][] spots, List< Piece > pieces, GameType gameType )
+    public GameHandler( GameBase game, MoveValidatorBase moveValidator,
+                        Spot[][] spots, List< Piece > pieces, GameType gameType )
     {
         this.game = game;
         this.moveValidator = moveValidator;

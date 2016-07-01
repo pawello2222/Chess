@@ -21,7 +21,7 @@ import static com.pawello2222.chess.core.MainFactory.*;
  *
  * @author Pawel Wiszenko
  */
-public class GameLocal extends GameBase
+public class Game extends GameBase
 {
     /**
      * Dependencies
@@ -31,7 +31,7 @@ public class GameLocal extends GameBase
     private JFrame parentFrame;
     private JPanel boardPanel;
 
-    public GameLocal( JFrame parentFrame )
+    public Game( JFrame parentFrame )
     {
         this.parentFrame = parentFrame;
 
@@ -46,7 +46,7 @@ public class GameLocal extends GameBase
             @Override
             public void windowClosing( WindowEvent e )
             {
-                int confirm = JOptionPane.showOptionDialog( GameLocal.this,
+                int confirm = JOptionPane.showOptionDialog( Game.this,
                         "Are you sure you want to quit this game?", "Quit game",
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
                         null, null, null );

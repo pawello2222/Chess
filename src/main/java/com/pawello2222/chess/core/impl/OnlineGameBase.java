@@ -13,14 +13,14 @@ import static com.pawello2222.chess.util.NetworkUtils.validateInt;
  *
  * @author Pawel Wiszenko
  */
-abstract class GameOnlineBase extends GameLocal
+abstract class OnlineGameBase extends Game
 {
     /**
      * Dependencies
      */
     NetworkHandlerBase networkHandler;
 
-    GameOnlineBase( JFrame parentFrame )
+    OnlineGameBase( JFrame parentFrame )
     {
         super( parentFrame );
 

@@ -12,7 +12,7 @@ import java.net.ServerSocket;
  *
  * @author Pawel Wiszenko
  */
-public class NetworkServer extends NetworkHandlerImpl
+public class NetworkServer extends NetworkHandler
 {
     /**
      * Variables

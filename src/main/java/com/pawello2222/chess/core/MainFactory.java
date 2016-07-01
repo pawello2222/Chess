@@ -15,32 +15,32 @@ public abstract class MainFactory
 {
     public static GameBase getLocalGame( JFrame application )
     {
-        return new GameLocal( application );
+        return new Game( application );
     }
 
     public static GameBase getServerGame( JFrame application )
     {
-        return new GameOnlineServer( application );
+        return new OnlineGameServer( application );
     }
 
     public static GameBase getClientGame( JFrame application )
     {
-        return new GameOnlineClient( application );
+        return new OnlineGameClient( application );
     }
 
     public static GameHandlerBase getGameHandler( GameBase game, MoveValidatorBase moveValidator,
                                                   Spot[][] spots, List< Piece > pieces, GameType gameType )
     {
-        return new GameHandlerImpl( game, moveValidator, spots, pieces, gameType );
+        return new GameHandler( game, moveValidator, spots, pieces, gameType );
     }
 
     public static MoveListenerBase getMoveListener( GameHandlerBase gameHandler, Spot[][] spots )
     {
-        return new MoveListenerImpl( gameHandler, spots );
+        return new MoveListener( gameHandler, spots );
     }
 
     public static MoveValidatorBase getMoveValidator( Spot[][] spots )
     {
-        return new MoveValidatorImpl( spots );
+        return new MoveValidator( spots );
     }
 }

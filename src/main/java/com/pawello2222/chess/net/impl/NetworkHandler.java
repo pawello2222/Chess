@@ -15,7 +15,7 @@ import java.net.Socket;
  *
  * @author Pawel Wiszenko
  */
-abstract class NetworkHandlerImpl extends NetworkHandlerBase
+abstract class NetworkHandler extends NetworkHandlerBase
 {
     /**
      * Dependencies
@@ -30,7 +30,7 @@ abstract class NetworkHandlerImpl extends NetworkHandlerBase
     volatile DataInputStream inputStream;
     volatile DataOutputStream outputStream;
 
-    NetworkHandlerImpl( EventHandler eventHandler )
+    NetworkHandler( EventHandler eventHandler )
     {
         this.eventHandler = eventHandler;
     }

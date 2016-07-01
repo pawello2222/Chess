@@ -10,7 +10,7 @@ import static com.pawello2222.chess.util.ValidatorUtils.*;
  *
  * @author Pawel Wiszenko
  */
-public class MoveValidatorImpl extends MoveValidatorBase
+public class MoveValidator extends MoveValidatorBase
 {
     /**
      * Dependencies
@@ -24,7 +24,7 @@ public class MoveValidatorImpl extends MoveValidatorBase
     private Piece sourcePiece;
     private PieceColor sourceColor;
 
-    public MoveValidatorImpl( Spot[][] spots )
+    public MoveValidator( Spot[][] spots )
     {
         this.spots = spots;
     }

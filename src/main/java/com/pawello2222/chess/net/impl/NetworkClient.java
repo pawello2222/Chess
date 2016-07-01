@@ -12,7 +12,7 @@ import java.net.Socket;
  *
  * @author Pawel Wiszenko
  */
-public class NetworkClient extends NetworkHandlerImpl
+public class NetworkClient extends NetworkHandler
 {
     public NetworkClient( EventHandler eventHandler )
     {

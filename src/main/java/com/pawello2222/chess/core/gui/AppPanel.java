@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 /**
- * Main menu panel.
+ * Application panel.
  *
  * @author Pawel Wiszenko
  */

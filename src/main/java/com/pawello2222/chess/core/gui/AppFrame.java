@@ -13,7 +13,7 @@ import static com.pawello2222.chess.core.AppFactory.getAppPanel;
 import static com.pawello2222.chess.core.MainFactory.*;
 
 /**
- * Main menu frame.
+ * Application frame.
  *
  * @author Pawel Wiszenko
  */

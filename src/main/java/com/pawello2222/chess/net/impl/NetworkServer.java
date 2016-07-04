@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 /**
- * Network server class.
+ * Network server implementation class.
  *
  * @author Pawel Wiszenko
  */

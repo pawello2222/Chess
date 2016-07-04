@@ -75,7 +75,7 @@ abstract class NetworkHandler extends NetworkHandlerBase
                 catch ( IOException e )
                 {
                     if ( isReceiver() )
-                        exception( "Connection failed - receive." );
+                        exception( "Connection failed." );
                 }
             }
         };

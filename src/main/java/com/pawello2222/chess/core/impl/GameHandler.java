@@ -108,7 +108,7 @@ public class GameHandler extends GameHandlerBase
                 }
                 else
                     game.setTitle( "Chess - online game (BLACK)" );
-                game.message( "Success", "Connected to opponent" );
+                game.message( "Success", "Connected to opponent." );
             }
             else if ( data.charAt( 0 ) == 'M' )
                 movePiece( spots[ Integer.parseInt( data.substring( 1, 2 ) ) ]

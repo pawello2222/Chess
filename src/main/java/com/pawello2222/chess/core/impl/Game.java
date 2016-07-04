@@ -17,7 +17,7 @@ import static com.pawello2222.chess.core.BoardFactory.*;
 import static com.pawello2222.chess.core.MainFactory.*;
 
 /**
- * Local game implementation class.
+ * Game implementation class.
  *
  * @author Pawel Wiszenko
  */

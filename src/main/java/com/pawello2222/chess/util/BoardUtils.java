@@ -72,7 +72,7 @@ public abstract class BoardUtils
             promotionType = PieceType.values()[ index ];
         }
 
-        String path = piece.getColor() + "_" + promotionType.toString() + ".png";
+        String path = piece.getColor() + "_" + promotionType + ".png";
         piece.setImage( ResourceLoader.loadImageExitOnEx( path ) );
         piece.setType( promotionType );
 

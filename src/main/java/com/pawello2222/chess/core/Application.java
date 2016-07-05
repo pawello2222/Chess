@@ -16,4 +16,3 @@ public abstract class Application
 }
 
 // todo: add verification of null dependencies (everywhere)
-// todo: join game -> verify that socket should throw exception

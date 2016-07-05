@@ -79,7 +79,8 @@ abstract class OnlineGameBase extends Game
         int min = 1024;
         int max = 65535;
 
-        return validateInt( getInput( "Specify port number (range: " + min + "-" + max + "):" ), min, max );
+        return validateInt( getInput( "Specify port number (range: " + min + "-" + max + "):" ),
+                            min, max );
     }
 
     int getTimeout()
@@ -87,7 +88,8 @@ abstract class OnlineGameBase extends Game
         int min = 1;
         int max = 30;
 
-        int result = validateInt( getInput( "Specify timeout in seconds (range: " + min + "-" + max + "):" ), min, max );
+        int result = validateInt( getInput( "Specify timeout in seconds (range: " + min + "-" + max + "):" ),
+                                  min, max );
         if ( result != -1 )
             result *= 1000;
 

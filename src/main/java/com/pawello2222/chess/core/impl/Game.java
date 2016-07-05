@@ -68,7 +68,8 @@ public class Game extends GameBase
 
     private void initGame( GameType gameType )
     {
-        boolean reversed = gameType == GameType.LOCAL_BLACK || gameType == GameType.ONLINE_BLACK;
+        boolean reversed = gameType == GameType.LOCAL_BLACK
+                           || gameType == GameType.ONLINE_BLACK;
 
         Image image = ResourceLoader.loadImageExitOnEx( "BOARD.png" );
         Spot[][] spots = getSpots( reversed );

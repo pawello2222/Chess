@@ -18,6 +18,8 @@ public class TranslucentButton extends JButton
     private static final Color pressed2 = new Color( 1f, 1f, 1f, .5f );
     private static final Color border = new Color( 0f, 0f, 0f, .6f );
 
+    private static final int radius = 8;
+
     public TranslucentButton( String text, ActionListener actionListener )
     {
         super( text );
@@ -36,7 +38,6 @@ public class TranslucentButton extends JButton
         Graphics2D g2 = ( Graphics2D ) graphics.create();
 
         g2.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
-        int radius = 8;
         Shape area = new RoundRectangle2D.Float( 0, 0, getWidth() - 1, getHeight() - 1, radius, radius );
 
         Color gradient1 = normal1;
